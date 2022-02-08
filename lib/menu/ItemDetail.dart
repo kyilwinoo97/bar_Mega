@@ -5,13 +5,16 @@ import 'package:bar_mega/widgets/Dialogs.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../Utils.dart';
 import '../injection_container.dart';
 
 class ItemDetail extends StatefulWidget {
   final Item item;
+
   ItemDetail({this.item});
+
   @override
   State<StatefulWidget> createState() => _ItemDetailState();
 }
@@ -32,11 +35,12 @@ class _ItemDetailState extends State<ItemDetail> {
   String buttonText = "Save";
   final _formKey = GlobalKey<FormState>();
   MainRepository repository;
+
   @override
   void initState() {
     repository = sl<MainRepository>();
     categoryItems.addAll(Utils.categoryList);
-    if(widget.item != null){
+    if (widget.item != null) {
       nameController.text = widget.item.name;
       priceController.text = widget.item.price.toString();
       title = "Update Menu";
@@ -48,19 +52,25 @@ class _ItemDetailState extends State<ItemDetail> {
 
   @override
   Widget build(BuildContext context) {
-    var mQuery = MediaQuery.of(context).size;
+    var mQuery = MediaQuery
+        .of(context)
+        .size;
     var width = mQuery.width;
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
         actions: [
-          CupertinoButton(child: Text("Create Unit",style: TextStyle(color: Colors.white),), onPressed: () {
-           Dialogs.createUnit(context).then((value) =>{
-           print("result => $value"),
-             addUnit(value),
+          CupertinoButton(child: Text(
+            "Create Unit", style: TextStyle(color: Colors.white),),
+              onPressed: () {
+                Dialogs.createUnit(context).then((value) =>
+                {
+                  print("result => $value"),
+                  addUnit(value),
+                  getData(),
 
-           });
-          }),
+                });
+              }),
         ],
       ),
       body: SingleChildScrollView(
@@ -115,7 +125,7 @@ class _ItemDetailState extends State<ItemDetail> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text("Unit"),
-                              SizedBox(width:32),
+                              SizedBox(width: 32),
                               Container(
                                 width: width * 0.28,
                                 child: DropdownButtonFormField2(
@@ -137,7 +147,8 @@ class _ItemDetailState extends State<ItemDetail> {
                                   ),
                                   iconSize: 30,
                                   buttonHeight: 60,
-                                  buttonPadding: const EdgeInsets.only(left: 20, right: 10),
+                                  buttonPadding: const EdgeInsets.only(
+                                      left: 20, right: 10),
                                   dropdownDecoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15),
                                   ),
@@ -156,7 +167,7 @@ class _ItemDetailState extends State<ItemDetail> {
                                   validator: (value) {
                                     if (value == null) {
                                       return 'Please select Unit.';
-                                    }else{
+                                    } else {
                                       return "";
                                     }
                                   },
@@ -197,7 +208,8 @@ class _ItemDetailState extends State<ItemDetail> {
                                   ),
                                   iconSize: 30,
                                   buttonHeight: 60,
-                                  buttonPadding: const EdgeInsets.only(left: 20, right: 10),
+                                  buttonPadding: const EdgeInsets.only(
+                                      left: 20, right: 10),
                                   dropdownDecoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15),
                                   ),
@@ -216,7 +228,7 @@ class _ItemDetailState extends State<ItemDetail> {
                                   validator: (value) {
                                     if (value == null) {
                                       return 'Please select Category.';
-                                    }else{
+                                    } else {
                                       return "";
                                     }
                                   },
@@ -242,7 +254,10 @@ class _ItemDetailState extends State<ItemDetail> {
                               onTap: () {}),
                         ),
                         Container(
-                          child: url.isEmpty ? Image.asset("assets/images/logo.png",height: 100,width: 100,) : Image.network(url,height: 100,width: 100,),
+                          child: url.isEmpty
+                              ? Image.asset(
+                            "assets/images/logo.png", height: 100, width: 100,)
+                              : Image.network(url, height: 100, width: 100,),
                         ),
                         Container(
                           padding: EdgeInsets.all(16.0),
@@ -258,7 +273,25 @@ class _ItemDetailState extends State<ItemDetail> {
                                     fontSize: 20,
                                     spacing: 1,
                                     fontWeight: FontWeight.bold,
-                                    onTap: () {}),
+                                    onTap: () {
+                                      if (nameController.text
+                                          .trim()
+                                          .isNotEmpty && priceController.text
+                                          .trim()
+                                          .isNotEmpty &&
+                                          selectedCategory != null) {
+                                        saveMenu();
+                                      } else {
+                                        Fluttertoast.showToast(
+                                          msg: "Please fill all field!",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          fontSize: 13,
+                                          backgroundColor: Colors.green,
+                                          gravity: ToastGravity.CENTER,
+                                          timeInSecForIosWeb: 1,
+                                        );
+                                      }
+                                    }),
                               ),
                               SizedBox(
                                 width: 14,
@@ -290,21 +323,37 @@ class _ItemDetailState extends State<ItemDetail> {
     );
   }
 
-  addUnit(String value) async{
-   var result = await repository.addUnit(Unit(name: value));
-   print("result => $result");
+  addUnit(String value) async {
+    var result = await repository.addUnit(Unit(name: value));
   }
 
-  void getData() async{
-   List<Map> result = await repository.getAllUnit();
-   List<String> lst = [];
-   for(int i = 0 ; i < result.length ; i ++){
-     unitList.add(Unit.fromMap(result[i]));
-     lst.add(result[i]["name"]);
-   }
-   setState(() {
-     unitItems.addAll(lst);
-   });
+  void getData() async {
+    List<Map> result = await repository.getAllUnit();
+    List<String> lst = [];
+    for (int i = 0; i < result.length; i ++) {
+      unitList.add(Unit.fromMap(result[i]));
+      lst.add(result[i]["name"]);
+    }
+    setState(() {
+      unitItems.addAll(lst);
+    });
+  }
+
+  void saveMenu() async{
+    int unitId = -1;
+    for(int i = 0 ; i< unitList.length; i ++){
+      if(unitList[i].name == selectedUnit){
+       unitId = unitList[i].unitId;
+      }
+    }
+    if(unitId != -1){
+      var result = await repository.saveMenu(Item(unitId:unitId, name: nameController.text.toString(),
+          price: priceController.text.toString(),unit: selectedUnit,path: "",category: selectedCategory));
+      print("result => $result");
+    }else{
+      //something went wrong
+    }
+
   }
 }
 
@@ -327,13 +376,12 @@ Widget inputWidget({double width, TextEditingController controller}) {
   );
 }
 
-Widget buttonWidget(
-    {String text,
-    Color color,
-    double fontSize,
-    double spacing,
-    FontWeight fontWeight,
-    Function() onTap}) {
+Widget buttonWidget({String text,
+  Color color,
+  double fontSize,
+  double spacing,
+  FontWeight fontWeight,
+  Function() onTap}) {
   return CupertinoButton(
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 14),
       color: CupertinoColors.activeGreen,

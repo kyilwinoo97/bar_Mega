@@ -2,8 +2,9 @@ class Item{
   int itemId;
   int unitId;
   String name;
-  double price;
+  String price;
   String unit;
+  String qty = "";
   String path;
   String category;
 
@@ -16,6 +17,7 @@ class Item{
         price = map['price'],
         unit = map['unit'],
         path = map['path'],
+        qty = map['qty'],
         category = map['category'];
 
   Map<String, dynamic> toMap() {
@@ -26,6 +28,7 @@ class Item{
     map['price'] = price;
     map['unit'] = unit;
     map['path'] = path;
+    map['qty'] = qty;
     map['category'] = category;
     return map;
   }

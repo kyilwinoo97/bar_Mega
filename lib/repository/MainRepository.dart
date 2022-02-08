@@ -8,6 +8,10 @@ abstract class MainRepository{
   Future<int> addUnit(Unit unit);
 
   Future<List<Map>> getAllUnit();
+
+  Future<int> saveMenu(Item item);
+
+  Future<List<Map>> getAllMenu();
 }
 class MainRepositoryImpl extends MainRepository{
   DbHelper helper;
@@ -27,6 +31,16 @@ class MainRepositoryImpl extends MainRepository{
   Future<List<Map>> getAllUnit() async{
     return await  helper.getAllUnit();
 
+  }
+
+  @override
+  Future<int> saveMenu(Item item) async{
+  return await helper.insertMenu(item);
+  }
+
+  @override
+  Future<List<Map>> getAllMenu() async{
+  return await helper.getAllMenu();
   }
 
 }

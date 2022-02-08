@@ -1,6 +1,7 @@
 
 
 import 'package:bar_mega/common/Utils.dart';
+import 'package:bar_mega/model/Item.dart';
 import 'package:bar_mega/model/Unit.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -13,6 +14,10 @@ abstract class DbHelper{
   Future<int> insertUnit(Unit unit);
 
   Future<List<Map>> getAllUnit();
+
+  Future<int> insertMenu(Item item);
+
+  Future<List<Map>> getAllMenu();
 }
 class DbHelperImpl implements DbHelper{
   final Database database;
@@ -56,6 +61,16 @@ class DbHelperImpl implements DbHelper{
   Future<List<Map>> getAllUnit() async{
  var result = await database.query(Sql.Unit_Table);
  return result;
+  }
+
+  @override
+  Future<int> insertMenu(Item item) async{
+    return database.insert(Sql.Item_Table, item.toMap());
+  }
+
+  @override
+  Future<List<Map>> getAllMenu() async{
+   return await database.query(Sql.Item_Table);
   }
 
 

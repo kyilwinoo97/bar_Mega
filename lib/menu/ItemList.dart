@@ -1,11 +1,13 @@
 import 'dart:ffi';
 
+import 'package:bar_mega/db/DbAccess.dart';
 import 'package:bar_mega/menu/ItemDetail.dart';
 import 'package:bar_mega/model/Item.dart';
 import 'package:bar_mega/repository/MainRepository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../Utils.dart';
 import '../injection_container.dart';
 
 class ItemList extends StatefulWidget {
@@ -15,177 +17,15 @@ class ItemList extends StatefulWidget {
 
 class _ItemListState extends State<ItemList> {
   MainRepository repository;
-  List<Item> itemList = [];
-  List<Item> mainMenu = [
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Salad",
-        price: 1000,
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Salad",
-        price: 1000,
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Salad",
-        price: 1000,
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Salad",
-        price: 1000,
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Salad",
-        price: 1000,
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Salad",
-        price: 1000,
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Salad",
-        price: 1000,
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-
-    //testing
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Salad",
-        price: 1000,
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Salad",
-        price: 1000,
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Salad",
-        price: 1000,
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Salad",
-        price: 1000,
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Salad",
-        price: 1000,
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Salad",
-        price: 1000,
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Salad",
-        price: 1000,
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Salad",
-        price: 1000,
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Salad",
-        price: 1000,
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Salad",
-        price: 1000,
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Salad",
-        price: 1000,
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Salad",
-        price: 1000,
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Salad",
-        price: 1000,
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-  ];
+  List<Item> showItemList = [];
+  List<Item> mainMenu = [];
+  List<Item> desserts = [];
   List<Item> softItem = [
     Item(
         itemId: 1,
         unitId: 0,
         name: "Cocacola",
-        price: 1000,
+        price: "1000",
         unit: "Cup",
         category: "Soft Drink",
         path: ""),
@@ -193,7 +33,7 @@ class _ItemListState extends State<ItemList> {
         itemId: 1,
         unitId: 0,
         name: "Blue mountain",
-        price: 1000,
+        price: "1000",
         unit: "bottle",
         category: "Soft Drink",
         path: ""),
@@ -201,7 +41,7 @@ class _ItemListState extends State<ItemList> {
         itemId: 1,
         unitId: 0,
         name: "Pepsi",
-        price: 1000,
+        price: "1000",
         unit: "bottle",
         category: "Soft Drink",
         path: ""),
@@ -209,7 +49,7 @@ class _ItemListState extends State<ItemList> {
         itemId: 1,
         unitId: 0,
         name: "M - 150",
-        price: 1000,
+        price: "1000",
         unit: "bottle",
         category: "Soft Drink",
         path: ""),
@@ -217,7 +57,7 @@ class _ItemListState extends State<ItemList> {
         itemId: 1,
         unitId: 0,
         name: "Shark",
-        price: 1000,
+        price: "1000",
         unit: "bottle",
         category: "Soft Drink",
         path: ""),
@@ -225,7 +65,7 @@ class _ItemListState extends State<ItemList> {
         itemId: 1,
         unitId: 0,
         name: "Red Bull",
-        price: 1000,
+        price: "1000",
         unit: "bottle",
         category: "Soft Drink",
         path: ""),
@@ -233,7 +73,7 @@ class _ItemListState extends State<ItemList> {
         itemId: 1,
         unitId: 0,
         name: "Lipo",
-        price: 1000,
+        price: "1000",
         unit: "bottle",
         category: "Soft Drink",
         path: ""),
@@ -243,8 +83,7 @@ class _ItemListState extends State<ItemList> {
   @override
   void initState() {
     repository = sl<MainRepository>();
-    itemList.addAll(mainMenu);
-    //Todo get data from database
+    getData();
     super.initState();
   }
 
@@ -265,14 +104,14 @@ class _ItemListState extends State<ItemList> {
                 children: [
                   CategoryWidget(text: "Main Menu",onPressed: (){
                     setState(() {
-                      itemList.clear();
-                      itemList.addAll(mainMenu);
+                      showItemList.clear();
+                      showItemList.addAll(mainMenu);
                     });
                   }),
                   CategoryWidget(text: "Soft Drink",onPressed: (){
                     setState(() {
-                      itemList.clear();
-                      itemList.addAll(softItem);
+                      showItemList.clear();
+                      showItemList.addAll(softItem);
                     });
 
                   }),
@@ -280,6 +119,10 @@ class _ItemListState extends State<ItemList> {
 
                   }),
                   CategoryWidget(text: "Desserts",onPressed: (){
+                    setState(() {
+                      showItemList.clear();
+                      showItemList.addAll(desserts);
+                    });
 
                   }),
                 ],
@@ -294,10 +137,10 @@ class _ItemListState extends State<ItemList> {
           child: GridView.count(
             crossAxisCount: 5,
             scrollDirection: Axis.vertical,
-            children: List.generate(itemList.length, (index) {
-              return InkWell(child: MenuItem(itemList[index]),onTap: (){
+            children: List.generate(showItemList.length, (index) {
+              return InkWell(child: MenuItem(showItemList[index]),onTap: (){
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ItemDetail(item: itemList[index],)));
+                    MaterialPageRoute(builder: (context) => ItemDetail(item: showItemList[index],)));
               },);
             }),
           ),
@@ -339,6 +182,25 @@ class _ItemListState extends State<ItemList> {
           ),), onPressed: onPressed),
     );
  }
+
+  void getData() async{
+   List<Map> result = await repository.getAllMenu();
+   for(int i = 0 ; i< result.length ; i ++){
+     if(result[i][Sql.Category] == Utils.MainMenu){
+       mainMenu.add(Item.fromMap(result[i]));
+     }else if(result[i][Sql.Category] == Utils.SoftDrink){
+
+     }else if(result[i][Sql.Category] == Utils.AlcoholicDrink){
+
+     }else if(result[i][Sql.Category] == Utils.Desserts){
+       desserts.add(Item.fromMap(result[i]));
+     }
+   }
+   setState(() {
+     showItemList.addAll(mainMenu);//default show is main menu
+   });
+
+  }
 }
 
 class MenuItem extends StatelessWidget {

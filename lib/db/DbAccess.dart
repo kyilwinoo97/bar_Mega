@@ -78,7 +78,6 @@ class Sql{
 
 
 
-
   static String create_unit_table ='''CREATE TABLE IF NOT EXISTS $Unit_Table 
                  ($id INTEGER PRIMARY KEY,
                   $unitName TEXT NOT NULL

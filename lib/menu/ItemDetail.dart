@@ -1,7 +1,13 @@
 import 'package:bar_mega/model/Item.dart';
+import 'package:bar_mega/model/Unit.dart';
+import 'package:bar_mega/repository/MainRepository.dart';
+import 'package:bar_mega/widgets/Dialogs.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../Utils.dart';
+import '../injection_container.dart';
 
 class ItemDetail extends StatefulWidget {
   final Item item;
@@ -18,21 +24,25 @@ class _ItemDetailState extends State<ItemDetail> {
 
   final List<String> unitItems = [];
   final List<String> categoryItems = [];
+  final List<Unit> unitList = [];
 
   String selectedUnit;
   String selectedCategory;
   String title = "Create Menu";
   String buttonText = "Save";
   final _formKey = GlobalKey<FormState>();
-
+  MainRepository repository;
   @override
   void initState() {
+    repository = sl<MainRepository>();
+    categoryItems.addAll(Utils.categoryList);
     if(widget.item != null){
       nameController.text = widget.item.name;
       priceController.text = widget.item.price.toString();
       title = "Update Menu";
       buttonText = "Update";
     }
+    getData();
     super.initState();
   }
 
@@ -43,7 +53,15 @@ class _ItemDetailState extends State<ItemDetail> {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
+        actions: [
+          CupertinoButton(child: Text("Create Unit",style: TextStyle(color: Colors.white),), onPressed: () {
+           Dialogs.createUnit(context).then((value) =>{
+           print("result => $value"),
+             addUnit(value),
 
+           });
+          }),
+        ],
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -270,6 +288,23 @@ class _ItemDetailState extends State<ItemDetail> {
         ),
       ),
     );
+  }
+
+  addUnit(String value) async{
+   var result = await repository.addUnit(Unit(name: value));
+   print("result => $result");
+  }
+
+  void getData() async{
+   List<Map> result = await repository.getAllUnit();
+   List<String> lst = [];
+   for(int i = 0 ; i < result.length ; i ++){
+     unitList.add(Unit.fromMap(result[i]));
+     lst.add(result[i]["name"]);
+   }
+   setState(() {
+     unitItems.addAll(lst);
+   });
   }
 }
 

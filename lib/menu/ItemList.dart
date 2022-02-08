@@ -302,7 +302,8 @@ class _ItemListState extends State<ItemList> {
             }),
           ),
         ),
-      ]),
+      ]
+      ),
       floatingActionButton: Container(
         height: 60.0,
         width: 60.0,

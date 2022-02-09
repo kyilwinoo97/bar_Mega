@@ -1,4 +1,5 @@
 import 'package:bar_mega/menu/ItemList.dart';
+import 'package:bar_mega/settings/Settings.dart';
 import 'package:bar_mega/tables/TableList.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,12 @@ class _HomeSate extends State<Home>{
                         MaterialPageRoute(
                             builder: (context) => TableList()));
                   }),
-                  HomeItem("Settings",Image.asset("assets/images/settings.png"),(){}),
+                  HomeItem("Settings",Image.asset("assets/images/settings.png"),(){
+                    Navigator.push(context,
+                        MaterialPageRoute(
+                            builder: (context) => Settings()));
+
+                  }),
               ],)
             ],
           ),

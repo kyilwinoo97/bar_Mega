@@ -351,18 +351,27 @@ class _SaleState extends State<Sale> {
                     borderRadius: BorderRadius.circular(20.0),
                   ),
                   child: Column(
+                    mainAxisSize: MainAxisSize.max,
                     children: [
-                      ListTile(
-                        leading: Image.asset(
-                          "assets/images/menu.png",
-                          height: 50,
-                          width: 50,
-                        ),
-                        title: Text('Test'),
-                        trailing: Text('20'),
-                      )
+                      ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: cartItems.length,
+                          itemBuilder: (context,index){
+                        return SizedBox(
+                          height: 200.0,
+                          child: InkWell(
+                            child: SaleItem(cartItems[index]),
+                            onTap: () {
+                              setState(() {
+
+                              });
+                            },
+                          ),
+                        );
+                      }),
                     ],
-                  )),
+                  )
+              ),
             ),
           )
         ],

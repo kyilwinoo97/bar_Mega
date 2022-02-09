@@ -1,11 +1,11 @@
-import 'dart:ffi';
-
+import 'package:bar_mega/bloc/menu_bloc/MenuBloc.dart';
 import 'package:bar_mega/db/DbAccess.dart';
 import 'package:bar_mega/menu/MenuDetail.dart';
 import 'package:bar_mega/model/Item.dart';
 import 'package:bar_mega/repository/MainRepository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../Utils.dart';
 import '../injection_container.dart';
@@ -16,102 +16,11 @@ class ItemList extends StatefulWidget {
 }
 
 class _ItemListState extends State<ItemList> {
-  MainRepository repository;
-  List<Item> showItemList = [];
-  List<Item> allItems = [];
-  List<Item> mainMenu = [];
-  List<Item> desserts = [];
-  List<Item> alcoholicDrinks = [
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Cocacola",
-        price: "1000",
-        unit: "Cup",
-        category: "Soft Drink",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Blue mountain",
-        price: "1000",
-        unit: "bottle",
-        category: "Soft Drink",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Pepsi",
-        price: "1000",
-        unit: "bottle",
-        category: "Soft Drink",
-        path: ""),
-  ];
-  List<Item> softItem = [
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Cocacola",
-        price: "1000",
-        unit: "Cup",
-        category: "Soft Drink",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Blue mountain",
-        price: "1000",
-        unit: "bottle",
-        category: "Soft Drink",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Pepsi",
-        price: "1000",
-        unit: "bottle",
-        category: "Soft Drink",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "M - 150",
-        price: "1000",
-        unit: "bottle",
-        category: "Soft Drink",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Shark",
-        price: "1000",
-        unit: "bottle",
-        category: "Soft Drink",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Red Bull",
-        price: "1000",
-        unit: "bottle",
-        category: "Soft Drink",
-        path: ""),
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Lipo",
-        price: "1000",
-        unit: "bottle",
-        category: "Soft Drink",
-        path: ""),
-  ];
   List<String> cats = Utils.categoryList;
   String selectedCat;
 
-  //category => main menu,alcoholic drink,soft drink ,desserts
   @override
   void initState() {
-    repository = sl<MainRepository>();
     selectedCat = cats[0];
     getData();
     super.initState();
@@ -139,8 +48,7 @@ class _ItemListState extends State<ItemList> {
                           if (selected) {
                             setState(() {
                               selectedCat = cats[0];
-                              showItemList.clear();
-                              showItemList.addAll(allItems);
+                              BlocProvider.of<MenuBloc>(context).add(GetAllMenu());
                             });
                           }
                         }),
@@ -150,8 +58,8 @@ class _ItemListState extends State<ItemList> {
                           if (selected) {
                             setState(() {
                               selectedCat = cats[1];
-                              showItemList.clear();
-                              showItemList.addAll(mainMenu);
+                              BlocProvider.of<MenuBloc>(context).add(GetMenuByCategory(selectedCat));
+
                             });
                           }
                         }),
@@ -161,8 +69,8 @@ class _ItemListState extends State<ItemList> {
                           if (selected) {
                             setState(() {
                               selectedCat = cats[2];
-                              showItemList.clear();
-                              showItemList.addAll(softItem);
+                              BlocProvider.of<MenuBloc>(context).add(GetMenuByCategory(selectedCat));
+
                             });
                           }
                         }),
@@ -172,8 +80,7 @@ class _ItemListState extends State<ItemList> {
                           if (selected) {
                             setState(() {
                               selectedCat = cats[3];
-                              showItemList.clear();
-                              showItemList.addAll(alcoholicDrinks);
+                              BlocProvider.of<MenuBloc>(context).add(GetMenuByCategory(selectedCat));
                             });
                           }
                         }),
@@ -183,8 +90,7 @@ class _ItemListState extends State<ItemList> {
                           if (selected) {
                             setState(() {
                               selectedCat = cats[4];
-                              showItemList.clear();
-                              showItemList.addAll(desserts);
+                              BlocProvider.of<MenuBloc>(context).add(GetMenuByCategory(selectedCat));
                             });
                           }
                         }),
@@ -198,17 +104,32 @@ class _ItemListState extends State<ItemList> {
         ),
         Expanded(
           flex: 7,
-          child: Container(
-            child: GridView.count(
-              crossAxisCount: 5,
-              scrollDirection: Axis.vertical,
-              children: List.generate(showItemList.length, (index) {
-                return InkWell(child: MenuItem(showItemList[index]),onTap: (){
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ItemDetail(item: showItemList[index],)));
-                },);
-              }),
-            ),
+          child: BlocBuilder<MenuBloc,MenuState>(
+            builder: (context,state){
+              if(state is Success){
+               return Container(
+                  child: GridView.count(
+                    crossAxisCount: 5,
+                    scrollDirection: Axis.vertical,
+                    children: List.generate(state.result.length, (index) {
+                      return InkWell(child: MenuItem(state.result[index]),onTap: (){
+                         Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => MenuDetail(item: state.result[index],category: selectedCat,)));
+
+                      },);
+                    }),
+                  ),
+                );
+            }else if(state is Failure){
+                return Center(
+                  child: Text(state.message),
+                );
+              }else {
+                return Center(
+                  child: CircularProgressIndicator(color: Colors.green,),
+                );
+              }
+            },
           ),
         ),
       ]
@@ -220,8 +141,9 @@ class _ItemListState extends State<ItemList> {
           child: FloatingActionButton(
             backgroundColor: CupertinoColors.activeGreen,
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ItemDetail()));
+           Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MenuDetail(category: selectedCat,)));
+
             },
             tooltip: "Add Menu",
             child: Icon(
@@ -237,7 +159,7 @@ class _ItemListState extends State<ItemList> {
 
   CategoryWidget({String label, Function(bool) onSelected}) {
     return Padding(
-      padding: const EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+      padding: const EdgeInsets.only(top: 14.0, left: 10.0, right: 10.0),
       child: ChoiceChip(
         key: Key(label),
         shape: RoundedRectangleBorder(
@@ -246,7 +168,7 @@ class _ItemListState extends State<ItemList> {
         ),
         selectedColor: Colors.green,
         backgroundColor: Colors.green.shade50,
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(16.0),
         label: SizedBox(
           width: double.infinity,
           child: Text(
@@ -265,23 +187,7 @@ class _ItemListState extends State<ItemList> {
 
 
   void getData() async{
-   List<Map> result = await repository.getAllMenu();
-   for(int i = 0 ; i< result.length ; i ++){
-     allItems.add(Item.fromMap(result[i]));
-     if(result[i][Sql.Category] == Utils.MainMenu){
-       mainMenu.add(Item.fromMap(result[i]));
-     }else if(result[i][Sql.Category] == Utils.SoftDrink){
-
-     }else if(result[i][Sql.Category] == Utils.AlcoholicDrink){
-
-     }else if(result[i][Sql.Category] == Utils.Desserts){
-       desserts.add(Item.fromMap(result[i]));
-     }
-   }
-   setState(() {
-     showItemList.addAll(allItems);//default show is all
-   });
-
+    BlocProvider.of<MenuBloc>(context).add(GetAllMenu());
   }
 }
 

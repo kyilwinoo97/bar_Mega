@@ -1,14 +1,17 @@
+import 'package:bar_mega/bloc/menu_bloc/MenuBloc.dart';
 import 'package:bar_mega/repository/MainRepository.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'bloc/table_bloc/TableBloc.dart';
 import 'db/DbAccess.dart';
 import 'db/DbHelper.dart';
 
 final sl = GetIt.instance;
 Future<void> init() async{
 
-  // sl.registerFactory(() => BaccaratBloc(repository: sl()));
+  sl.registerFactory(() => MenuBloc(repository: sl()));
+  sl.registerFactory(() => TableBloc(repository: sl()));
   // sl.registerFactory(() => NetworkBloc(baccaratRepository: sl()));
 
 

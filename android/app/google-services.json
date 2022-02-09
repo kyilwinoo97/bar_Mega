@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "737148382893",
+    "project_id": "mega-4e721",
+    "storage_bucket": "mega-4e721.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:737148382893:android:3a7d53764f403dea61a024",
+        "android_client_info": {
+          "package_name": "com.example.bar_mega"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "737148382893-799s3mcflasd17fbpku4p86ptc91v3lb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjqx_QbQ7YBs-uHAjDV1HYHnFho4DbVmo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "737148382893-799s3mcflasd17fbpku4p86ptc91v3lb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

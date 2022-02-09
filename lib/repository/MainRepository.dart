@@ -12,6 +12,14 @@ abstract class MainRepository{
   Future<int> saveMenu(Item item);
 
   Future<List<Map>> getAllMenu();
+
+  Future<int> updateMenu(Item item);
+
+  Future<List<Map>> getMenuByCategory(String category);
+
+  Future<int> deleteMenu(Item item);
+
+  Future<List<Map>> getAlTable();
 }
 class MainRepositoryImpl extends MainRepository{
   DbHelper helper;
@@ -41,6 +49,27 @@ class MainRepositoryImpl extends MainRepository{
   @override
   Future<List<Map>> getAllMenu() async{
   return await helper.getAllMenu();
+  }
+
+  @override
+  Future<int> updateMenu(Item item) async{
+   return await helper.updateMenu(item);
+  }
+
+  @override
+  Future<List<Map>> getMenuByCategory(String category) async{
+    return await helper.getMenuByCategory(category);
+  }
+
+  @override
+  Future<int> deleteMenu(Item item) async{
+    return await helper.deleteMenu(item);
+
+  }
+
+  @override
+  Future<List<Map>> getAlTable() async{
+  return await helper.getAllTable();
   }
 
 }

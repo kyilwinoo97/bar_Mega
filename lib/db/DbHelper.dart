@@ -17,6 +17,14 @@ abstract class DbHelper{
   Future<int> insertMenu(Item item);
 
   Future<List<Map>> getAllMenu();
+
+  Future<int> updateMenu(Item item);
+
+  Future<List<Map>> getMenuByCategory(String category);
+
+  Future<int> deleteMenu(Item item);
+
+  Future<List<Map>> getAllTable();
 }
 class DbHelperImpl implements DbHelper{
   final Database database;
@@ -72,7 +80,25 @@ class DbHelperImpl implements DbHelper{
    return await database.query(Sql.Item_Table);
   }
 
+  @override
+  Future<int> updateMenu(Item item) async{
+    return await database.update(Sql.Item_Table, item.toMap(),where: '${Sql.Id} = ?', whereArgs: [item.itemId]);
+  }
 
+  @override
+  Future<List<Map>> getMenuByCategory(String category) async{
+   return await database.query(Sql.Item_Table,where: '${Sql.Category} = ?',whereArgs: [category]);
+  }
+
+  @override
+  Future<int> deleteMenu(Item item) async{
+    return await database.delete(Sql.Item_Table, where: '${Sql.Id} = ?', whereArgs: [item.itemId]);
+  }
+
+  @override
+  Future<List<Map>> getAllTable() async{
+   return await database.query(Sql.Desk_Table);
+  }
 
 }
 

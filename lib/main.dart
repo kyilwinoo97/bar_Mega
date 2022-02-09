@@ -1,24 +1,27 @@
+import 'package:bar_mega/bloc/menu_bloc/MenuBloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'bloc/table_bloc/TableBloc.dart';
 import 'home/home.dart';
 import 'injection_container.dart' as di;
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  // await Firebase.initializeApp();
   di.init();
-  // runApp(MultiBlocProvider(providers: [
-  //   BlocProvider<BaccaratBloc>(
-  //     create: (BuildContext context) => di.sl<BaccaratBloc>(),
-  //   ),
-  //   BlocProvider<NetworkBloc>(create: (BuildContext context) =>di.sl<NetworkBloc>(),)
-  // ], child:MyApp()));
-  runApp(const MyApp());
+  runApp(MultiBlocProvider(providers: [
+    BlocProvider<MenuBloc>(
+      create: (BuildContext context) => di.sl<MenuBloc>(),
+    ),
+    BlocProvider<TableBloc>(
+      create: (BuildContext context) => di.sl<TableBloc>(),
+    ),
+  ], child:MyApp()));
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key key}) : super(key: key);
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
@@ -29,7 +32,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Bar Mega',
       theme: ThemeData(
-
         primarySwatch: Colors.green,
       ),
       home: Home(),

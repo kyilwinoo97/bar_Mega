@@ -1,5 +1,9 @@
 import 'dart:io';
 
+import 'package:bar_mega/model/Unit.dart';
+import 'package:bar_mega/repository/MainRepository.dart';
+import 'package:bar_mega/widgets/Dialogs.dart';
+import 'package:bar_mega/widgets/Toasts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -7,6 +11,8 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:flutter/services.dart' show rootBundle;
+
+import '../injection_container.dart';
 
 
 class Settings extends StatefulWidget {
@@ -17,9 +23,14 @@ class Settings extends StatefulWidget {
 class _SettingState extends State<Settings> {
  
   String selectedItem;
-  List<String> itemList =["Printer Settings","Log Out"];
+  List<String> itemList =["Printer Settings","Unit","Log Out"];
   TextEditingController controller = TextEditingController();
-
+  MainRepository repository;
+  @override
+  void initState() {
+    repository = sl<MainRepository>();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     var mQuery = MediaQuery.of(context).size;
@@ -38,7 +49,6 @@ class _SettingState extends State<Settings> {
                   if(selected){
                     setState(() {
                       selectedItem = itemList[0];
-
                       generatePdf();
                     });
                   }
@@ -47,6 +57,18 @@ class _SettingState extends State<Settings> {
                   if(selected){
                     setState(() {
                       selectedItem = itemList[1];
+                      Dialogs.createUnit(context).then((value) =>
+                      {
+                         addUnit(value),
+
+                      });
+                    });
+                  }
+                }),
+                CategoryWidget(label: itemList[2],onSelected: (selected){
+                  if(selected){
+                    setState(() {
+                      selectedItem = itemList[2];
 
                     });
                   }
@@ -82,6 +104,12 @@ class _SettingState extends State<Settings> {
       ),
     );
   }
+  addUnit(String value) async {
+    var result = await repository.addUnit(Unit(name: value));
+    if(result > -1){
+      Toasts.greenToast("Success");
+    }
+  }
   CategoryWidget({String label, Function(bool) onSelected}) {
     return Padding(
       padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
@@ -99,12 +127,12 @@ class _SettingState extends State<Settings> {
           child: Text(
             label,
             style: TextStyle(
-                color: selectedItem == label ? Colors.white : Colors.green,
+                color: Colors.green,
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold),
           ),
         ),
-        selected: selectedItem == label,
+        selected: false,
         onSelected: onSelected,
       ),
     );

@@ -7,7 +7,7 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingState extends State<Settings> {
-  final doc = pw.Document();
+  // final doc = pw.Document();
 
   @override
   Widget build(BuildContext context) {

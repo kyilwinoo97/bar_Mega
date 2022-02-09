@@ -1,4 +1,5 @@
-import 'package:bar_mega/menu/ItemList.dart';
+import 'package:bar_mega/menu/Menu.dart';
+import 'package:bar_mega/sale/Sale.dart';
 import 'package:bar_mega/settings/Settings.dart';
 import 'package:bar_mega/tables/TableList.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,7 +26,11 @@ class _HomeSate extends State<Home>{
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  HomeItem("Sale",Image.asset("assets/images/sales.png"),(){}),
+                  HomeItem("Sale",Image.asset("assets/images/sales.png"),(){
+                    Navigator.push(context,
+                        MaterialPageRoute(
+                            builder: (context) => Sale()));
+                  }),
                   HomeItem("Purchase",Image.asset("assets/images/shopping_cart.png"),(){}),
                   HomeItem("Reports",Image.asset("assets/images/business_report.png"),(){}),
                 ],

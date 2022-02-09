@@ -1,4 +1,4 @@
-import 'package:bar_mega/menu/ItemDetail.dart';
+import 'package:bar_mega/menu/MenuDetail.dart';
 import 'package:bar_mega/model/Unit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

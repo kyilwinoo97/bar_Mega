@@ -1,5 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
+import 'package:flutter/services.dart' show rootBundle;
+
 
 class Settings extends StatefulWidget {
   @override
@@ -7,7 +15,10 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingState extends State<Settings> {
-  // final doc = pw.Document();
+ 
+  String selectedItem;
+  List<String> itemList =["Printer Settings","Log Out"];
+  TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -18,62 +29,113 @@ class _SettingState extends State<Settings> {
       ),
       body: Row(
         children :[
-          Container(
-            width: mQuery.width * 0.3,
-            child: Column(
-            children: [
-             Card(
-                  elevation: 5,
-                  shadowColor: Colors.grey,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 24,horizontal: 24),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Printer Settings",style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold
-                        ),),
-                        Icon(Icons.arrow_forward_ios_outlined),
-                      ],
-                    ),
-                  ),
-                ),
-              Card(
-                  elevation: 5,
-                  shadowColor: Colors.grey,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 24,horizontal: 24),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Log Out",style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold
-                        ),),
-                        Icon(Icons.arrow_forward_ios_outlined),
-                      ],
-                    ),
-                  ),
-                ),
-            ],
+          Expanded(
+            flex: 2,
+            child: Container(
+              child: Column(
+              children: [
+                CategoryWidget(label: itemList[0],onSelected: (selected){
+                  if(selected){
+                    setState(() {
+                      selectedItem = itemList[0];
+
+                      generatePdf();
+                    });
+                  }
+                }),
+                CategoryWidget(label: itemList[1],onSelected: (selected){
+                  if(selected){
+                    setState(() {
+                      selectedItem = itemList[1];
+
+                    });
+                  }
+                }),
+              ],
         ),
+            ),
           ),
           VerticalDivider(
             width: 0.5,
             color: Colors.black,
           ),
-          Container(
-            child: Column(
-              children: [
-                Text("Devices"),
-              ],
-            ),
+          Expanded(
+            flex: 7,
+              child: Container(
+                child: Column(
+                  children: [
+                    Container(
+                      child: TextFormField(
+                        controller: controller,
+                      ),
+                      // child: PdfPreview(
+                      //   maxPageWidth: mQuery.width * 0.6,
+                      // build: (format) => doc.save(),
+                      // ),
+                    ),
+
+                  ],
+                ),
+              ),
           )
       ]
       ),
     );
   }
+  CategoryWidget({String label, Function(bool) onSelected}) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+      child: ChoiceChip(
+        key: Key(label),
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: Colors.green, width: 1.5),
+          borderRadius: BorderRadius.circular(50.0),
+        ),
+        selectedColor: Colors.green,
+        backgroundColor: Colors.green.shade50,
+        padding: const EdgeInsets.all(16.0),
+        label: SizedBox(
+          width: double.infinity,
+          child: Text(
+            label,
+            style: TextStyle(
+                color: selectedItem == label ? Colors.white : Colors.green,
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold),
+          ),
+        ),
+        selected: selectedItem == label,
+        onSelected: onSelected,
+      ),
+    );
+  }
+
+  void generatePdf() async{
+    const double inch = 72.0;
+    const double cm = inch / 2.54;
+    final doc = pw.Document(pageMode: PdfPageMode.fullscreen,title: "Hello",deflate: zlib.encode);
+    doc.addPage(pw.Page(
+      theme: pw.ThemeData.withFont(
+        base: pw.Font.ttf(await rootBundle.load("assets/font/NotoSerifMyanmar_Regular.ttf")),
+        bold:  pw.Font.ttf(await rootBundle.load("assets/font/NotoSerifMyanmar_Regular.ttf")),
+      ),
+        pageFormat: PdfPageFormat.roll80.copyWith(height: 20 * cm),
+        build: (pw.Context context) {
+        return  pw.Center(
+              child: pw.Column(
+                  children: [
+                    pw.Text(controller.text),
+                  ]
+              )
+        );
+
+
+        }));
+    final output = await getTemporaryDirectory();
+    final file = File('${output.path}/example.pdf');
+   var result =  await file.writeAsBytes(await doc.save());
+   print("result => $result");
+  }
+
 }
+

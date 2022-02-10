@@ -1,3 +1,4 @@
+import 'package:bar_mega/sale/OrderDetail.dart';
 import 'package:bar_mega/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
@@ -379,8 +380,8 @@ class _SaleState extends State<Sale> {
                                         Text(
                                           'Cart',
                                           style: TextStyle(
-                                              color: Colors.green,
-                                              fontSize: 20.0,
+                                              color: Colors.black,
+                                              fontSize: 22.0,
                                               fontWeight: FontWeight.bold),
                                         ),
                                         PopupMenuButton(
@@ -476,8 +477,9 @@ class _SaleState extends State<Sale> {
                           color: Colors.red,
                           onTap: () {
                             setState(() {
-                              cartItems.clear();
-                              _listKey = GlobalKey();
+                              Navigator.pushReplacement(context, MaterialPageRoute(
+                                builder: (context) => this.widget,
+                              ));
                             });
                           },
                         ),
@@ -487,7 +489,12 @@ class _SaleState extends State<Sale> {
                         child: CustomButton(
                           label: 'Order',
                           color: Colors.green,
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => OrderDetail()),
+                            );
+                          },
                         ),
                       )
                     ],
@@ -678,7 +685,6 @@ class _SaleState extends State<Sale> {
   CartItem({item}) {
     return Container(
       margin: EdgeInsets.all(5.0),
-      padding: EdgeInsets.all(0.0),
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
@@ -720,85 +726,93 @@ class _SaleState extends State<Sale> {
                   )),
               const SizedBox(height: 2.0),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
+                padding: EdgeInsets.symmetric( vertical: 5.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Flexible(
-                      child: Text(
-                        item.name,
-                        style: TextStyle(
-                            color: Colors.green,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold),
-                      ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            item.name,
+                            style: TextStyle(
+                                color: Colors.green,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        const SizedBox(height: 8.0),
+                        Text(
+                          '${item.price} Ks',
+                          style: TextStyle(color: Colors.green, fontSize: 18.0),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 8.0),
-                    Text(
-                      '${item.price} Ks',
-                      style: TextStyle(color: Colors.green, fontSize: 18.0),
-                    ),
+                    Container(
+                        padding: const EdgeInsets.symmetric(vertical: 5.0),
+                        alignment: Alignment.centerRight,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ClipOval(
+                              child: Material(
+                                color: Colors.green.shade50, // Button color
+                                child: InkWell(
+                                  splashColor: Colors.green, // Splash color
+                                  onTap: () {
+                                    if (item.count > 1) {
+                                      setState(() {
+                                        --item.count;
+                                      });
+                                    }
+                                  },
+                                  child: SizedBox(
+                                      width: 50,
+                                      height: 50,
+                                      child: Icon(
+                                        Icons.remove,
+                                        color: Colors.green,
+                                      )),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 30.0),
+                              child: Text(
+                                '${item.count}',
+                                style: TextStyle(
+                                    fontSize: 18.0, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            ClipOval(
+                              child: Material(
+                                color: Colors.green.shade50, // Button color
+                                child: InkWell(
+                                  splashColor: Colors.green, // Splash color
+                                  onTap: () {
+                                    setState(() {
+                                      ++item.count;
+                                    });
+                                  },
+                                  child: SizedBox(
+                                      width: 50,
+                                      height: 50,
+                                      child: Icon(
+                                        Icons.add,
+                                        color: Colors.green,
+                                      )),
+                                ),
+                              ),
+                            )
+                          ],
+                        )),
                   ],
                 ),
               ),
-              Container(
-                  padding: const EdgeInsets.only(top: 15.0, bottom: 10.0),
-                  alignment: Alignment.bottomCenter,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ClipOval(
-                        child: Material(
-                          color: Colors.green.shade50, // Button color
-                          child: InkWell(
-                            splashColor: Colors.green, // Splash color
-                            onTap: () {
-                              if (item.count > 1) {
-                                setState(() {
-                                  --item.count;
-                                });
-                              }
-                            },
-                            child: SizedBox(
-                                width: 50,
-                                height: 50,
-                                child: Icon(
-                                  Icons.remove,
-                                  color: Colors.green,
-                                )),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 30.0),
-                        child: Text(
-                          '${item.count}',
-                          style: TextStyle(
-                              fontSize: 18.0, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      ClipOval(
-                        child: Material(
-                          color: Colors.green.shade50, // Button color
-                          child: InkWell(
-                            splashColor: Colors.green, // Splash color
-                            onTap: () {
-                              setState(() {
-                                ++item.count;
-                              });
-                            },
-                            child: SizedBox(
-                                width: 50,
-                                height: 50,
-                                child: Icon(
-                                  Icons.add,
-                                  color: Colors.green,
-                                )),
-                          ),
-                        ),
-                      )
-                    ],
-                  )),
+
             ],
           ),
         ),

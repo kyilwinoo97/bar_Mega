@@ -140,7 +140,7 @@ class _SettingState extends State<Settings> {
         return  pw.Center(
               child: pw.Column(
                   children: [
-                    pw.Text("ြကက်သား ‌ြေကာ်"),
+                    pw.Text("ြကက်သား ‌ေြကာ်"),
                   ]
               )
         );

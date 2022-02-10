@@ -205,18 +205,20 @@ class MenuItem extends StatelessWidget {
               color: Colors.grey, width: 0.5, style: BorderStyle.solid)),
       child: Column(
         children: [
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 8),
-            child: item.path.isNotEmpty
-                ? Image.network(
-                    item.path,
-                    fit: BoxFit.fill,
-                  )
-                : Image.asset(
-                    "assets/images/menu.png",
-                    fit: BoxFit.fill,
-                    height: 100,
-                  ),
+          Flexible(
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: item.path.isNotEmpty
+                  ? Image.network(
+                      item.path,
+                      fit: BoxFit.fill,
+                    )
+                  : Image.asset(
+                      "assets/images/menu.png",
+                      fit: BoxFit.fill,
+                      height: 100,
+                    ),
+            ),
           ),
           Divider(
             height: 0.4,

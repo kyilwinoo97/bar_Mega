@@ -1,4 +1,5 @@
 import 'package:bar_mega/db/DbHelper.dart';
+import 'package:bar_mega/model/Desk.dart';
 import 'package:bar_mega/model/Item.dart';
 import 'package:bar_mega/model/Unit.dart';
 
@@ -20,6 +21,12 @@ abstract class MainRepository{
   Future<int> deleteMenu(Item item);
 
   Future<List<Map>> getAlTable();
+
+  Future<int> saveTable(Desk desk);
+
+  Future<int> updateTable(Desk desk);
+
+  Future<int> deleteTable(Desk desk);
 }
 class MainRepositoryImpl extends MainRepository{
   DbHelper helper;
@@ -70,6 +77,21 @@ class MainRepositoryImpl extends MainRepository{
   @override
   Future<List<Map>> getAlTable() async{
   return await helper.getAllTable();
+  }
+
+  @override
+  Future<int> saveTable(Desk desk) async{
+   return await helper.insertTable(desk);
+  }
+
+  @override
+  Future<int> updateTable(Desk desk) async{
+   return await helper.updateTable(desk);
+  }
+
+  @override
+  Future<int> deleteTable(Desk desk) async{
+   return await helper.deleteTable(desk);
   }
 
 }

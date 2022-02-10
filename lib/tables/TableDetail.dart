@@ -16,14 +16,19 @@ class TableDetail extends StatefulWidget{
 
 class _TableDetialState extends State<TableDetail> {
   String buttonText = "Save";
+  String status = "Available";
 
-  TextEditingController nameController = TextEditingController();
-  TextEditingController priceController = TextEditingController();
+  TextEditingController tableNoController = TextEditingController();
+  TextEditingController noOfSeatsController = TextEditingController();
 
+  // Desk desk = Desk(deskId: ,tableNo: ,noOfSeats: ,status: );
   @override
   void initState() {
     if(widget.desk != null){
       buttonText = "Update";
+      tableNoController.text = widget.desk.tableNo;
+      noOfSeatsController.text = widget.desk.noOfSeats.toString();
+      status = widget.desk.status;
     }
     super.initState();
   }
@@ -35,20 +40,19 @@ class _TableDetialState extends State<TableDetail> {
         title: Text(widget.title),
         actions: [
           widget.title =="Update Table" ? IconButton(onPressed: (){
-           // deleteTable(widget.desk);
+           deleteTable(widget.desk);
           }, icon: Icon(Icons.delete,color: Colors.white,size: 32,)):SizedBox.shrink(),
           SizedBox(width: 20,),
         ],
       ),
       body: BlocListener<TableBloc,TableState>(
         listener: (context,state){
-          if (state is DeleteSuccess) {
+          if (state is SaveSuccess) {
               BlocProvider.of<TableBloc>(context).add(GetAllTable());
             Navigator.of(context).pop();
           }
         },
        child: SingleChildScrollView(
-
             child: Column(
               children: [
                 Center(
@@ -60,18 +64,18 @@ class _TableDetialState extends State<TableDetail> {
                       child: Column(
                         children: [
                           Container(
-                            padding: EdgeInsets.all(16.0),
+                            padding: EdgeInsets.all(18.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text("Name"),
+                                Text("Table No."),
                                 SizedBox(
                                   width: 10,
                                 ),
                                 inputWidget(
                                     width: width * 0.3,
-                                    controller: nameController),
+                                    controller: tableNoController),
                               ],
                             ),
                           ),
@@ -81,13 +85,13 @@ class _TableDetialState extends State<TableDetail> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text("No."),
+                                Text("No. of Seats"),
                                 SizedBox(
                                   width: 10,
                                 ),
                                 inputWidget(
                                     width: width * 0.3,
-                                    controller: priceController),
+                                    controller: noOfSeatsController),
                               ],
                             ),
                           ),
@@ -106,15 +110,15 @@ class _TableDetialState extends State<TableDetail> {
                                       spacing: 1,
                                       fontWeight: FontWeight.bold,
                                       onTap: () {
-                                        if (nameController.text
+                                        if (tableNoController.text
                                             .trim()
-                                            .isNotEmpty && priceController.text
+                                            .isNotEmpty && noOfSeatsController.text
                                             .trim()
                                             .isNotEmpty) {
                                           if(buttonText =="Save"){
-                                            // saveMenu();
+                                            saveTable();
                                           }else{
-                                            // updateMenu();
+                                             updateTable();
                                           }
                                         } else {
                                           Fluttertoast.showToast(
@@ -157,6 +161,26 @@ class _TableDetialState extends State<TableDetail> {
       ),
     );
   }
+
+  void saveTable() {
+    BlocProvider.of<TableBloc>(context).add(SaveTable(Desk(
+        tableNo: tableNoController.text,
+        noOfSeats: int.parse(noOfSeatsController.text),
+        status: status)));
+  }
+
+  void updateTable() {
+    BlocProvider.of<TableBloc>(context).add(UpdateTable(Desk(
+        deskId: widget.desk.deskId,
+        tableNo: tableNoController.text,
+        noOfSeats: int.parse(noOfSeatsController.text),
+        status: status)));
+  }
+
+  void deleteTable(Desk desk) {
+    BlocProvider.of<TableBloc>(context).add(DeleteTable(desk));
+  }
+
 }
 Widget inputWidget({double width, TextEditingController controller}) {
   return Container(

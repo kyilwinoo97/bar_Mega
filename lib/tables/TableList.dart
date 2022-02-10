@@ -64,7 +64,10 @@ class _TableListState extends State<TableList> {
                crossAxisCount: 5,
                scrollDirection: Axis.vertical,
                children: List.generate(state.result.length, (index) {
-                 return TableItem(state.result[index]);
+                 return InkWell(child: TableItem(state.result[index]),onTap: (){
+                   Navigator.push(context,
+                       MaterialPageRoute(builder: (context) => TableDetail(title: "Update Table",desk: state.result[index],)));
+                 },);
                }),
              ),
            );
@@ -96,8 +99,10 @@ class TableItem extends StatelessWidget {
     return Container(
       child: Column(
         children: [
-          FittedBox(
-            child:Image.asset("assets/images/table.png",fit: BoxFit.fill,height: 125,),
+          Flexible(
+            child: Container(
+              child:Image.asset("assets/images/table.png",fit: BoxFit.fill,height: 100,),
+            ),
           ),
           Container(
             padding: EdgeInsets.all(4),

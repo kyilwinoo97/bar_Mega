@@ -12,6 +12,9 @@ class Success extends TableState{
 class DeleteSuccess extends TableState{
   DeleteSuccess();
 }
+class SaveSuccess extends TableState{
+  SaveSuccess();
+}
 class Failure extends TableState{
   final String message;
   Failure(this.message);

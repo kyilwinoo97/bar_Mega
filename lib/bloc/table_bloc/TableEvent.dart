@@ -7,3 +7,15 @@ abstract class TableEvent extends Equatable{
 class GetAllTable extends TableEvent{
   GetAllTable();
 }
+class SaveTable extends TableEvent{
+  final Desk desk;
+  SaveTable(this.desk);
+}
+class UpdateTable extends TableEvent{
+  final Desk desk;
+  UpdateTable(this.desk);
+}
+class DeleteTable extends TableEvent{
+  final Desk desk;
+  DeleteTable(this.desk);
+}

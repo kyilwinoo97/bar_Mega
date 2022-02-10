@@ -16,6 +16,12 @@ class TableBloc extends Bloc<TableEvent,TableState>{
   Stream<TableState> mapEventToState(TableEvent event) async*{
     if(event is GetAllTable){
       yield* _getAllTable();
+    }else if(event is SaveTable){
+      yield* _saveTable(event.desk);
+    }else if (event is UpdateTable){
+      yield* _updateTable(event.desk);
+    }else if (event is DeleteTable){
+      yield* _deleteTable(event.desk);
     }
   }
 
@@ -30,6 +36,36 @@ class TableBloc extends Bloc<TableEvent,TableState>{
       yield Success(result: lst);
     }else{
       yield Failure("No Tables");
+    }
+  }
+
+  Stream<TableState> _saveTable(Desk desk)  async*{
+    yield Loading();
+    var result = await repository.saveTable(desk);
+    if(result > 0){
+      yield SaveSuccess();
+    }else{
+      yield Failure("Something went wrong!");
+    }
+  }
+
+  Stream<TableState> _updateTable(Desk desk) async*{
+    yield Loading();
+    var result = await repository.updateTable(desk);
+    if(result > 0){
+      yield SaveSuccess();
+    }else{
+      yield Failure("Something went wrong!");
+    }
+  }
+
+  Stream<TableState> _deleteTable(Desk desk) async*{
+    yield Loading();
+    var result = await repository.deleteTable(desk);
+    if(result > 0){
+      yield SaveSuccess();
+    }else{
+      yield Failure("Something went wrong!");
     }
   }
 

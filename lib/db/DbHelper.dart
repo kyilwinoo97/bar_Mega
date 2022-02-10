@@ -1,5 +1,6 @@
 
 import 'package:bar_mega/common/Utils.dart';
+import 'package:bar_mega/model/Desk.dart';
 import 'package:bar_mega/model/Item.dart';
 import 'package:bar_mega/model/Unit.dart';
 import 'package:sqflite/sqflite.dart';
@@ -25,27 +26,16 @@ abstract class DbHelper{
   Future<int> deleteMenu(Item item);
 
   Future<List<Map>> getAllTable();
+
+  Future<int> insertTable(Desk desk);
+
+  Future<int> updateTable(Desk desk);
+
+  Future<int> deleteTable(Desk desk);
 }
 class DbHelperImpl implements DbHelper{
   final Database database;
   DbHelperImpl({this.database});
-
-
-  ///example
-  /// db.insert(tableTodo, todo.toMap());
-  /// get
-  /// db.query(tableTodo,
-  ///         columns: [columnId, columnDone, columnTitle],
-  //         where: '$columnId = ?',
-  //         whereArgs: [id]);
-  //     if (maps.length > 0) {
-  //       return Todo.fromMap(maps.first);
-  //     }
-  ///delete
-  ///db.delete(tableTodo, where: '$columnId = ?', whereArgs: [id]);
-  ///update
-  ///db.update(tableTodo, todo.toMap(),
-  //         where: '$columnId = ?', whereArgs: [todo.id]);
 
 
   @override
@@ -98,6 +88,21 @@ class DbHelperImpl implements DbHelper{
   @override
   Future<List<Map>> getAllTable() async{
    return await database.query(Sql.Desk_Table);
+  }
+
+  @override
+  Future<int> insertTable(Desk desk) async{
+   return await database.insert(Sql.Desk_Table, desk.toMap());
+  }
+
+  @override
+  Future<int> updateTable(Desk desk) async{
+  return await database.update(Sql.Desk_Table, desk.toMap(),where:'${Sql.D_Id} = ?',whereArgs: [desk.deskId]);
+  }
+
+  @override
+  Future<int> deleteTable(Desk desk) async{
+   return await database.delete(Sql.Desk_Table,where: '${Sql.D_Id} = ?',whereArgs: [desk.deskId]);
   }
 
 }

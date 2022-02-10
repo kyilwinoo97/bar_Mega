@@ -23,7 +23,7 @@ class Settings extends StatefulWidget {
 class _SettingState extends State<Settings> {
  
   String selectedItem;
-  List<String> itemList =["Printer Settings","Unit","Log Out"];
+  List<String> itemList =["Printer Settings","Log Out"];
   TextEditingController controller = TextEditingController();
   MainRepository repository;
   @override
@@ -57,18 +57,6 @@ class _SettingState extends State<Settings> {
                   if(selected){
                     setState(() {
                       selectedItem = itemList[1];
-                      Dialogs.createUnit(context).then((value) =>
-                      {
-                         addUnit(value),
-
-                      });
-                    });
-                  }
-                }),
-                CategoryWidget(label: itemList[2],onSelected: (selected){
-                  if(selected){
-                    setState(() {
-                      selectedItem = itemList[2];
 
                     });
                   }
@@ -152,17 +140,13 @@ class _SettingState extends State<Settings> {
         return  pw.Center(
               child: pw.Column(
                   children: [
-                    pw.Text(controller.text),
+                    pw.Text("ြကက်သား ‌ြေကာ်"),
                   ]
               )
         );
-
-
         }));
-    final output = await getTemporaryDirectory();
-    final file = File('${output.path}/example.pdf');
-   var result =  await file.writeAsBytes(await doc.save());
-   print("result => $result");
+    await Printing.layoutPdf(onLayout: (format) => doc.save());
+
   }
 
 }

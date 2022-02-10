@@ -2,14 +2,12 @@ import 'Item.dart';
 
 class Order{
   int orderId;
-  int tableId;
   String invoiceNo;
-  String tablesNo;
   String itemName;
+  int qty;
   String price;
   String discount;
   String date;
-  int qty;
   Item item;
 
 }

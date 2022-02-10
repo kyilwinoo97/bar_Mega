@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../Utils.dart';
+import '../common/Utils.dart';
 import '../injection_container.dart';
 
 class ItemList extends StatefulWidget {
@@ -227,7 +227,7 @@ class MenuItem extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(4),
             child: Text(
-              item.name,
+              item.nameEng,
               style: TextStyle(
                   color: Colors.black,
                   fontSize: 18,

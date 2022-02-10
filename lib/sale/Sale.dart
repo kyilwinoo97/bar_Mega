@@ -3,7 +3,7 @@ import 'package:bar_mega/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../Utils.dart';
+import '../common/Utils.dart';
 import '../injection_container.dart';
 import '../model/Item.dart';
 import '../repository/MainRepository.dart';
@@ -377,7 +377,7 @@ class _SaleState extends State<Sale> {
                   children: [
                     Flexible(
                       child: Text(
-                        item.name,
+                        item.nameEng,
                         style: TextStyle(
                             color: Colors.green,
                             fontSize: 20.0,
@@ -404,11 +404,11 @@ class _SaleState extends State<Sale> {
                           child: InkWell(
                             splashColor: Colors.green, // Splash color
                             onTap: () {
-                              if (item.qty > 1) {
-                                setState(() {
-                                  --item.qty;
-                                });
-                              }
+                              // if (item.qty > 1) {
+                              //   setState(() {
+                              //     --item.qty;
+                              //   });
+                              // }
                             },
                             child: SizedBox(
                                 width: 50,
@@ -422,11 +422,11 @@ class _SaleState extends State<Sale> {
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 30.0),
-                        child: Text(
-                          '${item.qty}',
-                          style: TextStyle(
-                              fontSize: 18.0, fontWeight: FontWeight.bold),
-                        ),
+                        // child: Text(
+                        //   '${item.qty}',
+                        //   style: TextStyle(
+                        //       fontSize: 18.0, fontWeight: FontWeight.bold),
+                        // ),
                       ),
                       ClipOval(
                         child: Material(
@@ -435,7 +435,7 @@ class _SaleState extends State<Sale> {
                             splashColor: Colors.green, // Splash color
                             onTap: () {
                               setState(() {
-                                ++item.qty;
+                                // ++item.qty;
                               });
                             },
                             child: SizedBox(
@@ -529,7 +529,7 @@ class SaleItem extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 10.0),
                 alignment: Alignment.bottomCenter,
                 child: Text(
-                  item.name,
+                  item.nameEng,
                   style: TextStyle(color: Colors.green, fontSize: 18.0),
                 ),
               ),

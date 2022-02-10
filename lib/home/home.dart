@@ -1,4 +1,5 @@
 import 'package:bar_mega/menu/Menu.dart';
+import 'package:bar_mega/reports/ReportChart.dart';
 import 'package:bar_mega/sale/Sale.dart';
 import 'package:bar_mega/settings/Settings.dart';
 import 'package:bar_mega/tables/TableList.dart';
@@ -32,7 +33,11 @@ class _HomeSate extends State<Home>{
                             builder: (context) => Sale()));
                   }),
                   HomeItem("Purchase",Image.asset("assets/images/shopping_cart.png"),(){}),
-                  HomeItem("Reports",Image.asset("assets/images/business_report.png"),(){}),
+                  HomeItem("Reports",Image.asset("assets/images/business_report.png"),(){
+                    Navigator.push(context,
+                        MaterialPageRoute(
+                            builder: (context) => ReportChart()));
+                  }),
                 ],
               ),
               SizedBox(
@@ -54,7 +59,7 @@ class _HomeSate extends State<Home>{
                   HomeItem("Settings",Image.asset("assets/images/settings.png"),(){
                     Navigator.push(context,
                         MaterialPageRoute(
-                            builder: (context) => Settings()));
+                            builder: (context) => PrinterSetting()));
 
                   }),
               ],)

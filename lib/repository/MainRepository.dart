@@ -8,8 +8,6 @@ abstract class MainRepository{
 
   Future<int> addUnit(Unit unit);
 
-  Future<List<Map>> getAllUnit();
-
   Future<int> saveMenu(Item item);
 
   Future<List<Map>> getAllMenu();
@@ -40,12 +38,6 @@ class MainRepositoryImpl extends MainRepository{
   @override
   Future<int> addUnit(Unit unit) {
     return helper.insertUnit(unit);
-  }
-
-  @override
-  Future<List<Map>> getAllUnit() async{
-    return await  helper.getAllUnit();
-
   }
 
   @override

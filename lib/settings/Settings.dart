@@ -130,6 +130,8 @@ class _SettingState extends State<Settings> {
     const double inch = 72.0;
     const double cm = inch / 2.54;
     final doc = pw.Document(pageMode: PdfPageMode.fullscreen,title: "Hello",deflate: zlib.encode);
+    final  font = await rootBundle.load("assets/font/Roboto-Regular.ttf");
+    final  ttf = pw.Font.ttf(font);
     doc.addPage(pw.Page(
       theme: pw.ThemeData.withFont(
         base: pw.Font.ttf(await rootBundle.load("assets/font/NotoSerifMyanmar_Regular.ttf")),
@@ -140,12 +142,37 @@ class _SettingState extends State<Settings> {
         return  pw.Center(
               child: pw.Column(
                   children: [
-                    pw.Text("ြကက်သား ‌ေြကာ်"),
+                    pw.Center(
+                      child: pw.Text("Bar Mega",style: pw.TextStyle(
+                        color:PdfColors.black,
+                        fontSize: 35,
+                        font: ttf,
+                      ))
+                    ),
+                    pw.SizedBox(height: 25),
+                    pw.Row(
+                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                      children: [
+                        pw.Expanded(
+                          flex: 5,
+                          child:pw.Text("ြကက်သား ‌ေြကာ်"),
+                        ),
+                        pw.Text(" ၁ ပွဲ  ",),
+                        // pw.Text("${controller.text}"),
+                        pw.Expanded(
+                          flex: 5,
+                          child:pw.Text("1500",style: pw.TextStyle(
+                            font:ttf,
+                            fontSize: 18
+                          )),
+                        ),
+                      ]
+                    )
                   ]
               )
         );
         }));
-    await Printing.layoutPdf(onLayout: (format) => doc.save());
+    await Printing.layoutPdf(onLayout: (format) => doc.save(),format: PdfPageFormat.roll80.copyWith(height: 20 * cm),usePrinterSettings: true);
 
   }
 

@@ -1,4 +1,5 @@
 import 'package:bar_mega/bloc/menu_bloc/MenuBloc.dart';
+import 'package:bar_mega/bloc/sale_bloc/SaleBloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +18,9 @@ void main() async{
     BlocProvider<TableBloc>(
       create: (BuildContext context) => di.sl<TableBloc>(),
     ),
+    BlocProvider<SaleBloc>(
+      create: (BuildContext context) => di.sl<SaleBloc>(),
+    ),
   ], child:MyApp()));
 }
 
@@ -33,6 +37,7 @@ class MyApp extends StatelessWidget {
       title: 'Bar Mega',
       theme: ThemeData(
         primarySwatch: Colors.green,
+        fontFamily: "Roboto"
       ),
       home: Home(),
     );

@@ -2,6 +2,7 @@ class Desk{
   int deskId;
   String tableNo;
   int noOfSeats;
+  String invoiceNo;
   String status; //available or present
 
   Desk({this.deskId, this.tableNo, this.noOfSeats,

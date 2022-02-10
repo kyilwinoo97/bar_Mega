@@ -1,6 +1,9 @@
+import 'package:bar_mega/bloc/menu_bloc/MenuBloc.dart';
 import 'package:bar_mega/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../Utils.dart';
 import '../injection_container.dart';
 import '../model/Item.dart';
 import '../repository/MainRepository.dart';
@@ -14,239 +17,15 @@ class Sale extends StatefulWidget {
 class _SaleState extends State<Sale> {
   GlobalKey<AnimatedListState> _listKey = GlobalKey();
 
-  MainRepository repository;
-  List<Item> itemList = [];
-  List<Item> allItem = [
-    Item(
-        itemId: 1,
-        unitId: 0,
-        name: "Salad",
-        price: "1000",
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 2,
-        unitId: 0,
-        name: "Salad",
-        price: "1000",
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 3,
-        unitId: 0,
-        name: "Salad",
-        price: "1000",
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 4,
-        unitId: 0,
-        name: "Salad",
-        price: "1000",
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 5,
-        unitId: 0,
-        name: "Salad",
-        price: "1000",
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 6,
-        unitId: 0,
-        name: "Salad",
-        price: "1000",
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 7,
-        unitId: 0,
-        name: "Salad",
-        price: "1000",
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 8,
-        unitId: 0,
-        name: "Salad",
-        price: "1000",
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 9,
-        unitId: 0,
-        name: "Salad",
-        price: "1000",
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 10,
-        unitId: 0,
-        name: "Salad",
-        price: "1000",
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 11,
-        unitId: 0,
-        name: "Salad",
-        price: "1000",
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 12,
-        unitId: 0,
-        name: "Salad",
-        price: "1000",
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 13,
-        unitId: 0,
-        name: "Salad",
-        price: "1000",
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 14,
-        unitId: 0,
-        name: "Salad",
-        price: "1000",
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 15,
-        unitId: 0,
-        name: "Salad",
-        price: "1000",
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 16,
-        unitId: 0,
-        name: "Salad",
-        price: "1000",
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 17,
-        unitId: 0,
-        name: "Salad",
-        price: "1000",
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 18,
-        unitId: 0,
-        name: "Salad",
-        price: "1000",
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 19,
-        unitId: 0,
-        name: "Salad",
-        price: "1000",
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-    Item(
-        itemId: 20,
-        unitId: 0,
-        name: "Salad",
-        price: "1000",
-        unit: "Cup",
-        category: "Food",
-        path: ""),
-  ];
-  List<Item> softItem = [
-    Item(
-        itemId: 21,
-        unitId: 0,
-        name: "Cocacola",
-        price: "1000",
-        unit: "Cup",
-        category: "Soft Drink",
-        path: ""),
-    Item(
-        itemId: 22,
-        unitId: 0,
-        name: "Blue mountain",
-        price: "1000",
-        unit: "bottle",
-        category: "Soft Drink",
-        path: ""),
-    Item(
-        itemId: 23,
-        unitId: 0,
-        name: "Pepsi",
-        price: "1000",
-        unit: "bottle",
-        category: "Soft Drink",
-        path: ""),
-    Item(
-        itemId: 24,
-        unitId: 0,
-        name: "M - 150",
-        price: "1000",
-        unit: "bottle",
-        category: "Soft Drink",
-        path: ""),
-    Item(
-        itemId: 25,
-        unitId: 0,
-        name: "Shark",
-        price: "1000",
-        unit: "bottle",
-        category: "Soft Drink",
-        path: ""),
-    Item(
-        itemId: 26,
-        unitId: 0,
-        name: "Red Bull",
-        price: "1000",
-        unit: "bottle",
-        category: "Soft Drink",
-        path: ""),
-    Item(
-        itemId: 27,
-        unitId: 0,
-        name: "Lipo",
-        price: "1000",
-        unit: "bottle",
-        category: "Soft Drink",
-        path: ""),
-  ];
-  List<String> cats = ['All', 'Soft Drink', 'Alcoholic Drink', 'Desserts'];
+  List<String> cats = Utils.categoryList;
   String selectedCat;
   List<Item> cartItems = [];
   double total = 0.0;
-  //category => main menu,alcoholic drink,soft drink ,desserts
+
   @override
   void initState() {
     selectedCat = cats[0];
-    repository = sl<MainRepository>();
-    itemList.addAll(allItem);
-    //Todo get data from database
+    getData(); //get menu from db
     super.initState();
   }
 
@@ -280,9 +59,8 @@ class _SaleState extends State<Sale> {
                             if (selected) {
                               setState(() {
                                 selectedCat = cats[0];
-                                itemList.clear();
-                                itemList.addAll(allItem);
                               });
+                              BlocProvider.of<MenuBloc>(context).add(GetAllMenu());
                             }
                           }),
                       CategoryWidget(
@@ -291,9 +69,9 @@ class _SaleState extends State<Sale> {
                             if (selected) {
                               setState(() {
                                 selectedCat = cats[1];
-                                itemList.clear();
-                                itemList.addAll(softItem);
                               });
+                              BlocProvider.of<MenuBloc>(context).add(GetMenuByCategory(selectedCat));
+
                             }
                           }),
                       CategoryWidget(
@@ -302,8 +80,8 @@ class _SaleState extends State<Sale> {
                             if (selected) {
                               setState(() {
                                 selectedCat = cats[2];
-                                itemList.clear();
                               });
+                              BlocProvider.of<MenuBloc>(context).add(GetMenuByCategory(selectedCat));
                             }
                           }),
                       CategoryWidget(
@@ -312,8 +90,8 @@ class _SaleState extends State<Sale> {
                             if (selected) {
                               setState(() {
                                 selectedCat = cats[3];
-                                itemList.clear();
                               });
+                              BlocProvider.of<MenuBloc>(context).add(GetMenuByCategory(selectedCat));
                             }
                           }),
                     ],
@@ -321,33 +99,47 @@ class _SaleState extends State<Sale> {
             ),
           ),
           Expanded(
-            flex: 5,
-            child: Container(
-              margin: const EdgeInsets.all(10.0),
-              child: GridView.count(
-                crossAxisCount: 3,
-                children: List.generate(itemList.length, (index) {
-                  return InkWell(
-                    child: SaleItem(itemList[index]),
-                    onTap: () {
-                      var item = itemList[index];
-                      setState(() {
-                        cartItems.add(item);
-                        _listKey.currentState.insertItem(0,
-                            duration: const Duration(milliseconds: 500));
-                        cartItems = []
-                          ..add(item)
-                          ..addAll(cartItems);
-                      });
-                      // OnItemSelect(item: itemList[index]);
-                    },
-                  );
-                }),
-              ),
-            ),
+            flex: 6,
+            child: BlocBuilder<MenuBloc, MenuState>(builder: (context, state) {
+              if (state is Success) {
+                return Container(
+                  margin: const EdgeInsets.all(10.0),
+                  child: GridView.count(
+                    crossAxisCount: 3,
+                    children: List.generate(state.result.length, (index) {
+                      return InkWell(
+                        child: SaleItem(state.result[index]),
+                        onTap: () {
+                          var item = state.result[index];
+                          setState(() {
+                            cartItems.add(item);
+                            _listKey.currentState.insertItem(0,
+                                duration: const Duration(milliseconds: 500));
+                            cartItems = []
+                              ..add(item)
+                              ..addAll(cartItems);
+                          });
+                          // OnItemSelect(item: itemList[index]);
+                        },
+                      );
+                    }),
+                  ),
+                );
+              } else if (state is Failure) {
+                return Center(
+                  child: Text(state.message),
+                );
+              } else {
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.green,
+                  ),
+                );
+              }
+            }),
           ),
           Expanded(
-            flex: 3,
+            flex: 4,
             child: Column(
               children: [
                 Expanded(
@@ -369,7 +161,7 @@ class _SaleState extends State<Sale> {
                               children: [
                                 Padding(
                                     padding: const EdgeInsets.only(
-                                        left: 30.0, top: 15.0, right: 30.0),
+                                        left: 10.0, top: 4.0, right: 10.0),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -499,144 +291,6 @@ class _SaleState extends State<Sale> {
     );
   }
 
-  // OnItemSelect({item}) {
-  //   showDialog(
-  //       context: context,
-  //       barrierDismissible: true,
-  //       builder: (BuildContext context) {
-  //         return StatefulBuilder(builder: (context, setState) {
-  //           return AlertDialog(
-  //             shape: RoundedRectangleBorder(
-  //               borderRadius: BorderRadius.circular(20.0),
-  //             ),
-  //             actions: [
-  //               ClipOval(
-  //                 child: Material(
-  //                   color: Colors.red, // Button color
-  //                   child: InkWell(
-  //                     splashColor: Colors.red.shade50, // Splash color
-  //                     onTap: () {
-  //                       Navigator.pop(context);
-  //                     },
-  //                     child: SizedBox(
-  //                         width: 50,
-  //                         height: 50,
-  //                         child: Icon(
-  //                           Icons.remove,
-  //                           color: Colors.white,
-  //                         )),
-  //                   ),
-  //                 ),
-  //               ),
-  //               const SizedBox(width: 10.0),
-  //               ClipOval(
-  //                 child: Material(
-  //                   color: Colors.green, // Button color
-  //                   child: InkWell(
-  //                     splashColor: Colors.green, // Splash color
-  //                     onTap: () {
-  //                       setState(() {
-  //                         cartItems.add(item);
-  //                         _listKey.currentState.insertItem(0,
-  //                             duration: const Duration(milliseconds: 700));
-  //                         cartItems = []
-  //                           ..add(item)
-  //                           ..addAll(cartItems);
-  //                       });
-  //                       Navigator.pop(context);
-  //                     },
-  //                     child: SizedBox(
-  //                         width: 50,
-  //                         height: 50,
-  //                         child: Icon(
-  //                           Icons.done,
-  //                           color: Colors.white,
-  //                         )),
-  //                   ),
-  //                 ),
-  //               )
-  //             ],
-  //             title: Row(
-  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //               children: [
-  //                 Text(
-  //                   '${item.name}',
-  //                   style: TextStyle(color: Colors.green, fontSize: 22.0),
-  //                 ),
-  //                 Text(
-  //                   '${item.price} Ks',
-  //                   style: TextStyle(color: Colors.green, fontSize: 17.0),
-  //                 )
-  //               ],
-  //             ),
-  //             content: Column(
-  //               mainAxisSize: MainAxisSize.min,
-  //               children: [
-  //                 Image.asset(
-  //                   'assets/images/menu.png',
-  //                   width: 150.0,
-  //                   height: 150.0,
-  //                 ),
-  //                 Padding(
-  //                     padding: const EdgeInsets.only(top: 50.0, bottom: 10.0),
-  //                     child: Row(
-  //                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //                       children: [
-  //                         ClipOval(
-  //                           child: Material(
-  //                             color: Colors.green.shade50, // Button color
-  //                             child: InkWell(
-  //                               splashColor: Colors.green, // Splash color
-  //                               onTap: () {
-  //                                 if (item.count > 1) {
-  //                                   setState(() {
-  //                                     --item.count;
-  //                                   });
-  //                                 }
-  //                               },
-  //                               child: SizedBox(
-  //                                   width: 50,
-  //                                   height: 50,
-  //                                   child: Icon(
-  //                                     Icons.remove,
-  //                                     color: Colors.green,
-  //                                   )),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                         Padding(
-  //                           padding: EdgeInsets.symmetric(horizontal: 5.0),
-  //                           child: Text('${item.count}'),
-  //                         ),
-  //                         ClipOval(
-  //                           child: Material(
-  //                             color: Colors.green.shade50, // Button color
-  //                             child: InkWell(
-  //                               splashColor: Colors.green, // Splash color
-  //                               onTap: () {
-  //                                 setState(() {
-  //                                   ++item.count;
-  //                                 });
-  //                               },
-  //                               child: SizedBox(
-  //                                   width: 50,
-  //                                   height: 50,
-  //                                   child: Icon(
-  //                                     Icons.add,
-  //                                     color: Colors.green,
-  //                                   )),
-  //                             ),
-  //                           ),
-  //                         )
-  //                       ],
-  //                     )),
-  //               ],
-  //             ),
-  //           );
-  //         });
-  //       });
-  // }
-
   onRemove(int index) {
     var item = cartItems.removeAt(index);
     _listKey.currentState.removeItem(
@@ -673,10 +327,9 @@ class _SaleState extends State<Sale> {
     );
   }
 
-  CartItem({item}) {
+  CartItem({Item item}) {
     return Container(
       margin: EdgeInsets.all(5.0),
-      padding: EdgeInsets.all(0.0),
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
@@ -684,7 +337,7 @@ class _SaleState extends State<Sale> {
         elevation: 10.0,
         shadowColor: Colors.white54,
         child: Padding(
-          padding: EdgeInsets.all(10.0),
+          padding: EdgeInsets.all(2.0),
           child: Column(
             children: <Widget>[
               Align(
@@ -751,9 +404,9 @@ class _SaleState extends State<Sale> {
                           child: InkWell(
                             splashColor: Colors.green, // Splash color
                             onTap: () {
-                              if (item.count > 1) {
+                              if (item.qty > 1) {
                                 setState(() {
-                                  --item.count;
+                                  --item.qty;
                                 });
                               }
                             },
@@ -770,7 +423,7 @@ class _SaleState extends State<Sale> {
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 30.0),
                         child: Text(
-                          '${item.count}',
+                          '${item.qty}',
                           style: TextStyle(
                               fontSize: 18.0, fontWeight: FontWeight.bold),
                         ),
@@ -782,7 +435,7 @@ class _SaleState extends State<Sale> {
                             splashColor: Colors.green, // Splash color
                             onTap: () {
                               setState(() {
-                                ++item.count;
+                                ++item.qty;
                               });
                             },
                             child: SizedBox(
@@ -831,6 +484,10 @@ class _SaleState extends State<Sale> {
       ),
     );
   }
+
+  void getData() {
+    BlocProvider.of<MenuBloc>(context).add(GetAllMenu());
+  }
 }
 
 class SaleItem extends StatelessWidget {
@@ -841,7 +498,7 @@ class SaleItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(5.0),
+      margin: EdgeInsets.all(3.0),
       padding: EdgeInsets.all(0.0),
       child: Card(
         shape: RoundedRectangleBorder(
@@ -864,16 +521,24 @@ class SaleItem extends StatelessWidget {
                       : Image.asset(
                           "assets/images/menu.png",
                           fit: BoxFit.fill,
-                          height: 120,
+                          height: 100,
                         ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.only(top: 10.0),
+                alignment: Alignment.bottomCenter,
+                child: Text(
+                  item.name,
+                  style: TextStyle(color: Colors.green, fontSize: 18.0),
                 ),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 10.0),
                 alignment: Alignment.bottomCenter,
                 child: Text(
-                  item.name,
-                  style: TextStyle(color: Colors.green, fontSize: 18.0),
+                  "${item.price} Ks",
+                  style: TextStyle(color: Colors.black, fontSize: 16.0),
                 ),
               ),
             ],

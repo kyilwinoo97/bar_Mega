@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart' as intl;
 
 class Utils{
@@ -13,6 +14,11 @@ static const String AlcoholicDrink ="Alcoholic Drink";
 static const String Desserts ="Desserts";
 static const List<String> categoryList = [All,MainMenu,SoftDrink,AlcoholicDrink,Desserts];
 
+
+static const String dish ="dish";
+static const String bottle ="bottle";
+static const String cup ="cup";
+static const List<String> unitList = [dish,bottle,cup];
 
   static bool validatePhone(String phone) {
     final regex = new RegExp(r"^(09|\+?950?9|\+?95950?9)\d{7,9}$$", multiLine: false);

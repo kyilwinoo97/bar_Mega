@@ -35,7 +35,6 @@ class _MenuDetailState extends State<MenuDetail> {
 
   final List<String> unitItems = [];
   final List<String> categoryItems = [];
-  final List<Unit> unitList = [];
 
   String selectedUnit = "Select Unit";
   String selectedCategory = "Select Category";
@@ -43,7 +42,6 @@ class _MenuDetailState extends State<MenuDetail> {
   String buttonText = "Save";
   final _formKey = GlobalKey<FormState>();
   MainRepository repository;
-  int unitId = -1;
   String imagePath = "";
 
   @override
@@ -52,17 +50,16 @@ class _MenuDetailState extends State<MenuDetail> {
     for(int i = 1 ; i< Utils.categoryList.length ; i ++){
       categoryItems.add(Utils.categoryList[i]);
     }
+    unitItems.addAll(Utils.unitList);
     if (widget.item != null) {
       nameController.text = widget.item.name;
       priceController.text = widget.item.price.toString();
       title = "Update Menu";
       buttonText = "Update";
       selectedUnit = widget.item.unit;
-      unitId = widget.item.unitId;
       selectedCategory = widget.item.category;
       imagePath = widget.item.path;
     }
-    getData();
     super.initState();
   }
 
@@ -193,11 +190,6 @@ class _MenuDetailState extends State<MenuDetail> {
                                     },
                                     onChanged: (value) {
                                       selectedUnit = value.toString();
-                                      for(int i = 0 ; i< unitList.length; i ++){
-                                        if(unitList[i].name == selectedUnit){
-                                          unitId = unitList[i].unitId;
-                                        }
-                                      }
                                     },
                                   ),
                                 ),
@@ -323,7 +315,7 @@ class _MenuDetailState extends State<MenuDetail> {
                                             .isNotEmpty && priceController.text
                                             .trim()
                                             .isNotEmpty &&
-                                            selectedCategory != null) {
+                                            selectedCategory != null && selectedUnit.isNotEmpty) {
                                           if(buttonText =="Save"){
                                             saveMenu();
                                           }else{
@@ -372,23 +364,8 @@ class _MenuDetailState extends State<MenuDetail> {
     );
   }
 
-
-
-  void getData() async {
-    List<Map> result = await repository.getAllUnit();
-    List<String> lst = [];
-    for (int i = 0; i < result.length; i ++) {
-      unitList.add(Unit.fromMap(result[i]));
-      lst.add(result[i]["name"]);
-    }
-    setState(() {
-      unitItems.addAll(lst);
-    });
-  }
-
   void saveMenu() async{
-    if(unitId != -1){
-      var result = await repository.saveMenu(Item(unitId:unitId, name: nameController.text.toString(),
+      var result = await repository.saveMenu(Item( name: nameController.text.toString(),
           price: priceController.text.toString(),unit: selectedUnit,path: "",category: selectedCategory));
       if(result > 0){
         if(widget.category == Utils.All){
@@ -398,17 +375,12 @@ class _MenuDetailState extends State<MenuDetail> {
         }
         Navigator.of(context).pop();
       }
-    }else{
-      //something went wrong
-    }
 
   }
 
   void updateMenu() async{
-    if(unitId > 0){
     var result = await  repository.updateMenu(Item(
           itemId: widget.item.itemId,
-          unitId: unitId,
           name: nameController.text,
           price: priceController.text,
           unit: selectedUnit,
@@ -421,7 +393,6 @@ class _MenuDetailState extends State<MenuDetail> {
         BlocProvider.of<MenuBloc>(context).add(GetMenuByCategory(widget.category));
       }
       Navigator.of(context).pop();
-    }
     }
   }
 

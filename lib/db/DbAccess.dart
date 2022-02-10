@@ -52,7 +52,6 @@ class Sql{
 
   static const String Item_Table = "Item";
   static const String Id = "itemId";
-  static const String UnitId = "unitId";
   static const String Name = "name";
   static const String Qty = "qty";
   static const String Price = "price";
@@ -65,6 +64,7 @@ class Sql{
   static const String NO = "tableNo";
   static const String Seat = "noOfSeats";
   static const String Status = "status";
+  static const String InvoiceNo = "invoiceNo";
 
 
   static const String Unit_Table = "Unit";
@@ -90,9 +90,8 @@ class Sql{
 
   static String create_menu_table ='''CREATE TABLE IF NOT EXISTS $Item_Table 
                  ($Id INTEGER PRIMARY KEY,
-                 $UnitId INTEGER NOT NULL,
                   $Name TEXT NOT NULL,
-                  $Qty TEXT NOT NULL,
+                  $Qty INTEGER NOT NULL,
                   $Price TEXT NOT NULL,
                   $Unit TEXT NOT NULL,
                   $ImagePath TEXT NOT NULL,
@@ -103,9 +102,10 @@ class Sql{
                  ($D_Id INTEGER PRIMARY KEY,
                   $NO TEXT NOT NULL,
                   $Seat INTEGER NOT NULL,
+                  $InvoiceNo TEXT NOT NULL,
                   $Status TEXT NOT NULL
                   )''';
 
-  static List<String> queryList = [create_menu_table,create_desk_table,create_unit_table,create_category_table];
+  static List<String> queryList = [create_menu_table,create_desk_table];
 
 }

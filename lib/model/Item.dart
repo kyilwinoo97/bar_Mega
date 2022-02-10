@@ -6,6 +6,7 @@ class Item{
   String unit;
   String path;
   String category;
+  int count=1;
 
   Item({this.itemId,  this.unitId,  this.name,  this.price,  this.unit,  this.path,
        this.category});
@@ -16,7 +17,8 @@ class Item{
         price = map['price'],
         unit = map['unit'],
         path = map['path'],
-        category = map['category'];
+        category = map['category'],
+        count = map['count'];
 
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
@@ -27,6 +29,7 @@ class Item{
     map['unit'] = unit;
     map['path'] = path;
     map['category'] = category;
+    map['count'] = count;
     return map;
   }
 }

@@ -28,6 +28,8 @@ class SaleBloc extends Bloc<SaleEvent,SaleState> {
      yield* _removeOneOrder(event.order);
    }else if(event is RemoveAllOrder){
      yield* _removeAllOrder(event.lstOrder);
+   }else if(event is AddSale){
+     yield* _addSale(event.sale);
    }
   }
 
@@ -106,6 +108,17 @@ class SaleBloc extends Bloc<SaleEvent,SaleState> {
       }else{
         yield Failure("Something went wrong");
       }
+    }
+  }
+
+  Stream<SaleState> _addSale(Sale sale) async*{
+    yield Loading();
+    var result = -1;
+    result = await repository.addSale(sale);
+    if(result > 0){
+      yield SaleSuccess();
+    }else{
+      yield Failure("Something went wrong");
     }
   }
 

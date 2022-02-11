@@ -49,6 +49,8 @@ abstract class DbHelper{
   Future<int> deleteOrder(Order order);
 
   Future<int> deleteInvoice(String invoiceNo);
+
+  Future<int> addSale(Sale sale);
 }
 class DbHelperImpl implements DbHelper{
   final Database database;
@@ -155,6 +157,11 @@ class DbHelperImpl implements DbHelper{
   @override
   Future<int> deleteInvoice(String invoiceNo) async{
     return await database.delete(Sql.Invoice_Table,where: '${Sql.invoiceNo} = ?',whereArgs: [invoiceNo]);
+  }
+
+  @override
+  Future<int> addSale(Sale sale) async{
+   return await database.insert(Sql.SaleTable, sale.toMap());
   }
 
 }

@@ -217,7 +217,7 @@ class _PrinterSettingState extends State<PrinterSetting> {
       // final output = await getTemporaryDirectory();
       // final file = File('${output.path}/example.pdf');
       // return await file.writeAsBytes(await doc.save());
-       await Printing.layoutPdf(onLayout: (format) => doc.save(),format: PdfPageFormat.roll80.copyWith(height: 20 * cm),usePrinterSettings: true);
+      //  await Printing.layoutPdf(onLayout: (format) => doc.save(),format: PdfPageFormat.roll80.copyWith(height: 20 * cm),usePrinterSettings: true);
 
     }
 

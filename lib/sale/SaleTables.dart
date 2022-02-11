@@ -1,3 +1,4 @@
+import 'package:bar_mega/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,7 +23,13 @@ class _SaleTablesState extends State<SaleTables> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Select Table'),elevation: 0.0,),
+      appBar: AppBar(title: Text('Select Table'),elevation: 0.0,
+      leading: IconButton(
+        onPressed: (){
+          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+              Home()), (Route<dynamic> route) => false);        },
+        icon: Icon(Icons.arrow_back,color: Colors.white,),
+      ),),
       backgroundColor: Colors.grey.shade100,
       body: BlocBuilder<TableBloc,TableState>(
           builder: (context,state) {

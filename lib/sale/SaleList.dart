@@ -31,6 +31,7 @@ class SaleList extends StatefulWidget {
 
 class _SaleListState extends State<SaleList> {
 
+  final _discountController = TextEditingController();
   List<String> cats = Utils.categoryList;
   String selectedCat;
   List<Order> cartItems = [];
@@ -238,6 +239,25 @@ class _SaleListState extends State<SaleList> {
                                                 fontSize: 20.0,
                                                 fontWeight: FontWeight.bold),
                                           ),
+                                      ClipOval(
+                                        child: Material(
+                                          color: Colors.red.shade50, // Button color
+                                          child: InkWell(
+                                            splashColor: Colors.red, // Splash color
+                                            onTap: () {
+                                              BlocProvider.of<sale.SaleBloc>(context).add(sale.RemoveAllOrder(cartItems));
+                                            },
+                                            child: SizedBox(
+                                                width: 30,
+                                                height: 30,
+                                                child: Icon(
+                                                  Icons.delete_forever,
+                                                  size: 20,
+                                                  color: Colors.red,
+                                                )),
+                                          ),
+                                        ),
+                                      ),
                                         ],
                                       )),
                                   const SizedBox(height: 5.0),
@@ -278,11 +298,10 @@ class _SaleListState extends State<SaleList> {
                         Expanded(
                           flex: 1,
                           child: CustomButton(
-                            label: 'Clear',
-                            color: Colors.red,
-                            onTap: () {
-                              BlocProvider.of<sale.SaleBloc>(context).add(sale.RemoveAllOrder(cartItems));
-                            },
+                            label: 'Discount',
+                            color: Colors.green,
+                            onTap: _showDialog,
+
                           ),
                         ),
                         Expanded(
@@ -310,6 +329,42 @@ class _SaleListState extends State<SaleList> {
           ],
         ),
       ),
+    );
+  }
+
+  _showDialog() async {
+    await showDialog<String>(
+      context: context,
+      builder: (context){
+        return AlertDialog(
+          contentPadding: const EdgeInsets.all(16.0),
+          content: new Row(
+            children: <Widget>[
+              new Expanded(
+                child: new TextField(
+                  controller: _discountController,
+                  autofocus: true,
+                  decoration: new InputDecoration(
+                      labelText: 'Discount', hintText: '%'),
+                ),
+              )
+            ],
+          ),
+          actions: <Widget>[
+            new ElevatedButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  _discountController.text = '';
+                  Navigator.pop(context);
+                }),
+            new ElevatedButton(
+                child: const Text('Save'),
+                onPressed: () {
+                  Navigator.pop(context);
+                })
+          ],
+        );
+      },
     );
   }
 

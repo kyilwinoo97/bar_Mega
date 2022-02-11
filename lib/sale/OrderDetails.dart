@@ -158,7 +158,7 @@ class _OrderDetailsState extends State<OrderDetails> {
               height: double.infinity,
               child: Card(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
                 elevation: 5.0,
                 color: Colors.white,
@@ -167,10 +167,14 @@ class _OrderDetailsState extends State<OrderDetails> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Center(
+                        child: Image.asset("assets/images/logo_bar_mega.png",fit: BoxFit.fill,height: 80,)
+                      ),
+                      const SizedBox(height: 10.0),
                       Align(
                         alignment: Alignment.center,
-                          child: Text('Bar Mega',style: TextStyle(fontSize: 20.0),)),
-                      const SizedBox(height: 10.0),
+                          child: Text('Bar Mega',style: TextStyle(fontSize: 24.0,fontWeight: FontWeight.bold),)),
+                      const SizedBox(height: 14.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

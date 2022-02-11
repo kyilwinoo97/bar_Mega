@@ -86,9 +86,7 @@ class Sql{
   //total
 
 
-  static const String Unit_Table = "Unit";
-  static const String id = "unitId";
-  static const String unitName = "name";
+
 
   static const String Purchase_Table = "PurchaseTable";
   static const String PurchaseId = "purchaseId";
@@ -135,10 +133,22 @@ class Sql{
   static const String categoryName = "name";
 
 
+  static const String Unit_Table = "Unit";
+  static const String id = "unitId";
+  static const String unitName = "name";
 
   static String create_unit_table ='''CREATE TABLE IF NOT EXISTS $Unit_Table 
                  ($id INTEGER PRIMARY KEY,
                   $unitName TEXT NOT NULL
+                  )''';
+
+  static const String UnitSaleTable = "SaleUnit";
+  static const String SaleUnitId = "unitId";
+  static const String SaleUnitName = "name";
+
+  static String create_sale_unit_table ='''CREATE TABLE IF NOT EXISTS $UnitSaleTable 
+                 ($SaleUnitId INTEGER PRIMARY KEY,
+                  $SaleUnitName TEXT NOT NULL
                   )''';
 
   static String create_category_table ='''CREATE TABLE IF NOT EXISTS $CategoryTable 
@@ -193,6 +203,6 @@ class Sql{
                   $Status TEXT NOT NULL
                   )''';
 
-  static List<String> queryList = [create_invoice_table,create_menu_table,create_desk_table,create_sale_table,create_order_table,create_purchase_table,create_purchase_Item_table];
+  static List<String> queryList = [create_invoice_table,create_menu_table,create_desk_table,create_sale_table,create_order_table,create_purchase_table,create_purchase_Item_table,create_sale_unit_table,create_unit_table];
 
 }

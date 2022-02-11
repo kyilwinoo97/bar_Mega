@@ -14,7 +14,7 @@ class TableItem extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
         ),
-        shadowColor: Colors.grey.shade100,
+        shadowColor: Colors.white54,
         color: Colors.white,
         child: Column(
           children: [

@@ -273,26 +273,6 @@ class _SaleState extends State<Sale> {
     return cartItems.forEach((e) => t += int.parse(e.total));
   }
 
-  onRemove(int index) {
-    var item = cartItems.removeAt(index);
-    _listKey.currentState.removeItem(
-      index,
-      (BuildContext context, Animation<double> animation) {
-        return FadeTransition(
-          opacity:
-              CurvedAnimation(parent: animation, curve: Interval(0.5, 1.0)),
-          child: SizeTransition(
-            sizeFactor:
-                CurvedAnimation(parent: animation, curve: Interval(0.0, 1.0)),
-            axisAlignment: 0.0,
-            child: CartItem(item: item),
-          ),
-        );
-      },
-      duration: Duration(milliseconds: 600),
-    );
-  }
-
   Widget AnimateCartItem(
       BuildContext context, int index, Animation<double> animation) {
     return SlideTransition(

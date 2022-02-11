@@ -19,7 +19,7 @@ class _HomeSate extends State<Home>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomIns  et: false,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text("Home"),
       ),

@@ -12,6 +12,9 @@ class Success extends SaleState{
 class DeleteSuccess extends SaleState{
   DeleteSuccess();
 }
+class SaleSuccess extends SaleState{
+  SaleSuccess();
+}
 class DeleteOneOrderSuccess extends SaleState{
   final Order removeOrder;
   DeleteOneOrderSuccess(this.removeOrder);

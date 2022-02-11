@@ -63,7 +63,7 @@ class _SaleListState extends State<SaleList> {
             listener: (context, state) {
               if(state is sale.Success){
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => OrderDetails()));
+                    MaterialPageRoute(builder: (context) => OrderDetails(widget.desk)));
               }else if(state is sale.DeleteSuccess){
                 BlocProvider.of<TableBloc>(context).add(UpdateTable(Desk(
                     deskId: widget.desk.deskId,

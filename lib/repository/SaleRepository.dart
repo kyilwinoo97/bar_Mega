@@ -17,6 +17,8 @@ Future<List<Map>> getAllOrderByInvoiceNo(String invoiceNo);
 
  Future<int> deleteOrder(Order order);
 
+ Future<int> addSale(Sale sale);
+
 
 }
 class SaleRepositoryImpl extends SaleRepository{
@@ -53,5 +55,10 @@ class SaleRepositoryImpl extends SaleRepository{
   @override
   Future<int> deleteOrder(Order order) async{
     return await helper.deleteOrder(order);
+  }
+
+  @override
+  Future<int> addSale(Sale sale) async{
+    return await helper.addSale(sale);
   }
 }

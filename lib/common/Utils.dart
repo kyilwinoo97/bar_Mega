@@ -65,6 +65,11 @@ static const List<String> unitList = [dish,bottle,cup];
     var formatter = new intl.DateFormat('hh:mm a');
     return formatter.format(dateTime);
   }
+  static Future<bool> isEnableBT(BlueThermalPrinter blueThermalPrinter) async{
+    return await blueThermalPrinter.isOn ?? false;
+
+  }
+
 
   static confirmDialog(BuildContext context,String title,String content){
     return showDialog(context: context,

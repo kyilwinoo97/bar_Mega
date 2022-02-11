@@ -165,6 +165,7 @@ class _TableDetialState extends State<TableDetail> {
   void saveTable() {
     BlocProvider.of<TableBloc>(context).add(SaveTable(Desk(
         tableNo: tableNoController.text,
+        invoiceNo: "",
         noOfSeats: int.parse(noOfSeatsController.text),
         status: status)));
   }
@@ -173,6 +174,7 @@ class _TableDetialState extends State<TableDetail> {
     BlocProvider.of<TableBloc>(context).add(UpdateTable(Desk(
         deskId: widget.desk.deskId,
         tableNo: tableNoController.text,
+        invoiceNo: widget.desk.invoiceNo,
         noOfSeats: int.parse(noOfSeatsController.text),
         status: status)));
   }

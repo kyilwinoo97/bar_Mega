@@ -227,7 +227,7 @@ class MenuItem extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(4),
             child: Text(
-              item.nameEng,
+              item.name,
               style: TextStyle(
                   color: Colors.black,
                   fontSize: 18,

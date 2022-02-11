@@ -1,20 +1,17 @@
 class Item{
   int itemId;
-  String nameEng;
-  String nameMyan;
-  String printName;
+  String name;
+
   String price;
   String unit;
   String path;
   String category;
 
-  Item({this.itemId,  this.nameEng,this.nameMyan,this.printName, this.price,  this.unit,  this.path,
+  Item({this.itemId,  this.name, this.price,  this.unit,  this.path,
        this.category});
   Item.fromMap(Map<String, dynamic> map)
       : itemId = map['itemId'],
-        nameEng = map['nameEng'],
-        nameMyan = map['nameMyan'],
-        printName = map['printName'],
+        name = map['name'],
         price = map['price'],
         unit = map['unit'],
         path = map['path'],
@@ -23,9 +20,7 @@ class Item{
   Map<String,dynamic> toMap() {
     var map = Map<String, dynamic>();
     map['itemId'] = itemId;
-    map['nameEng'] = nameEng;
-    map['nameMyan'] = nameMyan;
-    map['printName'] = printName;
+    map['name'] = name;
     map['price'] = price;
     map['unit'] = unit;
     map['path'] = path;

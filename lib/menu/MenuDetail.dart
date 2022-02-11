@@ -52,7 +52,7 @@ class _MenuDetailState extends State<MenuDetail> {
     }
     unitItems.addAll(Utils.unitList);
     if (widget.item != null) {
-      nameController.text = widget.item.nameEng;
+      nameController.text = widget.item.name;
       priceController.text = widget.item.price.toString();
       title = "Update Menu";
       buttonText = "Update";
@@ -366,8 +366,7 @@ class _MenuDetailState extends State<MenuDetail> {
   }
 
   void saveMenu() async{
-      var result = await repository.saveMenu(Item( nameEng: nameController.text.toString(),
-          nameMyan: '', printName: '',
+      var result = await repository.saveMenu(Item( name: nameController.text.toString(),
           price: priceController.text.toString(),unit: selectedUnit,path: url,category: selectedCategory));
       if(result > 0){
         if(widget.category == Utils.All){
@@ -383,7 +382,7 @@ class _MenuDetailState extends State<MenuDetail> {
   void updateMenu() async{
     var result = await  repository.updateMenu(Item(
           itemId: widget.item.itemId,
-          nameEng: nameController.text,
+          name: nameController.text,
           price: priceController.text,
           unit: selectedUnit,
           path: url,

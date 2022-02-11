@@ -9,11 +9,15 @@ class OrderDetails extends StatefulWidget {
 
 class _OrderDetailsState extends State<OrderDetails> {
   List<Order> orderDetails;
+  double total = 0.0;
 
   @override
   void initState() {
     super.initState();
     orderDetails = OrderList.list ?? [];
+    for(int i = 0; i< orderDetails.length; i ++){
+      total += double.parse(orderDetails[i].total);
+    }
   }
   @override
   Widget build(BuildContext context) {
@@ -91,15 +95,15 @@ class _OrderDetailsState extends State<OrderDetails> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(orderDetails[index].itemName),
-                                  Text(orderDetails[index].price),
+                                  Text(orderDetails[index].name),
+                                  Text(orderDetails[index].amount),
                                 ],
                               ),
                               const SizedBox(height: 5.0,),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text('${orderDetails[index].qty}'),
+                                  Text('${orderDetails[index].quantity}'),
                                 ],
                               ),
                               Divider(color: Colors.grey.shade500,),
@@ -111,7 +115,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('Total',style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold),),
-                      Text('100000',style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold),),
+                      Text(total.toString(),style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold),),
                     ],
                   ),
                 ],

@@ -6,8 +6,8 @@ abstract class SaleState extends Equatable{
 }
 class Uninitialized extends SaleState{}
 class Success extends SaleState{
-  // final List<Desk> result ;
-  // Success({this.result});
+  final List<Order> result ;
+  Success({this.result});
 }
 class Failure extends SaleState{
   final String message;

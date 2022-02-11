@@ -5,5 +5,17 @@ abstract class SaleEvent extends Equatable{
   List<Object> get props => [];
 }
 class AddOrder extends SaleEvent{
-  AddOrder();
+  final List<Order> order;
+  AddOrder(this.order);
+}
+class ClearOrder extends SaleEvent{
+  ClearOrder();
+}
+class GetOrderByInvoice extends SaleEvent{
+  final String invoiceNo;
+  GetOrderByInvoice(this.invoiceNo);
+}
+class RemoveOneOrder extends SaleEvent{
+  final Order order;
+  RemoveOneOrder(this.order);
 }

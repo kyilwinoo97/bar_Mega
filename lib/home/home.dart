@@ -1,6 +1,6 @@
 import 'package:bar_mega/menu/Menu.dart';
 import 'package:bar_mega/reports/ReportChart.dart';
-import 'package:bar_mega/sale/Sale.dart';
+import 'package:bar_mega/sale/SaleList.dart';
 import 'package:bar_mega/sale/SaleTables.dart';
 import 'package:bar_mega/settings/Settings.dart';
 import 'package:bar_mega/tables/TableList.dart';
@@ -19,7 +19,7 @@ class _HomeSate extends State<Home>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomIns  et: false,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text("Home"),
       ),

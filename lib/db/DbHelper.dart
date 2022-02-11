@@ -1,8 +1,11 @@
 
 import 'package:bar_mega/common/Utils.dart';
 import 'package:bar_mega/model/Desk.dart';
+import 'package:bar_mega/model/Invoice.dart';
 import 'package:bar_mega/model/Item.dart';
+import 'package:bar_mega/model/Order.dart';
 import 'package:bar_mega/model/Unit.dart';
+import 'package:charts_flutter/flutter.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'DbAccess.dart';
@@ -32,6 +35,14 @@ abstract class DbHelper{
   Future<int> updateTable(Desk desk);
 
   Future<int> deleteTable(Desk desk);
+
+  Future<int> insertInvoice(Invoice invoice);
+
+ Future<List<Map>> getOrderByInvoiceNo(String invoiceNo);
+
+  Future<int> addOrder(Order order);
+
+  Future<int> updateOrder(Order order);
 }
 class DbHelperImpl implements DbHelper{
   final Database database;
@@ -97,12 +108,32 @@ class DbHelperImpl implements DbHelper{
 
   @override
   Future<int> updateTable(Desk desk) async{
-  return await database.update(Sql.Desk_Table, desk.toMap(),where:'${Sql.D_Id} = ?',whereArgs: [desk.deskId]);
+  return await database.update(Sql.Desk_Table, desk.toMap(),where:'${Sql.DeskId} = ?',whereArgs: [desk.deskId]);
   }
 
   @override
   Future<int> deleteTable(Desk desk) async{
-   return await database.delete(Sql.Desk_Table,where: '${Sql.D_Id} = ?',whereArgs: [desk.deskId]);
+   return await database.delete(Sql.Desk_Table,where: '${Sql.DeskId} = ?',whereArgs: [desk.deskId]);
+  }
+
+  @override
+  Future<int> insertInvoice(Invoice invoice) async{
+   return await database.insert(Sql.Invoice_Table, invoice.toMap());
+  }
+
+  @override
+  Future<List<Map>> getOrderByInvoiceNo(String invoiceNo) async{
+    return await database.query(Sql.OrderTable,where:'${Sql.invoiceNo} = ?',whereArgs: [invoiceNo]);
+  }
+
+  @override
+ Future<int> addOrder(Order order) async{
+   return await database.insert(Sql.OrderTable, order.toMap());
+  }
+
+  @override
+ Future<int> updateOrder(Order order) async{
+    return await database.update(Sql.OrderTable,order.toMap(),where:'${Sql.orderId}',whereArgs: [order.orderId]);
   }
 
 }

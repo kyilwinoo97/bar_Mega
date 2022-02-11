@@ -3,13 +3,40 @@ import 'Item.dart';
 class Order{
   int orderId;
   String invoiceNo;
-  String itemName;
-  int qty;
-  String price;
+  String name;
+  int quantity;
+  String amount;
   String discount;
   String date;
   String total;
-  Order({this.itemName,this.qty,this.price,this.total});
+  String unit;
+
+  Order({this.orderId, this.invoiceNo, this.name, this.quantity, this.amount,
+      this.discount,this.unit, this.date, this.total});
+  Order.fromMap(Map<String, dynamic> map)
+      : orderId = map['orderId'],
+       invoiceNo = map['invoiceNo'],
+        name = map['name'],
+        quantity = map['quantity'],
+        amount = map['amount'],
+        unit = map['unit'],
+        discount = map['discount'],
+        date = map['date'],
+        total = map['total'];
+
+  Map<String, dynamic> toMap() {
+    var map = Map<String, dynamic>();
+    map['orderId'] = orderId;
+    map['invoiceNo'] = invoiceNo;
+    map['name'] = name;
+    map['quantity'] = quantity;
+    map['amount'] = amount;
+    map['unit'] = unit;
+    map['discount'] = discount;
+    map['date'] = date;
+    map['total'] = total;
+    return map;
+  }
 }
 
 class OrderList{
@@ -21,8 +48,37 @@ class OrderList{
 class Sale{
   int saleId;
   String invoiceNo;
-  String price;
-  String date;
+  String name;
+  int quantity;
+  String amount;
   String discount;
+  String date;
   String total;
+
+  Sale({this.saleId, this.invoiceNo, this.name, this.quantity, this.amount,
+      this.discount, this.date, this.total});
+
+  Sale.fromMap(Map<String, dynamic> map)
+      : saleId = map['saleId'],
+        invoiceNo = map['invoiceNo'],
+        name = map['name'],
+        quantity = map['quantity'],
+        amount = map['amount'],
+        discount = map['discount'],
+        date = map['date'],
+        total = map['total'];
+
+  Map<String, dynamic> toMap() {
+    var map = Map<String, dynamic>();
+    map['saleId'] = saleId;
+    map['invoiceNo'] = invoiceNo;
+    map['name'] = name;
+    map['quantity'] = quantity;
+    map['amount'] = amount;
+    map['discount'] = discount;
+    map['date'] = date;
+    map['total'] = total;
+    return map;
+  }
+
 }

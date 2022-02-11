@@ -52,24 +52,23 @@ class Sql{
 
   static const String Item_Table = "Item";
   static const String itemId = "itemId";
-  static const String Name = "nameEng";
-  static const String nameMyan = "nameMyan";
-  static const String printName = "printName";
+  static const String Name = "name";
+  // static const String nameMyan = "nameMyan";
+  // static const String printName = "printName";
   static const String Price = "price";
   static const String Unit = "unit";
   static const String ImagePath = "path";
   static const String Category = "category";
 
   static const String Desk_Table = "Desk";
-  static const String D_Id = "deskId";
+  static const String DeskId = "deskId";
   static const String NO = "tableNo";
   static const String Seat = "noOfSeats";
   static const String Status = "status";
-  static const String InvoiceNo = "invoiceNo";
 
-  static const String OrderTable = "order";
+  static const String OrderTable = "OrderTable";
   static const String orderId = "orderId";
-  static const String invoiceId = "invoiceId";
+  static const String invoiceNo = "invoiceNo";
   //itemid
   static const String Quantity = "quantity";
   static const String Amount = "amount";
@@ -78,7 +77,7 @@ class Sql{
   static const String Total = "total";
 
 
-  static const String SaleTable = "sale";
+  static const String SaleTable = "SaleTable";
   static const String saleId = "saleId";
   //invoiceId
   //amount
@@ -87,16 +86,17 @@ class Sql{
   //total
 
 
-
   static const String Unit_Table = "Unit";
   static const String id = "unitId";
   static const String unitName = "name";
 
 
+  static const String Invoice_Table = "InvoiceTable";
+
+
   static const String CategoryTable = "Category";
   static const String cId = "cId";
   static const String categoryName = "name";
-
 
 
   static String create_unit_table ='''CREATE TABLE IF NOT EXISTS $Unit_Table 
@@ -109,33 +109,39 @@ class Sql{
                   $categoryName TEXT NOT NULL
                   )''';
 
+  static String create_invoice_table ='''CREATE TABLE IF NOT EXISTS $Invoice_Table 
+                 ($invoiceNo INTEGER PRIMARY KEY,
+                  $DeskId INTEGER NOT NULL
+                  )''';
+
+
+
   static String create_order_table ='''CREATE TABLE IF NOT EXISTS $OrderTable 
                  ($orderId INTEGER PRIMARY KEY,
-                  $invoiceId TEXT NOT NULL,
-                  $itemId INTEGER NOT NULL,
+                  $invoiceNo TEXT NOT NULL,
+                  $Name TEXT NOT NULL,
                   $Quantity INTEGER NOT NULL,
-                  $Amount INTEGER NOT NULL,
-                  $Discount INTEGER NOT NULL,
-                  $Date INTEGER NOT NULL,
-                  $Total INTEGER NOT NULL
+                  $Amount TEXT NOT NULL,
+                  $Discount TEXT NOT NULL,
+                  $Unit TEXT NOT NULL,
+                  $Date TEXT NOT NULL,
+                  $Total TEXT NOT NULL
                   )''';
 
   static String create_sale_table ='''CREATE TABLE IF NOT EXISTS $SaleTable 
                  ($saleId INTEGER PRIMARY KEY,
-                  $invoiceId TEXT NOT NULL,
-                  $itemId INTEGER NOT NULL,
+                  $invoiceNo TEXT NOT NULL,
+                  $Name TEXT NOT NULL,
                   $Quantity INTEGER NOT NULL,
-                  $Amount INTEGER NOT NULL,
-                  $Discount INTEGER NOT NULL,
-                  $Date INTEGER NOT NULL,
-                  $Total INTEGER NOT NULL
+                  $Amount TEXT NOT NULL,
+                  $Discount TEXT NOT NULL,
+                  $Date TEXT NOT NULL,
+                  $Total TEXT NOT NULL
                   )''';
 
   static String create_menu_table ='''CREATE TABLE IF NOT EXISTS $Item_Table 
                  ($itemId INTEGER PRIMARY KEY,
                   $Name TEXT NOT NULL,
-                  $nameMyan TEXT NOT NULL,
-                  $printName TEXT NOT NULL,
                   $Price TEXT NOT NULL,
                   $Unit TEXT NOT NULL,
                   $ImagePath TEXT NOT NULL,
@@ -143,13 +149,13 @@ class Sql{
                   )''';
 
   static String create_desk_table ='''CREATE TABLE IF NOT EXISTS $Desk_Table 
-                 ($D_Id INTEGER PRIMARY KEY,
+                 ($DeskId INTEGER PRIMARY KEY,
                   $NO TEXT NOT NULL,
                   $Seat INTEGER NOT NULL,
-                  $InvoiceNo TEXT NOT NULL,
+                  $invoiceNo TEXT NOT NULL,
                   $Status TEXT NOT NULL
                   )''';
 
-  static List<String> queryList = [create_menu_table,create_desk_table,create_order_table];
+  static List<String> queryList = [create_invoice_table,create_menu_table,create_desk_table,create_sale_table,create_order_table];
 
 }

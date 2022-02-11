@@ -41,12 +41,21 @@ class TableBloc extends Bloc<TableEvent,TableState>{
       yield Failure("No Tables");
     }
   }
+  Future<List<Desk>> getAllTable() async{
+    List<Desk> lst = [];
+    List<Map> result = await repository.getAlTable();
+    for(int i = 0 ; i< result.length ; i++){
+      lst.add(Desk.fromMap(result[i]));
+    }
+    return lst;
+  }
 
   Stream<TableState> _saveTable(Desk desk)  async*{
     yield Loading();
     var result = await repository.saveTable(desk);
     if(result > 0){
-      yield SaveSuccess();
+      List<Desk> lst = await getAllTable();
+      yield Success(result: lst);
     }else{
       yield Failure("Something went wrong!");
     }
@@ -56,7 +65,8 @@ class TableBloc extends Bloc<TableEvent,TableState>{
     yield Loading();
     var result = await repository.updateTable(desk);
     if(result > 0){
-      yield SaveSuccess();
+      List<Desk> lst = await getAllTable();
+      yield Success(result: lst);
     }else{
       yield Failure("Something went wrong!");
     }
@@ -66,7 +76,8 @@ class TableBloc extends Bloc<TableEvent,TableState>{
     yield Loading();
     var result = await repository.deleteTable(desk);
     if(result > 0){
-      yield SaveSuccess();
+      List<Desk> lst = await getAllTable();
+      yield Success(result: lst);
     }else{
       yield Failure("Something went wrong!");
     }

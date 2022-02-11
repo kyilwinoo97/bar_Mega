@@ -10,7 +10,6 @@ part 'SaleEvent.dart';
 
 class SaleBloc extends Bloc<SaleEvent,SaleState> {
   SaleRepository repository;
-  List<Order> lstOrder = [];
 
   SaleBloc({
     this.repository
@@ -20,52 +19,73 @@ class SaleBloc extends Bloc<SaleEvent,SaleState> {
   Stream<SaleState> mapEventToState(SaleEvent event) async*{
    if(event is AddOrder){
      yield* _addAllOrder(event.order);
-   }else if(event is ClearOrder){
-     yield* clearOrder();
    }else if (event is GetOrderByInvoice){
-     yield* _getOrderByInovice(event.invoiceNo);
+     yield* _getOrderByInvoice(event.invoiceNo);
    }else if (event is RemoveOneOrder){
      yield* _removeOneOrder(event.order);
    }else if(event is RemoveAllOrder){
      yield* _removeAllOrder(event.lstOrder);
    }else if(event is AddSale){
      yield* _addSale(event.sale);
+   }else if(event is AddOneOrder){
+     yield* _addOneOrder(event.order);
+   }else if(event is UpdateOrder){
+     yield* _updateOrder(event.order);
    }
   }
 
-  Stream<SaleState> _addOrder(Order order) async*{
+
+  Stream<SaleState> _getOrderByInvoice(String invoiceNo) async*{
     yield Loading();
-    int itemIndex = lstOrder
-        .indexWhere((e) => e.name == order.name);
-    if(itemIndex == -1){
-      lstOrder.add(order);
-    }else{
-      lstOrder[itemIndex].quantity += order.quantity;
-      lstOrder[itemIndex].total =  (double.parse(lstOrder[itemIndex].total) + double.parse(order.total)).toString();
+    List<Order> lst = [];
+    var result =await  repository.getAllOrderByInvoiceNo(invoiceNo);
+    for(int i = 0 ; i< result.length; i ++){
+      lst.add(Order.fromMap(result[i]));
     }
-    yield Success(result: lstOrder);
+    if(lst.length > 0){
+      yield Success(result:  lst);
+    }else{
+      Failure("No Item");
+    }
   }
-
-  Stream<SaleState> clearOrder() async*{
+  Future<List<Order>> getOrderByInvoice(String invoice) async{
+    List<Order> lst = [];
+    var result =await  repository.getAllOrderByInvoiceNo(invoice);
+    for(int i = 0 ; i< result.length; i ++){
+      lst.add(Order.fromMap(result[i]));
+    }
+    return lst;
+  }
+  Stream<SaleState>  _addOneOrder(Order order) async*{
     yield Loading();
-    lstOrder.clear();
-    yield Success(result:  lstOrder);
+    var result = -1;
+    result =await repository.addOrder(order);
+    if(result > 0){
+      List<Order> lst = await getOrderByInvoice(order.invoiceNo);
+      yield Success(result: lst);
+    }else {
+      Failure("Order Add failed!");
+    }
   }
-
-  Stream<SaleState> _getOrderByInovice(String invoiceNo) async*{
+  Stream<SaleState> _updateOrder(Order order) async*{
     yield Loading();
-    // var result = repository.getAllOrderByInvoiceNo(invoiceNo);
-    // for(int i = 0 ; i< result.length; i ++){
-    //   lstOrder.add(Ord)
-    // }
-    yield Success(result:  lstOrder);
+    var result = -1;
+    result =await repository.updateOrder(order);
+    if(result > 0){
+      List<Order> lst = await getOrderByInvoice(order.invoiceNo);
+      yield Success(result: lst);
+    }else {
+      Failure("Order Update failed!");
+    }
   }
 
- Stream<SaleState> _removeOneOrder(Order order) async*{
+
+  Stream<SaleState> _removeOneOrder(Order order) async*{
     yield Loading();
     var result =await repository.deleteOrder(order);
     if(result > 0){
-      yield DeleteOneOrderSuccess(order);
+      List<Order> lst = await getOrderByInvoice(order.invoiceNo);
+      yield Success(result: lst);
     }else{
       Failure("Something went wrong");
     }
@@ -121,6 +141,9 @@ class SaleBloc extends Bloc<SaleEvent,SaleState> {
       yield Failure("Something went wrong");
     }
   }
+
+
+
 
 
 }

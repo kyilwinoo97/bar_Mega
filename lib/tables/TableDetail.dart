@@ -47,8 +47,7 @@ class _TableDetialState extends State<TableDetail> {
       ),
       body: BlocListener<TableBloc,TableState>(
         listener: (context,state){
-          if (state is SaveSuccess) {
-              BlocProvider.of<TableBloc>(context).add(GetAllTable());
+          if (state is Success) {
             Navigator.of(context).pop();
           }
         },

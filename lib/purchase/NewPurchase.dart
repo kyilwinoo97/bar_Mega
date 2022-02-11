@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 import '../common/Utils.dart';
+import '../model/PurchaseItemModel.dart';
+import 'Purchase.dart';
 
 class NewPurchase extends StatefulWidget {
   Function onSave;
@@ -22,6 +24,7 @@ class _NewPurchaseState extends State<NewPurchase> {
   ];
 
   DateTime _date = DateTime.now();
+  PurchaseItemModel newItem;
 
   final TextEditingController _nameController = TextEditingController();
 
@@ -212,11 +215,24 @@ class _NewPurchaseState extends State<NewPurchase> {
                   Container(
                     width: 150.0,
                       height: 70.0,
-                      padding: EdgeInsets.all(5.0),child: CustomButton(label: 'Cancel',color: Colors.red,onTap: (){},)),
+                      padding: EdgeInsets.all(5.0),child: CustomButton(label: 'Cancel',color: Colors.red,onTap: (){
+                        Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => Purchase()));
+                  },)),
                   Container(
                     width: 150.0,
                       height: 70.0,
-                      padding: EdgeInsets.all(5.0),child: CustomButton(label: 'Add',color: Colors.green,onTap: (){},)),
+                      padding: EdgeInsets.all(5.0),child: CustomButton(label: 'Add',color: Colors.green,onTap: (){
+                        newItem = PurchaseItemModel(
+                          name: _nameController.text,
+                          qty: _qtyController.text,
+                          unit: selectedUnit,
+                          price: _priceController.text,
+                          supplier: _supplierController.text,
+                          date: _date
+                        );
+                        widget.onSave(newItem);
+                  },)),
                 ],
               )
             ],

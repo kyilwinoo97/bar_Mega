@@ -27,3 +27,6 @@ class AddSale extends SaleEvent{
   final Sale sale;
   AddSale(this.sale);
 }
+class GetAllSale extends SaleEvent{
+  GetAllSale();
+}

@@ -4,7 +4,7 @@ import 'package:bar_mega/model/Order.dart';
 import 'package:bar_mega/sale/SaleList.dart';
 
 abstract class SaleRepository{
- List<SaleList> getAllSale();
+ Future<List<Map>> getAllSale();
 
 Future<int> addInvoice(Invoice invoice);
 
@@ -18,17 +18,14 @@ Future<List<Map>> getAllOrderByInvoiceNo(String invoiceNo);
  Future<int> deleteOrder(Order order);
 
  Future<int> addSale(Sale sale);
-
-
 }
 class SaleRepositoryImpl extends SaleRepository{
   DbHelper helper;
   SaleRepositoryImpl({ this.helper});
 
   @override
-  List<SaleList> getAllSale() {
-    // TODO: implement getAllSale
-    throw UnimplementedError();
+  Future<List<Map>> getAllSale() async{
+    return await helper.getAllSale();
   }
 
   @override

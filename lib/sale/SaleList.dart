@@ -343,6 +343,7 @@ class _SaleListState extends State<SaleList> {
               new Expanded(
                 child: new TextField(
                   controller: _discountController,
+                  keyboardType: TextInputType.text,
                   autofocus: true,
                   decoration: new InputDecoration(
                       labelText: 'Discount', hintText: '%'),

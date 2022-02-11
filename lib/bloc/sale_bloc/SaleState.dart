@@ -9,6 +9,12 @@ class Success extends SaleState{
   final List<Order> result ;
   Success({this.result});
 }
+
+class AllSaleSuccess extends SaleState{
+  final List<Sale> result;
+  AllSaleSuccess({this.result});
+}
+
 class DeleteSuccess extends SaleState{
   DeleteSuccess();
 }

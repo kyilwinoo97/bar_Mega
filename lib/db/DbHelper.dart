@@ -51,6 +51,8 @@ abstract class DbHelper{
   Future<int> deleteInvoice(String invoiceNo);
 
   Future<int> addSale(Sale sale);
+
+  Future<List<Map>> getAllSale();
 }
 class DbHelperImpl implements DbHelper{
   final Database database;
@@ -162,6 +164,11 @@ class DbHelperImpl implements DbHelper{
   @override
   Future<int> addSale(Sale sale) async{
    return await database.insert(Sql.SaleTable, sale.toMap());
+  }
+
+  @override
+  Future<List<Map>> getAllSale() async{
+    return await database.query(Sql.SaleTable);
   }
 
 }

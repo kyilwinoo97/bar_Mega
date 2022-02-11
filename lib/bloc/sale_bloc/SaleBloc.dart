@@ -30,6 +30,8 @@ class SaleBloc extends Bloc<SaleEvent,SaleState> {
      yield* _removeAllOrder(event.lstOrder);
    }else if(event is AddSale){
      yield* _addSale(event.sale);
+   }else if(event is GetAllSale){
+     yield* _getAllSale();
    }
   }
 
@@ -54,11 +56,12 @@ class SaleBloc extends Bloc<SaleEvent,SaleState> {
 
   Stream<SaleState> _getOrderByInovice(String invoiceNo) async*{
     yield Loading();
-    // var result = repository.getAllOrderByInvoiceNo(invoiceNo);
-    // for(int i = 0 ; i< result.length; i ++){
-    //   lstOrder.add(Ord)
-    // }
-    yield Success(result:  lstOrder);
+    List<Order> lst =[];
+    var result = await repository.getAllOrderByInvoiceNo(invoiceNo);
+    for(int i = 0 ; i< result.length; i ++){
+      lst.add(Order.fromMap(result[i]));
+    }
+    yield Success(result:  lst);
   }
 
  Stream<SaleState> _removeOneOrder(Order order) async*{
@@ -122,5 +125,17 @@ class SaleBloc extends Bloc<SaleEvent,SaleState> {
     }
   }
 
-
+  Stream<SaleState> _getAllSale() async*{
+    yield Loading();
+    List<Sale> lst = [];
+    List<Map> result = await repository.getAllSale();
+    for(int i = 0 ; i< result.length ; i++){
+      lst.add(Sale.fromMap(result[i]));
+    }
+    if(lst.length > 0){
+      yield AllSaleSuccess(result: lst);
+    }else{
+      yield Failure("No Sales");
+    }
+  }
 }

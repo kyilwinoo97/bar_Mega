@@ -45,6 +45,10 @@ abstract class DbHelper{
   Future<int> updateOrder(Order order);
 
   Future<List<Map>> getAllPurchase();
+
+  Future<int> deleteOrder(Order order);
+
+  Future<int> deleteInvoice(String invoiceNo);
 }
 class DbHelperImpl implements DbHelper{
   final Database database;
@@ -135,12 +139,22 @@ class DbHelperImpl implements DbHelper{
 
   @override
  Future<int> updateOrder(Order order) async{
-    return await database.update(Sql.OrderTable,order.toMap(),where:'${Sql.orderId}',whereArgs: [order.orderId]);
+    return await database.update(Sql.OrderTable,order.toMap(),where:'${Sql.orderId} = ?',whereArgs: [order.orderId]);
   }
 
   @override
   Future<List<Map>> getAllPurchase() async{
     return await database.query(Sql.Purchase_Table);
+  }
+
+  @override
+  Future<int> deleteOrder(Order order) async{
+    return await database.delete(Sql.OrderTable,where: '${Sql.orderId} = ?',whereArgs: [order.orderId]);
+  }
+
+  @override
+  Future<int> deleteInvoice(String invoiceNo) async{
+    return await database.delete(Sql.Invoice_Table,where: '${Sql.invoiceNo} = ?',whereArgs: [invoiceNo]);
   }
 
 }

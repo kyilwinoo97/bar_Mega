@@ -26,6 +26,8 @@ class SaleBloc extends Bloc<SaleEvent,SaleState> {
      yield* _getOrderByInovice(event.invoiceNo);
    }else if (event is RemoveOneOrder){
      yield* _removeOneOrder(event.order);
+   }else if(event is RemoveAllOrder){
+     yield* _removeAllOrder(event.lstOrder);
    }
   }
 
@@ -35,11 +37,9 @@ class SaleBloc extends Bloc<SaleEvent,SaleState> {
         .indexWhere((e) => e.name == order.name);
     if(itemIndex == -1){
       lstOrder.add(order);
-      print("add list => ${lstOrder.length}");
     }else{
       lstOrder[itemIndex].quantity += order.quantity;
       lstOrder[itemIndex].total =  (double.parse(lstOrder[itemIndex].total) + double.parse(order.total)).toString();
-      print("list update =>${lstOrder.length}");
     }
     yield Success(result: lstOrder);
   }
@@ -61,9 +61,12 @@ class SaleBloc extends Bloc<SaleEvent,SaleState> {
 
  Stream<SaleState> _removeOneOrder(Order order) async*{
     yield Loading();
-    lstOrder.removeAt(lstOrder.indexOf(order));
-    print("lstOrder lengt ${lstOrder.length}");
-    yield Success(result: lstOrder);
+    var result =await repository.deleteOrder(order);
+    if(result > 0){
+      yield DeleteOneOrderSuccess(order);
+    }else{
+      Failure("Something went wrong");
+    }
  }
 
  Stream<SaleState> _addAllOrder(List<Order> order) async*{
@@ -88,6 +91,22 @@ class SaleBloc extends Bloc<SaleEvent,SaleState> {
       yield Failure("Something went wrong");
     }
 
+  }
+
+  Stream<SaleState> _removeAllOrder(List<Order> lstOrder) async*{
+    yield Loading();
+    var result = -1;
+    for(int i = 0 ; i < lstOrder.length ; i++){
+      result = await repository.deleteOrder(lstOrder[i]);
+      if(result < 0){
+        break;
+      }
+      if(result > 0){
+        yield DeleteSuccess();
+      }else{
+        yield Failure("Something went wrong");
+      }
+    }
   }
 
 

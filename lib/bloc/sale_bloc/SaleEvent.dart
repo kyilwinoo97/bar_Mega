@@ -19,3 +19,11 @@ class RemoveOneOrder extends SaleEvent{
   final Order order;
   RemoveOneOrder(this.order);
 }
+class RemoveAllOrder extends SaleEvent{
+  final List<Order> lstOrder;
+  RemoveAllOrder(this.lstOrder);
+}
+class AddSale extends SaleEvent{
+  final Sale sale;
+  AddSale(this.sale);
+}

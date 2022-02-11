@@ -27,6 +27,8 @@ abstract class MainRepository{
   Future<int> deleteTable(Desk desk);
 
   Future<List<Map>> getAllPurchase();
+
+  Future<int> deleteInvoice(String invoiceNo);
 }
 class MainRepositoryImpl extends MainRepository{
   DbHelper helper;
@@ -91,6 +93,11 @@ class MainRepositoryImpl extends MainRepository{
   @override
   Future<List<Map>> getAllPurchase() async{
    return await helper.getAllPurchase();
+  }
+
+  @override
+  Future<int> deleteInvoice(String invoiceNo) async{
+   return await helper.deleteInvoice(invoiceNo);
   }
 
 }

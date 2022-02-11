@@ -19,3 +19,7 @@ class DeleteTable extends TableEvent{
   final Desk desk;
   DeleteTable(this.desk);
 }
+class DeleteInvoice extends TableEvent{
+  final String invoiceNo;
+  DeleteInvoice(this.invoiceNo);
+}

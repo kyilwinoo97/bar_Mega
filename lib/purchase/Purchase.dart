@@ -186,39 +186,38 @@ class _PurchaseState extends State<Purchase> {
               child:BlocBuilder<PurchaseBloc, PurchaseState>(
                 builder: (context, state) {
                   if(state is Success){
-                    return Container();
+                    return Padding(
+                      padding: const EdgeInsets.only(
+                          left: 10.0, top: 10.0, bottom: 10.0),
+                      child: AnimationLimiter(
+                        child: GridView.count(
+                          crossAxisCount: 3,
+                          children: List.generate(state.result.length, (index) {
+                            return AnimationConfiguration.staggeredGrid(
+                                position: index,
+                                columnCount: 3,
+                                child: ScaleAnimation(
+                                  child: FadeInAnimation(
+                                    duration: Duration(milliseconds: 800),
+                                    delay: Duration(milliseconds: 100),
+                                    child: PurchaseItem(
+                                      item: state.result[index],
+                                      onTap: () {
+                                        var item = state.result[index];
+                                        setState(() {
+                                          state.result.removeAt(index);
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ));
+                          }),
+                        ),
+                      ),
+                    );
                   }else{
                     return Container();
                   }
-                  return Padding(
-                    padding: const EdgeInsets.only(
-                        left: 10.0, top: 10.0, bottom: 10.0),
-                    child: AnimationLimiter(
-                      child: GridView.count(
-                        crossAxisCount: 3,
-                        children: List.generate(purchaseItems.length, (index) {
-                          return AnimationConfiguration.staggeredGrid(
-                              position: index,
-                              columnCount: 3,
-                              child: ScaleAnimation(
-                                child: FadeInAnimation(
-                                  duration: Duration(milliseconds: 800),
-                                  delay: Duration(milliseconds: 100),
-                                  child: PurchaseItem(
-                                    item: purchaseItems[index],
-                                    onTap: () {
-                                      var item = purchaseItems[index];
-                                      setState(() {
-                                        purchaseItems.removeAt(index);
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ));
-                        }),
-                      ),
-                    ),
-                  );
                 }
               ),
             ),

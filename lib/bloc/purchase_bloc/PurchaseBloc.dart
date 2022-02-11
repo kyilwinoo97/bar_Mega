@@ -21,9 +21,9 @@ class PurchaseBloc extends Bloc<PurchaseEvent,PurchaseState>{
 
   Stream<PurchaseState> _getAllPurchase() async*{
     yield Loading();
-    List<PurchaseItemModel> lst;
+    List<PurchaseItemModel> lst = [];
     List<Map> result =await repository.getAllPurchase();
-    for(int i = 0 ; i< result.length ; i ++){
+    for(int i = 0 ; i < result.length ; i ++){
       lst.add(PurchaseItemModel.fromMap(result[i]));
     }
     if(lst.length > 0){

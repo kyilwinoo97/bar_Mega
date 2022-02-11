@@ -15,6 +15,9 @@ Future<List<Map>> getAllOrderByInvoiceNo(String invoiceNo);
 
  Future<int> addOrder(Order order);
 
+ Future<int> deleteOrder(Order order);
+
+
 }
 class SaleRepositoryImpl extends SaleRepository{
   DbHelper helper;
@@ -45,5 +48,10 @@ class SaleRepositoryImpl extends SaleRepository{
   Future<int> updateOrder(Order order) async{
    return await helper.updateOrder(order);
 
+  }
+
+  @override
+  Future<int> deleteOrder(Order order) async{
+    return await helper.deleteOrder(order);
   }
 }

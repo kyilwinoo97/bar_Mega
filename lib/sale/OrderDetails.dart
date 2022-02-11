@@ -1,6 +1,10 @@
+import 'package:bar_mega/bloc/sale_bloc/SaleBloc.dart';
 import 'package:bar_mega/model/Order.dart';
+import 'package:bar_mega/sale/SaleTables.dart';
+import 'package:bar_mega/tables/TableList.dart';
 import 'package:bar_mega/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class OrderDetails extends StatefulWidget {
   @override
@@ -10,6 +14,10 @@ class OrderDetails extends StatefulWidget {
 class _OrderDetailsState extends State<OrderDetails> {
   List<Order> orderDetails;
   double total = 0.0;
+  int prefix = 0 ;
+  String invoiceNo = "";
+  String date = "";
+  int discount  = 0;
 
   @override
   void initState() {
@@ -17,7 +25,11 @@ class _OrderDetailsState extends State<OrderDetails> {
     orderDetails = OrderList.list ?? [];
     for(int i = 0; i< orderDetails.length; i ++){
       total += double.parse(orderDetails[i].total);
+      invoiceNo = orderDetails[i].invoiceNo;
+      date = orderDetails[i].date;
+      discount = int.parse(orderDetails[i].discount);
     }
+    prefix = ((int.parse(orderDetails[0].invoiceNo) + 1000) /1000).floor();
   }
   @override
   Widget build(BuildContext context) {
@@ -25,14 +37,35 @@ class _OrderDetailsState extends State<OrderDetails> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Order Details'),
+      leading: IconButton(
+        onPressed: (){
+          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+          SaleTables()), (Route<dynamic> route) => false);
+        },
+        icon: Icon(Icons.arrow_back,color: Colors.white,),
+      ),
       elevation: 0.0,
         actions: [
           Container(
             margin: EdgeInsets.symmetric(horizontal: 15.0),
             height: 50.0,
             width: 150.0,
-            child: GestureDetector(
-              onTap: (){},
+            child: InkWell(
+              onTap: (){
+                BlocProvider.of<SaleBloc>(context).add(AddSale(Sale(
+                  invoiceNo: invoiceNo,
+                  name:"Sale",
+                  quantity: orderDetails.length,
+                  amount: total.toString(),
+                  discount: discount.toString(),
+                  date: date,
+                  total: total.toString()
+                )));
+                //todo save to saletable
+                //update table status
+                //print voucher
+
+              },
               child: Card(
                   elevation: 0.0,
                   color: Colors.white,
@@ -42,10 +75,10 @@ class _OrderDetailsState extends State<OrderDetails> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.print,color: Colors.green,size: 30,),
+                      Icon(Icons.attach_money,color: Colors.green,size: 30,),
                       const SizedBox(width: 5.0,),
                       Text(
-                        'Print',
+                        'Charge',
                         style: TextStyle(
                             color: Colors.green,
                             fontSize: 18.0,
@@ -54,7 +87,35 @@ class _OrderDetailsState extends State<OrderDetails> {
                     ],
                   )),
             ),
-          )
+          ),
+          // Container(
+          //   margin: EdgeInsets.symmetric(horizontal: 15.0),
+          //   height: 50.0,
+          //   width: 150.0,
+          //   child: GestureDetector(
+          //     onTap: (){},
+          //     child: Card(
+          //         elevation: 0.0,
+          //         color: Colors.white,
+          //         shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(20.0),
+          //         ),
+          //         child: Row(
+          //           mainAxisAlignment: MainAxisAlignment.center,
+          //           children: [
+          //             Icon(Icons.print,color: Colors.green,size: 30,),
+          //             const SizedBox(width: 5.0,),
+          //             Text(
+          //               'Print',
+          //               style: TextStyle(
+          //                   color: Colors.green,
+          //                   fontSize: 18.0,
+          //                   fontWeight: FontWeight.bold),
+          //             ),
+          //           ],
+          //         )),
+          //   ),
+          // )
         ],
       ),
       backgroundColor: Colors.grey.shade100,
@@ -81,8 +142,8 @@ class _OrderDetailsState extends State<OrderDetails> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Table No 1',style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
-                      Text('11-2-2022')
+                      Text("#$prefix-"+"${int.parse(orderDetails[0].invoiceNo)+ 1000}",style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
+                      Text(orderDetails[0].date)
                     ],
                   ),
                   SizedBox(height: 20.0),

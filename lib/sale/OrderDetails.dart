@@ -170,10 +170,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                         child: Image.asset("assets/images/logo_bar_mega.png",fit: BoxFit.fill,height: 50,)
                       ),
                       const SizedBox(height: 5.0),
-                      Align(
-                        alignment: Alignment.center,
-                          child: Text('Bar Mega',style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),)),
-                      const SizedBox(height: 5.0),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

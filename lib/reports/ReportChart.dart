@@ -1,3 +1,4 @@
+import 'package:bar_mega/reports/ReportList.dart';
 import 'package:bar_mega/repository/SaleRepository.dart';
 import 'package:bar_mega/widgets/ReportData.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
@@ -7,6 +8,7 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 import '../common/Utils.dart';
 import '../injection_container.dart';
+import '../widgets/custom_button.dart';
 
 class ReportChart extends StatefulWidget{
   @override
@@ -80,6 +82,39 @@ class _ReportChartState extends State<ReportChart> {
       appBar: AppBar(
         title: Text('Reports'),
         elevation: 0.0,
+        actions: [
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 15.0),
+            height: 50.0,
+            width: 150.0,
+            child: InkWell(
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ReportList()),
+                );
+              },
+              child: Card(
+                  elevation: 0.0,
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Sales Report',
+                        style: TextStyle(
+                            color: Colors.green,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  )),
+            ),
+          ),
+        ],
       ),
       body: Card(
         elevation: 4,

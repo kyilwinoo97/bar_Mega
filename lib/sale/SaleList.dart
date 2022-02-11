@@ -29,7 +29,6 @@ class SaleList extends StatefulWidget {
 }
 
 class _SaleListState extends State<SaleList> {
-  GlobalKey<AnimatedListState> _listKey = GlobalKey();
 
   List<String> cats = Utils.categoryList;
   String selectedCat;
@@ -159,8 +158,6 @@ class _SaleListState extends State<SaleList> {
                                     discount: "0",
                                     date: Utils.getCurrentDate(),
                                     total: item.price);
-                                _listKey.currentState.insertItem(0,
-                                    duration: const Duration(milliseconds: 500));
                                 cartItems = []
                                   ..add(orderItem)
                                   ..addAll(cartItems);
@@ -226,14 +223,12 @@ class _SaleListState extends State<SaleList> {
                                         ],
                                       )),
                                   const SizedBox(height: 5.0),
-                                  AnimatedList(
-                                      key: _listKey,
+                                  ListView.builder(
                                       physics: const BouncingScrollPhysics(),
                                       shrinkWrap: true,
-                                      initialItemCount: cartItems.length,
-                                      itemBuilder: (context, index, animation) {
-                                        return AnimateCartItem(
-                                            context, index, animation);
+                                      itemCount: cartItems.length,
+                                      itemBuilder: (context, index) {
+                                        return CartItem(item: cartItems[index]);
                                       }),
                                 ],
                               ),
@@ -270,7 +265,6 @@ class _SaleListState extends State<SaleList> {
                             onTap: () {
                               setState(() {
                                 cartItems.clear();
-                                _listKey = GlobalKey();
                               });
                             },
                           ),
@@ -305,22 +299,6 @@ class _SaleListState extends State<SaleList> {
     return t;
   }
 
-  Widget AnimateCartItem(
-      BuildContext context, int index, Animation<double> animation) {
-    return SlideTransition(
-      position: Tween<Offset>(
-        begin: const Offset(-1, 0),
-        end: Offset(0, 0),
-      ).animate(animation),
-      child: InkWell(
-        child: CartItem(item: cartItems[index]),
-        onTap: () {
-          setState(() {});
-        },
-      ),
-    );
-  }
-
   CartItem({Order item}) {
     return Container(
       margin: EdgeInsets.all(5.0),
@@ -343,17 +321,10 @@ class _SaleListState extends State<SaleList> {
                         splashColor: Colors.red, // Splash color
                         onTap: () {
                           if (cartItems.length < 1) return;
-                          _listKey.currentState.removeItem(
-                              cartItems.indexOf(item),
-                              (_, animation) => AnimateCartItem(
-                                  context, cartItems.indexOf(item), animation),
-                              duration: const Duration(milliseconds: 500));
-                          Future.delayed(Duration(milliseconds: 550), () {
                             setState(() {
                               cartItems.removeAt(cartItems.indexOf(item));
                               total = getTotalPrice();
                             });
-                          });
                         },
                         child: SizedBox(
                             width: 30,
@@ -368,7 +339,7 @@ class _SaleListState extends State<SaleList> {
                   )),
               const SizedBox(height: 2.0),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+                padding: EdgeInsets.symmetric(horizontal: 5.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -383,7 +354,7 @@ class _SaleListState extends State<SaleList> {
                               fontSize: 20.0,
                               fontWeight: FontWeight.bold),
                         ),
-                        const SizedBox(height: 8.0),
+                        const SizedBox(height: 2.0),
                         Text(
                           '${item.amount} Ks',
                           style: TextStyle(color: Colors.green, fontSize: 18.0),
@@ -391,7 +362,7 @@ class _SaleListState extends State<SaleList> {
                       ],
                     ),
                     Container(
-                        padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
+                        padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
                         alignment: Alignment.bottomCenter,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,

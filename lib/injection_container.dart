@@ -1,4 +1,5 @@
 import 'package:bar_mega/bloc/menu_bloc/MenuBloc.dart';
+import 'package:bar_mega/bloc/purchase_bloc/PurchaseBloc.dart';
 import 'package:bar_mega/bloc/sale_bloc/SaleBloc.dart';
 import 'package:bar_mega/repository/MainRepository.dart';
 import 'package:bar_mega/repository/SaleRepository.dart';
@@ -15,6 +16,7 @@ Future<void> init() async{
   sl.registerFactory(() => MenuBloc(repository: sl()));
   sl.registerFactory(() => TableBloc(repository: sl()));
   sl.registerFactory(() => SaleBloc(repository: sl()));
+  sl.registerFactory(() => PurchaseBloc(repository: sl()));
 
 
   //repository

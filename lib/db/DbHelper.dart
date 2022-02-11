@@ -43,6 +43,8 @@ abstract class DbHelper{
   Future<int> addOrder(Order order);
 
   Future<int> updateOrder(Order order);
+
+  Future<List<Map>> getAllPurchase();
 }
 class DbHelperImpl implements DbHelper{
   final Database database;
@@ -134,6 +136,11 @@ class DbHelperImpl implements DbHelper{
   @override
  Future<int> updateOrder(Order order) async{
     return await database.update(Sql.OrderTable,order.toMap(),where:'${Sql.orderId}',whereArgs: [order.orderId]);
+  }
+
+  @override
+  Future<List<Map>> getAllPurchase() async{
+    return await database.query(Sql.Purchase_Table);
   }
 
 }

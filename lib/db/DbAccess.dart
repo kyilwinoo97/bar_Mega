@@ -90,6 +90,42 @@ class Sql{
   static const String id = "unitId";
   static const String unitName = "name";
 
+  static const String Purchase_Table = "PurchaseTable";
+  static const String PurchaseId = "purchaseId";
+  static const String PurchaseName = "name";
+  static const String PurchaseUnit = "unit";
+  static const String PurchaseAmount = "amount";
+  static const String PurchaseQuantity = "qty";
+  static const String Supplier = "supplier";
+  static const String PurchaseDiscount = "discount";
+  static const String PurchaseTotal = "total";
+
+  static String create_purchase_table ='''CREATE TABLE IF NOT EXISTS $Purchase_Table 
+                 ($PurchaseId INTEGER PRIMARY KEY,
+                  $PurchaseName TEXT NOT NULL, 
+                  $PurchaseUnit TEXT, 
+                  $PurchaseAmount TEXT NOT NULL, 
+                  $PurchaseQuantity TEXT NOT NULL, 
+                  $Supplier TEXT NOT NULL, 
+                  $PurchaseDiscount TEXT NOT NULL, 
+                  $PurchaseTotal TEXT NOT NULL 
+                  )''';
+
+
+  static const String PurchaseItem = "PurchaseItem";
+  static const String PurchaseItemId = "purchaseItemId";
+  static const String PurchaseItemName = "name";
+  static const String PurchaseItemPrice = "price";
+  static const String PurchaseItemUnit = "unit";
+  static const String PurchaseItemSupplier = "supplier";
+
+  static String create_purchase_Item_table ='''CREATE TABLE IF NOT EXISTS $PurchaseItem 
+                 ($PurchaseItemId INTEGER PRIMARY KEY,
+                  $PurchaseItemName TEXT NOT NULL, 
+                  $PurchaseItemPrice TEXT NOT NULL, 
+                  $PurchaseItemUnit TEXT NOT NULL, 
+                  $PurchaseItemSupplier TEXT NOT NULL
+                  )''';
 
   static const String Invoice_Table = "InvoiceTable";
 
@@ -97,6 +133,7 @@ class Sql{
   static const String CategoryTable = "Category";
   static const String cId = "cId";
   static const String categoryName = "name";
+
 
 
   static String create_unit_table ='''CREATE TABLE IF NOT EXISTS $Unit_Table 
@@ -156,6 +193,6 @@ class Sql{
                   $Status TEXT NOT NULL
                   )''';
 
-  static List<String> queryList = [create_invoice_table,create_menu_table,create_desk_table,create_sale_table,create_order_table];
+  static List<String> queryList = [create_invoice_table,create_menu_table,create_desk_table,create_sale_table,create_order_table,create_purchase_table,create_purchase_Item_table];
 
 }

@@ -1,4 +1,5 @@
 import 'package:bar_mega/bloc/menu_bloc/MenuBloc.dart';
+import 'package:bar_mega/bloc/purchase_bloc/PurchaseBloc.dart';
 import 'package:bar_mega/bloc/sale_bloc/SaleBloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,9 @@ void main() async{
     ),
     BlocProvider<SaleBloc>(
       create: (BuildContext context) => di.sl<SaleBloc>(),
+    ),
+    BlocProvider<PurchaseBloc>(
+      create: (BuildContext context) => di.sl<PurchaseBloc>(),
     ),
   ], child:MyApp()));
 }

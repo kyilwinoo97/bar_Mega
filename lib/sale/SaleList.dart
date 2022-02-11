@@ -30,15 +30,17 @@ class SaleList extends StatefulWidget {
 }
 
 class _SaleListState extends State<SaleList> {
-
   final _discountController = TextEditingController();
   List<String> cats = Utils.categoryList;
   String selectedCat;
-  List<Order> cartItems = [];
+  List<Order> temItems = [];
   double total = 0.0;
-  SaleRepository repository ;
+  SaleRepository repository;
+
   MainRepository mainRepository;
   var invoiceNo;
+  int discount = 0;
+
   @override
   void initState() {
     selectedCat = cats[0];
@@ -46,6 +48,7 @@ class _SaleListState extends State<SaleList> {
     mainRepository = sl<MainRepository>();
     generateInvoiceNo();
     getData(); //get menu from db
+
     super.initState();
   }
 
@@ -62,10 +65,16 @@ class _SaleListState extends State<SaleList> {
         listeners: [
           BlocListener<sale.SaleBloc, sale.SaleState>(
             listener: (context, state) {
-              if(state is sale.Success){
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => OrderDetails(widget.desk)));
-              }else if(state is sale.DeleteSuccess){
+              if (state is sale.Success) {
+                setState(() {
+                  temItems.clear();
+                  temItems.addAll(state.result);
+                  if (state.result.length > 0) {
+                    total = getTotalPrice(state.result);
+                  }
+                });
+
+              } else if (state is sale.DeleteSuccess) {
                 BlocProvider.of<TableBloc>(context).add(UpdateTable(Desk(
                     deskId: widget.desk.deskId,
                     tableNo: widget.desk.tableNo,
@@ -75,14 +84,11 @@ class _SaleListState extends State<SaleList> {
                 BlocProvider.of<TableBloc>(context).add(GetAllTable());
 
                 setState(() {
-                    cartItems.clear();
-                    OrderList().setList = [];
-                  });
+                  // cartItems.clear();
+                  OrderList().setList = [];
+                });
                 Navigator.of(context).pop();
-
-              }else if (state is sale.DeleteOneOrderSuccess){
-
-              }
+              } else if (state is sale.DeleteOneOrderSuccess) {}
             },
           ),
         ],
@@ -164,27 +170,42 @@ class _SaleListState extends State<SaleList> {
                           onTap: () {
                             var item = state.result[index];
 
-                            int itemIndex = cartItems
-                                .indexWhere((e) => e.name == item.name);
+                            int itemIndex = temItems.indexWhere((e) =>
+                                e.name == item.name); //todo itemId is better
                             setState(() {
                               if (itemIndex == -1) {
+                                //not exist order add to database
                                 Order orderItem = Order(
                                     invoiceNo: invoiceNo.toString(),
                                     name: item.name,
                                     quantity: 1,
                                     amount: item.price,
                                     unit: item.unit,
-                                    discount: "0",
+                                    discount: "",
                                     date: Utils.formatDate(DateTime.now()),
                                     total: item.price);
-                                cartItems = []
-                                  ..add(orderItem)
-                                  ..addAll(cartItems);
+                                BlocProvider.of<sale.SaleBloc>(context)
+                                    .add(sale.AddOneOrder(orderItem));
                               } else {
-                                cartItems[itemIndex].quantity += 1;
-                                cartItems[itemIndex].total = (double.parse(cartItems[itemIndex].amount) * cartItems[itemIndex].quantity).toString();
+                                //existing order update to database
+                                temItems[itemIndex].quantity += 1;
+                                temItems[itemIndex].total =
+                                    (double.parse(temItems[itemIndex].amount) *
+                                            temItems[itemIndex].quantity)
+                                        .toString();
+                                BlocProvider.of<sale.SaleBloc>(context).add(
+                                    sale.UpdateOrder(Order(
+                                        orderId: temItems[itemIndex].orderId,
+                                        invoiceNo:
+                                            temItems[itemIndex].invoiceNo,
+                                        name: temItems[itemIndex].name,
+                                        quantity: temItems[itemIndex].quantity,
+                                        amount: temItems[itemIndex].amount,
+                                        discount: temItems[itemIndex].discount,
+                                        unit: temItems[itemIndex].unit,
+                                        date: temItems[itemIndex].date,
+                                        total: temItems[itemIndex].total)));
                               }
-                              total = getTotalPrice();
                             });
                           },
                         );
@@ -209,69 +230,112 @@ class _SaleListState extends State<SaleList> {
               child: Column(
                 children: [
                   Expanded(
-                      flex: 9,
-                      child: Container(
-                        margin: const EdgeInsets.all(5.0),
-                        height: double.infinity,
-                        child: Card(
-                            shadowColor: Colors.white30,
-                            elevation: 5.0,
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            child: SingleChildScrollView(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 10.0, top: 4.0, right: 10.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            'Cart',
-                                            style: TextStyle(
-                                                color: Colors.green,
-                                                fontSize: 20.0,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                      ClipOval(
-                                        child: Material(
-                                          color: Colors.red.shade50, // Button color
-                                          child: InkWell(
-                                            splashColor: Colors.red, // Splash color
-                                            onTap: () {
-                                              BlocProvider.of<sale.SaleBloc>(context).add(sale.RemoveAllOrder(cartItems));
-                                            },
-                                            child: SizedBox(
-                                                width: 30,
-                                                height: 30,
-                                                child: Icon(
-                                                  Icons.delete_forever,
-                                                  size: 20,
-                                                  color: Colors.red,
-                                                )),
-                                          ),
-                                        ),
-                                      ),
-                                        ],
-                                      )),
-                                  const SizedBox(height: 5.0),
-                                  ListView.builder(
-                                      physics: const BouncingScrollPhysics(),
-                                      shrinkWrap: true,
-                                      itemCount: cartItems.length,
-                                      itemBuilder: (context, index) {
-                                        return CartItem(item: cartItems[index]);
-                                      }),
-                                ],
+                    flex: 9,
+                    child: BlocBuilder<sale.SaleBloc, sale.SaleState>(
+                        builder: (context, state) {
+                      if (state is sale.Success) {
+                        return Container(
+                          margin: const EdgeInsets.all(5.0),
+                          height: double.infinity,
+                          child: Card(
+                              shadowColor: Colors.white30,
+                              elevation: 5.0,
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
                               ),
-                            )),
-                      )),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 10.0, top: 4.0, right: 10.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Cart',
+                                              style: TextStyle(
+                                                  color: Colors.green,
+                                                  fontSize: 20.0,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            // ClipOval(
+                                            //   child: Material(
+                                            //     color: Colors.red.shade50, // Button color
+                                            //     child: InkWell(
+                                            //       splashColor: Colors.red, // Splash color
+                                            //       onTap: () {
+                                            //         BlocProvider.of<sale.SaleBloc>(context).add(sale.RemoveAllOrder(cartItems));
+                                            //       },
+                                            //       child: SizedBox(
+                                            //           width: 30,
+                                            //           height: 30,
+                                            //           child: Icon(
+                                            //             Icons.delete_forever,
+                                            //             size: 20,
+                                            //             color: Colors.red,
+                                            //           )),
+                                            //     ),
+                                            //   ),
+                                            // ),
+                                          ],
+                                        )),
+                                    const SizedBox(height: 5.0),
+                                    ListView.builder(
+                                        physics: const BouncingScrollPhysics(),
+                                        shrinkWrap: true,
+                                        itemCount: state.result.length,
+                                        itemBuilder: (context, index) {
+                                          return CartItem(
+                                              item: state.result[index]);
+                                        }),
+                                  ],
+                                ),
+                              )),
+                        );
+                      }else{
+                        return Container(
+                          margin: const EdgeInsets.all(5.0),
+                          height: double.infinity,
+                          child: Card(
+                              shadowColor: Colors.white30,
+                              elevation: 5.0,
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 10.0, top: 4.0, right: 10.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Cart',
+                                              style: TextStyle(
+                                                  color: Colors.green,
+                                                  fontSize: 20.0,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        )),
+                                  ],
+                                ),
+                              )),
+                        );
+                      }
+                    }),
+                  ),
                   Expanded(
                     flex: 1,
                     child: Row(
@@ -301,7 +365,6 @@ class _SaleListState extends State<SaleList> {
                             label: 'Discount',
                             color: Colors.green,
                             onTap: _showDialog,
-
                           ),
                         ),
                         Expanded(
@@ -310,13 +373,18 @@ class _SaleListState extends State<SaleList> {
                             label: 'Save',
                             color: Colors.green,
                             onTap: () {
-                              if(cartItems.length > 0 ){
-                                BlocProvider.of<sale.SaleBloc>(context).add(sale.AddOrder(cartItems));
-                                OrderList().setList = cartItems;
-                              }else{
+                              if (temItems.length > 0) {
+                                // BlocProvider.of<sale.SaleBloc>(context)
+                                //     .add(sale.AddOrder(cartItems));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => OrderDetails(
+                                            widget.desk, discount)));
+                                OrderList().setList = temItems;
+                              } else {
                                 Toasts.greenToast("Add item first");
                               }
-
                             },
                           ),
                         )
@@ -325,7 +393,7 @@ class _SaleListState extends State<SaleList> {
                   )
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -335,7 +403,7 @@ class _SaleListState extends State<SaleList> {
   _showDialog() async {
     await showDialog<String>(
       context: context,
-      builder: (context){
+      builder: (context) {
         return AlertDialog(
           contentPadding: const EdgeInsets.all(16.0),
           content: new Row(
@@ -345,8 +413,8 @@ class _SaleListState extends State<SaleList> {
                   controller: _discountController,
                   keyboardType: TextInputType.text,
                   autofocus: true,
-                  decoration: new InputDecoration(
-                      labelText: 'Discount', hintText: '%'),
+                  decoration:
+                      new InputDecoration(labelText: 'Discount', hintText: '%'),
                 ),
               )
             ],
@@ -361,6 +429,9 @@ class _SaleListState extends State<SaleList> {
             new ElevatedButton(
                 child: const Text('Save'),
                 onPressed: () {
+                  if (_discountController.text.isNotEmpty) {
+                    discount = int.parse(_discountController.text);
+                  }
                   Navigator.pop(context);
                 })
           ],
@@ -369,9 +440,9 @@ class _SaleListState extends State<SaleList> {
     );
   }
 
-  getTotalPrice() {
+  getTotalPrice(List<Order> result) {
     double t = 0;
-    cartItems.forEach((e) => t += double.parse(e.total));
+    result.forEach((e) => t += double.parse(e.total));
     return t;
   }
 
@@ -396,12 +467,9 @@ class _SaleListState extends State<SaleList> {
                       child: InkWell(
                         splashColor: Colors.red, // Splash color
                         onTap: () {
-                          if (cartItems.length < 1) return;
-                          BlocProvider.of<sale.SaleBloc>(context).add(sale.RemoveOneOrder(item));
-                          setState(() {
-                            cartItems.removeAt(cartItems.indexOf(item));
-                            total = getTotalPrice();
-                          });
+                          if (temItems.length < 1) return;
+                          BlocProvider.of<sale.SaleBloc>(context)
+                              .add(sale.RemoveOneOrder(item));
                         },
                         child: SizedBox(
                             width: 30,
@@ -453,10 +521,22 @@ class _SaleListState extends State<SaleList> {
                                     if (item.quantity > 1) {
                                       setState(() {
                                         --item.quantity;
-                                        item.total = (double.parse(item.amount) *
-                                                item.quantity)
-                                            .toString();
-                                        total = getTotalPrice();
+                                        item.total =
+                                            (double.parse(item.amount) *
+                                                    item.quantity)
+                                                .toString();
+                                        BlocProvider.of<sale.SaleBloc>(context)
+                                            .add(sale.UpdateOrder(Order(
+                                                orderId: item.orderId,
+                                                invoiceNo: item.invoiceNo,
+                                                name: item.name,
+                                                quantity: item.quantity,
+                                                amount: item.amount,
+                                                discount: item.discount,
+                                                unit: item.unit,
+                                                date: item.date,
+                                                total: item.total)));
+                                        // total = getTotalPrice();
                                       });
                                     }
                                   },
@@ -487,11 +567,20 @@ class _SaleListState extends State<SaleList> {
                                   onTap: () {
                                     setState(() {
                                       ++item.quantity;
-                                      item.total =
-                                          (double.parse(item.amount) * item.quantity)
-                                              .toString();
-                                      total = getTotalPrice();
-
+                                      item.total = (double.parse(item.amount) *
+                                              item.quantity)
+                                          .toString();
+                                      BlocProvider.of<sale.SaleBloc>(context)
+                                          .add(sale.UpdateOrder(Order(
+                                              orderId: item.orderId,
+                                              invoiceNo: item.invoiceNo,
+                                              name: item.name,
+                                              quantity: item.quantity,
+                                              amount: item.amount,
+                                              discount: item.discount,
+                                              unit: item.unit,
+                                              date: item.date,
+                                              total: item.total)));
                                     });
                                   },
                                   child: SizedBox(
@@ -544,25 +633,29 @@ class _SaleListState extends State<SaleList> {
     );
   }
 
-  void getData() async{
+  void getData() async {
     BlocProvider.of<Menu.MenuBloc>(context).add(Menu.GetAllMenu());
-    if (widget.desk.invoiceNo.isNotEmpty) {
-      List<Map> result = await repository.getAllOrderByInvoiceNo(widget.desk.invoiceNo);
-      List<Order> lst = [];
-      for(int i = 0;i< result.length ; i ++){
-        lst.add(Order.fromMap(result[i]));
-      }
-      setState(() {
-        cartItems.addAll(lst);
-        total = getTotalPrice();
-      });
-    }
+    BlocProvider.of<sale.SaleBloc>(context)
+        .add(sale.GetOrderByInvoice(widget.desk.invoiceNo));
+    // if (widget.desk.invoiceNo.isNotEmpty) {
+    //   List<Map> result = await repository.getAllOrderByInvoiceNo(widget.desk.invoiceNo);
+    //   List<Order> lst = [];
+    //   for(int i = 0;i< result.length ; i ++){
+    //     lst.add(Order.fromMap(result[i]));
+    //   }
+    //   setState(() {
+    //     cartItems.clear();
+    //     cartItems.addAll(lst);
+    //     total = getTotalPrice();
+    //   });
+    // }
   }
 
-  void generateInvoiceNo() async{
+  void generateInvoiceNo() async {
     //invoiceNo exist in table do not create
-    if(widget.desk.invoiceNo.isEmpty){
-      invoiceNo =await repository.addInvoice(Invoice(deskId: widget.desk.deskId));
+    if (widget.desk.invoiceNo.isEmpty) {
+      invoiceNo =
+          await repository.addInvoice(Invoice(deskId: widget.desk.deskId));
       BlocProvider.of<TableBloc>(context).add(UpdateTable(Desk(
           deskId: widget.desk.deskId,
           tableNo: widget.desk.tableNo,
@@ -570,7 +663,7 @@ class _SaleListState extends State<SaleList> {
           noOfSeats: widget.desk.noOfSeats,
           status: "Not Available")));
       BlocProvider.of<TableBloc>(context).add(GetAllTable());
-    }else{
+    } else {
       invoiceNo = widget.desk.invoiceNo;
     }
   }

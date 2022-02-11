@@ -8,12 +8,17 @@ class AddOrder extends SaleEvent{
   final List<Order> order;
   AddOrder(this.order);
 }
-class ClearOrder extends SaleEvent{
-  ClearOrder();
-}
 class GetOrderByInvoice extends SaleEvent{
   final String invoiceNo;
   GetOrderByInvoice(this.invoiceNo);
+}
+class AddOneOrder extends SaleEvent{
+  final Order order;
+  AddOneOrder(this.order);
+}
+class UpdateOrder extends SaleEvent{
+  final Order order;
+  UpdateOrder(this.order);
 }
 class RemoveOneOrder extends SaleEvent{
   final Order order;

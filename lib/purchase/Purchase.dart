@@ -215,8 +215,14 @@ class _PurchaseState extends State<Purchase> {
                         ),
                       ),
                     );
+                  }else if(state is Failure){
+                    return Center(
+                      child: Text("No purchase items"),
+                    );
                   }else{
-                    return Container();
+                    return Center(
+                      child: CircularProgressIndicator(color: Colors.green,),
+                    );
                   }
                 }
               ),

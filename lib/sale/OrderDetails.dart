@@ -31,7 +31,6 @@ class _OrderDetailsState extends State<OrderDetails> {
   double total = 0.0;
   int prefix = 0 ;
   String invoiceNo = "";
-  String date = "";
   int discount  = 0;
   ScreenshotController screenshotController = ScreenshotController();
   BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
@@ -44,7 +43,6 @@ class _OrderDetailsState extends State<OrderDetails> {
     for(int i = 0; i< orderDetails.length; i ++){
       total += double.parse(orderDetails[i].total);
       invoiceNo = orderDetails[i].invoiceNo;
-      date = orderDetails[i].date;
       discount = int.parse(orderDetails[i].discount);
     }
     prefix = ((int.parse(orderDetails[0].invoiceNo) + 1000) /1000).floor();
@@ -76,7 +74,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                   quantity: orderDetails.length,
                   amount: total.toString(),
                   discount: discount.toString(),
-                  date: date,
+                  date: Utils.formatDate(DateTime.now()),
                   total: total.toString()
                 )));
 

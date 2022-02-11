@@ -16,6 +16,8 @@ class PurchaseBloc extends Bloc<PurchaseEvent,PurchaseState>{
   Stream<PurchaseState> mapEventToState(PurchaseEvent event) async*{
     if(event is GetAllPurchase){
       yield* _getAllPurchase();
+    }else if(event is AddPurchaseItem){
+      yield* _addPurchaseItem(event.itemModel);
     }
   }
 
@@ -30,6 +32,26 @@ class PurchaseBloc extends Bloc<PurchaseEvent,PurchaseState>{
       yield Success(result: lst);
     }else{
       yield Failure("No purchase data");
+    }
+  }
+  getAllPurchaseList() async{
+    List<PurchaseItemModel> lst = [];
+    List<Map> result =await repository.getAllPurchase();
+    for(int i = 0 ; i < result.length ; i ++){
+      lst.add(PurchaseItemModel.fromMap(result[i]));
+    }
+    return lst;
+  }
+
+  Stream<PurchaseState> _addPurchaseItem(PurchaseItemModel itemModel) async*{
+    yield Loading();
+    var result = -1;
+    result = await repository.addPurchase(itemModel);
+    if(result > 0){
+      List<PurchaseItemModel> lst = await getAllPurchaseList();
+      yield Success(result: lst);
+    }else{
+      yield Failure("Something wrong!");
     }
   }
 

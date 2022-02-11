@@ -128,9 +128,9 @@ class SaleBloc extends Bloc<SaleEvent,SaleState> {
   Stream<SaleState> _getAllSale() async*{
     yield Loading();
     List<Sale> lst = [];
-    List<Map> result = await repository.getAllSale();
+    List<Sale> result = await repository.getAllSale();
     for(int i = 0 ; i< result.length ; i++){
-      lst.add(Sale.fromMap(result[i]));
+      lst.add(result[i]);
     }
     if(lst.length > 0){
       yield AllSaleSuccess(result: lst);

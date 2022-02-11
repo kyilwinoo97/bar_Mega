@@ -63,7 +63,7 @@ class PurchaseItem extends StatelessWidget {
               Icon(Icons.date_range,size:
                 20.0,color: Colors.blueGrey,),
               const SizedBox(width: 10.0,),
-              // Text("${item.date.day.toString()} / ${item.date.month.toString()} / ${item.date.year.toString()}",style: TextStyle(color: Colors.blueGrey),)
+              Text("${item.date.toString()}",style: TextStyle(color: Colors.blueGrey),)
             ],
           ),
         ],

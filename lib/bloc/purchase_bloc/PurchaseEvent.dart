@@ -7,3 +7,7 @@ abstract class PurchaseEvent extends Equatable{
 class GetAllPurchase extends PurchaseEvent{
   GetAllPurchase();
 }
+class AddPurchaseItem extends PurchaseEvent{
+  final PurchaseItemModel itemModel;
+  AddPurchaseItem(this.itemModel);
+}

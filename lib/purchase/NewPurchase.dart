@@ -33,6 +33,8 @@ class _NewPurchaseState extends State<NewPurchase> {
   final TextEditingController _priceController = TextEditingController();
 
   final TextEditingController _supplierController = TextEditingController();
+  final TextEditingController _discountController = TextEditingController();
+  final TextEditingController _totalController = TextEditingController();
 
   final TextStyle nameTextStyle = TextStyle(
     fontSize: 18.0,
@@ -65,7 +67,7 @@ class _NewPurchaseState extends State<NewPurchase> {
                       ))
                 ],
               ),
-              const SizedBox(height: 30.0,),
+              const SizedBox(height: 10.0,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -80,7 +82,7 @@ class _NewPurchaseState extends State<NewPurchase> {
                       ))
                 ],
               ),
-              const SizedBox(height: 30.0,),
+              const SizedBox(height: 10.0,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -141,7 +143,7 @@ class _NewPurchaseState extends State<NewPurchase> {
                       ))
                 ],
               ),
-              const SizedBox(height: 30.0,),
+              const SizedBox(height: 10.0,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -156,7 +158,7 @@ class _NewPurchaseState extends State<NewPurchase> {
                       ))
                 ],
               ),
-              const SizedBox(height: 30.0,),
+              const SizedBox(height: 10.0,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -171,7 +173,37 @@ class _NewPurchaseState extends State<NewPurchase> {
                       ))
                 ],
               ),
-              const SizedBox(height: 30.0,),
+              const SizedBox(height: 10.0,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(
+                      flex: 3,
+                      child: Text('Discount',style: nameTextStyle)),
+                  Expanded(
+                      flex: 7,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                        child: inputWidget(controller: _discountController,type: TextInputType.number),
+                      ))
+                ],
+              ),
+              const SizedBox(height: 10.0,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(
+                      flex: 3,
+                      child: Text('Total',style: nameTextStyle)),
+                  Expanded(
+                      flex: 7,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                        child: inputWidget(controller: _totalController,type: TextInputType.number),
+                      ))
+                ],
+              ),
+              const SizedBox(height: 10.0,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -208,7 +240,7 @@ class _NewPurchaseState extends State<NewPurchase> {
                       ))
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 15),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -228,8 +260,10 @@ class _NewPurchaseState extends State<NewPurchase> {
                           qty: _qtyController.text,
                           unit: selectedUnit,
                           price: _priceController.text,
-                          supplier: _supplierController.text,
-                          date: _date
+                          supplier: _supplierController.text.isEmpty ? "":_supplierController.text,
+                          date: Utils.formatDate(_date),
+                          discount: _discountController.text.isEmpty ? "" : _discountController.text,
+                          total: _totalController.text.isEmpty ? "": _totalController.text
                         );
                         widget.onSave(newItem);
                   },)),

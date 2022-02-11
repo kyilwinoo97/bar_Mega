@@ -155,7 +155,6 @@ class _OrderDetailsState extends State<OrderDetails> {
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 10.0),
               width: size.width / 3.4,
-              height: double.infinity,
               child: Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
@@ -168,13 +167,13 @@ class _OrderDetailsState extends State<OrderDetails> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Center(
-                        child: Image.asset("assets/images/logo_bar_mega.png",fit: BoxFit.fill,height: 80,)
+                        child: Image.asset("assets/images/logo_bar_mega.png",fit: BoxFit.fill,height: 50,)
                       ),
-                      const SizedBox(height: 10.0),
+                      const SizedBox(height: 5.0),
                       Align(
                         alignment: Alignment.center,
-                          child: Text('Bar Mega',style: TextStyle(fontSize: 24.0,fontWeight: FontWeight.bold),)),
-                      const SizedBox(height: 14.0),
+                          child: Text('Bar Mega',style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),)),
+                      const SizedBox(height: 5.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -182,7 +181,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                           Text(orderDetails[0].date)
                         ],
                       ),
-                      SizedBox(height: 20.0),
+                      SizedBox(height: 8.0),
                       ListView.builder(
                         shrinkWrap: true,
                           itemCount: orderDetails.length,
@@ -193,14 +192,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(orderDetails[index].name),
-                                      Text(orderDetails[index].amount),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 5.0,),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text('${orderDetails[index].quantity}'),
+                                      Text('${orderDetails[index].quantity} \tx\t\t'+orderDetails[index].amount),
                                     ],
                                   ),
                                   Divider(color: Colors.grey.shade500,),
@@ -219,19 +211,18 @@ class _OrderDetailsState extends State<OrderDetails> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Discount',style: TextStyle(fontSize: 16.0),),
-                          Text(discount.toString() + ' %',style: TextStyle(fontSize: 18.0),),
+                          Text('Discount',style: TextStyle(fontSize: 14.0),),
+                          Text(discount.toString() + ' %',style: TextStyle(fontSize: 14.0),),
                         ],
                       ),
                       const SizedBox(height: 5.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Amount',style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold),),
-                          Text(total.toString(),style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold),),
+                          Text('Amount',style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
+                          Text(total.toString(),style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
                         ],
                       ),
-                      const SizedBox(height: 25.0),
                        Divider(color: Colors.grey.shade500,),
                       Spacer(),
                       Align(

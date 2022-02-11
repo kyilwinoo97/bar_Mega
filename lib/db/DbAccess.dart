@@ -97,6 +97,7 @@ class Sql{
   static const String Supplier = "supplier";
   static const String PurchaseDiscount = "discount";
   static const String PurchaseTotal = "total";
+  static const String PurchaseDate = "date";
 
   static String create_purchase_table ='''CREATE TABLE IF NOT EXISTS $Purchase_Table 
                  ($PurchaseId INTEGER PRIMARY KEY,
@@ -106,6 +107,7 @@ class Sql{
                   $PurchaseQuantity TEXT NOT NULL, 
                   $Supplier TEXT NOT NULL, 
                   $PurchaseDiscount TEXT NOT NULL, 
+                  $PurchaseDate TEXT NOT NULL, 
                   $PurchaseTotal TEXT NOT NULL 
                   )''';
 

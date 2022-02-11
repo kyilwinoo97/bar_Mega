@@ -1,11 +1,11 @@
 import 'dart:ffi';
 
 class PurchaseItemModel{
-  String purchaseId;
+  int purchaseId;
   String name;
   String qty;
   String unit;
-  DateTime date;
+  String date;
   String price; //amount
   String supplier;
   String discount;

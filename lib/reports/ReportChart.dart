@@ -1,9 +1,12 @@
+import 'package:bar_mega/model/Order.dart';
+import 'package:bar_mega/model/PurchaseItemModel.dart';
 import 'package:bar_mega/repository/SaleRepository.dart';
 import 'package:bar_mega/widgets/ReportData.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../common/Utils.dart';
 import '../injection_container.dart';
@@ -234,29 +237,35 @@ class _ReportChartState extends State<ReportChart> {
 
   void loadChartData() async {
 
-    // List<Sale>  saleList = await repository.getAllSale();
+    List<Sale>  saleList = await repository.getAllSale();
+    List<PurchaseItemModel>  purchaseList = await repository.getAllPurchase();
 
-    // var waveMoneyTransactions = transactions
-    //     .where((transaction) {
-    //   return transaction.agent == Constants.WAVEMONEY &&
-    //       Utils.isEqualDateFilter(
-    //           new DateFormat("dd-MM-yyyy").parse(transaction.date),
-    //           this._fromDate,
-    //           this._toDate);
-    // })
-    //     .toList()
-    //     .where((transaction) =>
-    // transaction.transactionsType == Constants.DEPOSITE_TYPE)
-    //     .toList();
+    var sale = saleList
+        .where((sale) {
+      return
+          Utils.isEqualDateFilter(
+              new DateFormat("dd-MM-yyyy").parse(sale.date),
+              this._fromDate,
+              this._toDate);
+    })
+        .toList();
 
-
-    // double waveMoneyDepositeAmount = waveMoneyTransactions.fold(0, (sum, item) => sum + item.amount);
-    // double cbPayDepositeAmount = cbPayTransactions.fold(0, (sum, item) => sum + item.amount);
+    var purchase = purchaseList
+        .where((purchase) {
+      return
+        Utils.isEqualDateFilter(
+            new DateFormat("dd-MM-yyyy").parse(purchase.date),
+            this._fromDate,
+            this._toDate);
+    })
+        .toList();
+    double saleAmount = sale.fold(0, (sum, item) => sum + double.parse(item.total));
+    double purchaseAmount = purchase.fold(0, (sum, item) => sum + double.parse(item.price));
 
 
     List<ReportData> report = [
-      // new ReportData('Sales', waveMoneyDepositeAmount),
-      // new ReportData('Purchase', cbPayDepositeAmount),
+      new ReportData('Sales', saleAmount),
+      new ReportData('Purchase', purchaseAmount),
     ];
     setState(() {
       reportData = [

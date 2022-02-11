@@ -174,7 +174,7 @@ class _SaleListState extends State<SaleList> {
                                     amount: item.price,
                                     unit: item.unit,
                                     discount: "0",
-                                    date: Utils.getCurrentDate(),
+                                    date: Utils.formatDate(DateTime.now()),
                                     total: item.price);
                                 cartItems = []
                                   ..add(orderItem)

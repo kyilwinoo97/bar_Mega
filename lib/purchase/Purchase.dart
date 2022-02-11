@@ -13,93 +13,6 @@ class Purchase extends StatefulWidget {
 
 class _PurchaseState extends State<Purchase> {
 
-  List<PurchaseItemModel> purchaseItems = [
-    PurchaseItemModel(
-        name: 'Rice',
-        qty: '2',
-        unit: 'bottle',
-        price: '50000',
-        date: DateTime.now(),
-        supplier: 'Sein Paday Thar MiniMart'),
-    PurchaseItemModel(
-        name: 'Rice',
-        qty: '2',
-        unit: 'bottle',
-        price: '50000',
-        date: DateTime.now(),
-        supplier: 'Sein Paday Thar MiniMart'),
-    PurchaseItemModel(
-        name: 'Rice',
-        qty: '2',
-        unit: 'bottle',
-        price: '50000',
-        date: DateTime.now(),
-        supplier: 'Sein Paday Thar MiniMart'),
-    PurchaseItemModel(
-        name: 'Rice',
-        qty: '2',
-        unit: 'bottle',
-        price: '50000',
-        date: DateTime.now(),
-        supplier: 'Sein Paday Thar MiniMart'),
-    PurchaseItemModel(
-        name: 'Rice',
-        qty: '2',
-        unit: 'bottle',
-        price: '50000',
-        date: DateTime.now(),
-        supplier: 'Sein Paday Thar MiniMart'),
-    PurchaseItemModel(
-        name: 'Rice',
-        qty: '2',
-        unit: 'bottle',
-        price: '50000',
-        date: DateTime.now(),
-        supplier: 'Sein Paday Thar MiniMart'),
-    PurchaseItemModel(
-        name: 'Rice',
-        qty: '2',
-        unit: 'bottle',
-        price: '50000',
-        date: DateTime.now(),
-        supplier: 'Sein Paday Thar MiniMart'),
-    PurchaseItemModel(
-        name: 'Rice',
-        qty: '2',
-        unit: 'bottle',
-        price: '50000',
-        date: DateTime.now(),
-        supplier: 'Sein Paday Thar MiniMart'),
-    PurchaseItemModel(
-        name: 'Rice',
-        qty: '2',
-        unit: 'bottle',
-        price: '50000',
-        date: DateTime.now(),
-        supplier: 'Sein Paday Thar MiniMart'),
-    PurchaseItemModel(
-        name: 'Rice',
-        qty: '2',
-        unit: 'bottle',
-        price: '50000',
-        date: DateTime.now(),
-        supplier: 'Sein Paday Thar MiniMart'),
-    PurchaseItemModel(
-        name: 'Rice',
-        qty: '2',
-        unit: 'bottle',
-        price: '50000',
-        date: DateTime.now(),
-        supplier: 'Sein Paday Thar MiniMart'),
-    PurchaseItemModel(
-        name: 'Rice',
-        qty: '2',
-        unit: 'bottle',
-        price: '50000',
-        date: DateTime.now(),
-        supplier: 'Sein Paday Thar MiniMart'),
-  ];
-
   @override
   void initState() {
     getData();
@@ -144,34 +57,34 @@ class _PurchaseState extends State<Purchase> {
                   )),
             ),
           ),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 15.0),
-            height: 50.0,
-            width: 150.0,
-            child: GestureDetector(
-              onTap: (){},
-              child: Card(
-                  elevation: 0.0,
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.category,color: Colors.green,size: 30,),
-                      const SizedBox(width: 5.0,),
-                      Text(
-                        'Create Item',
-                        style: TextStyle(
-                            color: Colors.green,
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  )),
-            ),
-          ),
+          // Container(
+          //   margin: EdgeInsets.symmetric(horizontal: 15.0),
+          //   height: 50.0,
+          //   width: 150.0,
+          //   child: GestureDetector(
+          //     onTap: (){},
+          //     child: Card(
+          //         elevation: 0.0,
+          //         color: Colors.white,
+          //         shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(20.0),
+          //         ),
+          //         child: Row(
+          //           mainAxisAlignment: MainAxisAlignment.center,
+          //           children: [
+          //             Icon(Icons.category,color: Colors.green,size: 30,),
+          //             const SizedBox(width: 5.0,),
+          //             Text(
+          //               'Create Item',
+          //               style: TextStyle(
+          //                   color: Colors.green,
+          //                   fontSize: 18.0,
+          //                   fontWeight: FontWeight.bold),
+          //             ),
+          //           ],
+          //         )),
+          //   ),
+          // ),
 
         ],
       ),
@@ -237,9 +150,7 @@ class _PurchaseState extends State<Purchase> {
                   ),
                   color: Colors.white,
                   child: NewPurchase(onSave: (PurchaseItemModel newItem) {
-                    setState(() {
-                      purchaseItems = []..add(newItem)..addAll(purchaseItems);
-                    });
+                    BlocProvider.of<PurchaseBloc>(context).add(AddPurchaseItem(newItem));
                   }),
                 ),
               ),

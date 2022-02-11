@@ -4,6 +4,7 @@ import 'package:bar_mega/model/Desk.dart';
 import 'package:bar_mega/model/Invoice.dart';
 import 'package:bar_mega/model/Item.dart';
 import 'package:bar_mega/model/Order.dart';
+import 'package:bar_mega/model/PurchaseItemModel.dart';
 import 'package:bar_mega/model/Unit.dart';
 import 'package:charts_flutter/flutter.dart';
 import 'package:sqflite/sqflite.dart';
@@ -51,6 +52,10 @@ abstract class DbHelper{
   Future<int> deleteInvoice(String invoiceNo);
 
   Future<int> addSale(Sale sale);
+
+  Future<int> insertPurchase(PurchaseItemModel itemModel);
+
+  Future<List<Map>> getAllSale();
 }
 class DbHelperImpl implements DbHelper{
   final Database database;
@@ -162,6 +167,16 @@ class DbHelperImpl implements DbHelper{
   @override
   Future<int> addSale(Sale sale) async{
    return await database.insert(Sql.SaleTable, sale.toMap());
+  }
+
+  @override
+  Future<int> insertPurchase(PurchaseItemModel item) async{
+   return await database.insert(Sql.Purchase_Table, item.toMap());
+  }
+
+  @override
+  Future<List<Map>> getAllSale() async{
+    return await database.query(Sql.SaleTable);
   }
 
 }

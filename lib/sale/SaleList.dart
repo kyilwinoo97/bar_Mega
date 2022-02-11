@@ -30,14 +30,14 @@ class SaleList extends StatefulWidget {
 }
 
 class _SaleListState extends State<SaleList> {
-
   List<String> cats = Utils.categoryList;
   String selectedCat;
   List<Order> cartItems = [];
   double total = 0.0;
-  SaleRepository repository ;
+  SaleRepository repository;
   MainRepository mainRepository;
   var invoiceNo;
+  final TextEditingController _discountController = TextEditingController();
   @override
   void initState() {
     selectedCat = cats[0];
@@ -61,10 +61,10 @@ class _SaleListState extends State<SaleList> {
         listeners: [
           BlocListener<sale.SaleBloc, sale.SaleState>(
             listener: (context, state) {
-              if(state is sale.Success){
+              if (state is sale.Success) {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => OrderDetails()));
-              }else if(state is sale.DeleteSuccess){
+              } else if (state is sale.DeleteSuccess) {
                 BlocProvider.of<TableBloc>(context).add(UpdateTable(Desk(
                     deskId: widget.desk.deskId,
                     tableNo: widget.desk.tableNo,
@@ -74,14 +74,11 @@ class _SaleListState extends State<SaleList> {
                 BlocProvider.of<TableBloc>(context).add(GetAllTable());
 
                 setState(() {
-                    cartItems.clear();
-                    OrderList().setList = [];
-                  });
+                  cartItems.clear();
+                  OrderList().setList = [];
+                });
                 Navigator.of(context).pop();
-
-              }else if (state is sale.DeleteOneOrderSuccess){
-
-              }
+              } else if (state is sale.DeleteOneOrderSuccess) {}
             },
           ),
         ],
@@ -181,7 +178,10 @@ class _SaleListState extends State<SaleList> {
                                   ..addAll(cartItems);
                               } else {
                                 cartItems[itemIndex].quantity += 1;
-                                cartItems[itemIndex].total = (double.parse(cartItems[itemIndex].amount) * cartItems[itemIndex].quantity).toString();
+                                cartItems[itemIndex].total =
+                                    (double.parse(cartItems[itemIndex].amount) *
+                                            cartItems[itemIndex].quantity)
+                                        .toString();
                               }
                               total = getTotalPrice();
                             });
@@ -235,9 +235,31 @@ class _SaleListState extends State<SaleList> {
                                             'Cart',
                                             style: TextStyle(
                                                 color: Colors.green,
-                                                fontSize: 20.0,
+                                                fontSize: 18.0,
                                                 fontWeight: FontWeight.bold),
                                           ),
+                                      ClipOval(
+                                        child: Material(
+                                          color: Colors.red.shade50, // Button color
+                                          child: InkWell(
+                                            splashColor: Colors.red, // Splash color
+                                            onTap: () {
+                                              BlocProvider.of<sale.SaleBloc>(
+                                                  context)
+                                                  .add(sale.RemoveAllOrder(
+                                                  cartItems));
+                                            },
+                                            child: SizedBox(
+                                                width: 40,
+                                                height: 40,
+                                                child: Icon(
+                                                  Icons.delete_forever,
+                                                  size: 15,
+                                                  color: Colors.red,
+                                                )),
+                                          ),
+                                        ),
+                                      ),
                                         ],
                                       )),
                                   const SizedBox(height: 5.0),
@@ -278,11 +300,9 @@ class _SaleListState extends State<SaleList> {
                         Expanded(
                           flex: 1,
                           child: CustomButton(
-                            label: 'Clear',
-                            color: Colors.red,
-                            onTap: () {
-                              BlocProvider.of<sale.SaleBloc>(context).add(sale.RemoveAllOrder(cartItems));
-                            },
+                            label: 'Discount',
+                            color: Colors.green,
+                            onTap: _showDialog,
                           ),
                         ),
                         Expanded(
@@ -291,13 +311,13 @@ class _SaleListState extends State<SaleList> {
                             label: 'Save',
                             color: Colors.green,
                             onTap: () {
-                              if(cartItems.length > 0 ){
-                                BlocProvider.of<sale.SaleBloc>(context).add(sale.AddOrder(cartItems));
+                              if (cartItems.length > 0) {
+                                BlocProvider.of<sale.SaleBloc>(context)
+                                    .add(sale.AddOrder(cartItems));
                                 OrderList().setList = cartItems;
-                              }else{
+                              } else {
                                 Toasts.greenToast("Add item first");
                               }
-
                             },
                           ),
                         )
@@ -310,6 +330,43 @@ class _SaleListState extends State<SaleList> {
           ],
         ),
       ),
+    );
+  }
+
+  _showDialog() async {
+    await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: const EdgeInsets.all(16.0),
+          content: new Row(
+            children: <Widget>[
+              new Expanded(
+                child: new TextField(
+                  autofocus: true,
+                  controller: _discountController,
+                  keyboardType: TextInputType.number,
+                  decoration: new InputDecoration(
+                      labelText: 'Discount', hintText: '%'),
+                ),
+              )
+            ],
+          ),
+          actions: <Widget>[
+            new ElevatedButton(
+                child: const Text('CANCEL'),
+                onPressed: () {
+                  _discountController.text = '';
+                  Navigator.pop(context);
+                }),
+            new ElevatedButton(
+                child: const Text('OPEN'),
+                onPressed: () {
+                  Navigator.pop(context);
+                })
+          ],
+        );
+    },
     );
   }
 
@@ -341,15 +398,16 @@ class _SaleListState extends State<SaleList> {
                         splashColor: Colors.red, // Splash color
                         onTap: () {
                           if (cartItems.length < 1) return;
-                          BlocProvider.of<sale.SaleBloc>(context).add(sale.RemoveOneOrder(item));
+                          BlocProvider.of<sale.SaleBloc>(context)
+                              .add(sale.RemoveOneOrder(item));
                           setState(() {
                             cartItems.removeAt(cartItems.indexOf(item));
                             total = getTotalPrice();
                           });
                         },
                         child: SizedBox(
-                            width: 30,
-                            height: 30,
+                            width: 20,
+                            height: 20,
                             child: Icon(
                               Icons.close,
                               size: 15,
@@ -372,13 +430,13 @@ class _SaleListState extends State<SaleList> {
                           item.name,
                           style: TextStyle(
                               color: Colors.green,
-                              fontSize: 20.0,
+                              fontSize: 17.0,
                               fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 2.0),
                         Text(
                           '${item.amount} ks',
-                          style: TextStyle(color: Colors.green, fontSize: 18.0),
+                          style: TextStyle(color: Colors.green, fontSize: 14.0),
                         ),
                       ],
                     ),
@@ -397,16 +455,17 @@ class _SaleListState extends State<SaleList> {
                                     if (item.quantity > 1) {
                                       setState(() {
                                         --item.quantity;
-                                        item.total = (double.parse(item.amount) *
-                                                item.quantity)
-                                            .toString();
+                                        item.total =
+                                            (double.parse(item.amount) *
+                                                    item.quantity)
+                                                .toString();
                                         total = getTotalPrice();
                                       });
                                     }
                                   },
                                   child: SizedBox(
-                                      width: 50,
-                                      height: 50,
+                                      width: 40,
+                                      height: 40,
                                       child: Icon(
                                         Icons.remove,
                                         color: Colors.green,
@@ -431,16 +490,15 @@ class _SaleListState extends State<SaleList> {
                                   onTap: () {
                                     setState(() {
                                       ++item.quantity;
-                                      item.total =
-                                          (double.parse(item.amount) * item.quantity)
-                                              .toString();
+                                      item.total = (double.parse(item.amount) *
+                                              item.quantity)
+                                          .toString();
                                       total = getTotalPrice();
-
                                     });
                                   },
                                   child: SizedBox(
-                                      width: 50,
-                                      height: 50,
+                                      width: 40,
+                                      height: 40,
                                       child: Icon(
                                         Icons.add,
                                         color: Colors.green,
@@ -488,12 +546,13 @@ class _SaleListState extends State<SaleList> {
     );
   }
 
-  void getData() async{
+  void getData() async {
     BlocProvider.of<Menu.MenuBloc>(context).add(Menu.GetAllMenu());
     if (widget.desk.invoiceNo.isNotEmpty) {
-      List<Map> result = await repository.getAllOrderByInvoiceNo(widget.desk.invoiceNo);
+      List<Map> result =
+          await repository.getAllOrderByInvoiceNo(widget.desk.invoiceNo);
       List<Order> lst = [];
-      for(int i = 0;i< result.length ; i ++){
+      for (int i = 0; i < result.length; i++) {
         lst.add(Order.fromMap(result[i]));
       }
       setState(() {
@@ -503,10 +562,11 @@ class _SaleListState extends State<SaleList> {
     }
   }
 
-  void generateInvoiceNo() async{
+  void generateInvoiceNo() async {
     //invoiceNo exist in table do not create
-    if(widget.desk.invoiceNo.isEmpty){
-      invoiceNo =await repository.addInvoice(Invoice(deskId: widget.desk.deskId));
+    if (widget.desk.invoiceNo.isEmpty) {
+      invoiceNo =
+          await repository.addInvoice(Invoice(deskId: widget.desk.deskId));
       BlocProvider.of<TableBloc>(context).add(UpdateTable(Desk(
           deskId: widget.desk.deskId,
           tableNo: widget.desk.tableNo,
@@ -514,7 +574,7 @@ class _SaleListState extends State<SaleList> {
           noOfSeats: widget.desk.noOfSeats,
           status: "Not Available")));
       BlocProvider.of<TableBloc>(context).add(GetAllTable());
-    }else{
+    } else {
       invoiceNo = widget.desk.invoiceNo;
     }
   }

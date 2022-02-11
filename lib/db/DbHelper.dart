@@ -40,10 +40,10 @@ class DbHelperImpl implements DbHelper{
 
   @override
   Future<int> insertData() async{
-    if(database != null){
-      Utils.Log("database not  null");
-    }
-    return -1;
+    // if(database != null){
+    //   Utils.Log("database not  null");
+    // }
+     return -1;
   }
 
   @override
@@ -72,7 +72,7 @@ class DbHelperImpl implements DbHelper{
 
   @override
   Future<int> updateMenu(Item item) async{
-    return await database.update(Sql.Item_Table, item.toMap(),where: '${Sql.Id} = ?', whereArgs: [item.itemId]);
+    return await database.update(Sql.Item_Table, item.toMap(),where: '${Sql.itemId} = ?', whereArgs: [item.itemId]);
   }
 
   @override
@@ -82,7 +82,7 @@ class DbHelperImpl implements DbHelper{
 
   @override
   Future<int> deleteMenu(Item item) async{
-    return await database.delete(Sql.Item_Table, where: '${Sql.Id} = ?', whereArgs: [item.itemId]);
+    return await database.delete(Sql.Item_Table, where: '${Sql.itemId} = ?', whereArgs: [item.itemId]);
   }
 
   @override

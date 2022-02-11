@@ -3,10 +3,12 @@ import 'package:bar_mega/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../Utils.dart';
+import '../common/Utils.dart';
 import '../injection_container.dart';
 import '../model/Item.dart';
+import '../model/Order.dart';
 import '../repository/MainRepository.dart';
+import 'OrderDetails.dart';
 import 'empty_cart.dart';
 
 class Sale extends StatefulWidget {
@@ -19,7 +21,7 @@ class _SaleState extends State<Sale> {
 
   List<String> cats = Utils.categoryList;
   String selectedCat;
-  List<Item> cartItems = [];
+  List<Order> cartItems = [];
   double total = 0.0;
 
   @override
@@ -60,7 +62,8 @@ class _SaleState extends State<Sale> {
                               setState(() {
                                 selectedCat = cats[0];
                               });
-                              BlocProvider.of<MenuBloc>(context).add(GetAllMenu());
+                              BlocProvider.of<MenuBloc>(context)
+                                  .add(GetAllMenu());
                             }
                           }),
                       CategoryWidget(
@@ -70,8 +73,8 @@ class _SaleState extends State<Sale> {
                               setState(() {
                                 selectedCat = cats[1];
                               });
-                              BlocProvider.of<MenuBloc>(context).add(GetMenuByCategory(selectedCat));
-
+                              BlocProvider.of<MenuBloc>(context)
+                                  .add(GetMenuByCategory(selectedCat));
                             }
                           }),
                       CategoryWidget(
@@ -81,7 +84,8 @@ class _SaleState extends State<Sale> {
                               setState(() {
                                 selectedCat = cats[2];
                               });
-                              BlocProvider.of<MenuBloc>(context).add(GetMenuByCategory(selectedCat));
+                              BlocProvider.of<MenuBloc>(context)
+                                  .add(GetMenuByCategory(selectedCat));
                             }
                           }),
                       CategoryWidget(
@@ -91,7 +95,8 @@ class _SaleState extends State<Sale> {
                               setState(() {
                                 selectedCat = cats[3];
                               });
-                              BlocProvider.of<MenuBloc>(context).add(GetMenuByCategory(selectedCat));
+                              BlocProvider.of<MenuBloc>(context)
+                                  .add(GetMenuByCategory(selectedCat));
                             }
                           }),
                     ],
@@ -111,13 +116,28 @@ class _SaleState extends State<Sale> {
                         child: SaleItem(state.result[index]),
                         onTap: () {
                           var item = state.result[index];
+                          int itemIndex = cartItems
+                              .indexWhere((e) => e.itemName == item.nameEng);
+                          cartItems.forEach((e) => print(e.itemName));
                           setState(() {
-                            cartItems.add(item);
-                            _listKey.currentState.insertItem(0,
-                                duration: const Duration(milliseconds: 500));
-                            cartItems = []
-                              ..add(item)
-                              ..addAll(cartItems);
+                            if (itemIndex == -1) {
+                              Order orderItem = Order(
+                                  itemName: item.nameEng,
+                                  qty: 1,
+                                  price: item.price,
+                                  total: item.price);
+                              _listKey.currentState.insertItem(0,
+                                  duration: const Duration(milliseconds: 500));
+                              cartItems = []
+                                ..add(orderItem)
+                                ..addAll(cartItems);
+                            } else {
+                              cartItems[itemIndex].qty += 1;
+                              cartItems[itemIndex].total =
+                                  cartItems[itemIndex].price *
+                                      cartItems[itemIndex].qty;
+                            }
+                            // total = getTotalPrice();
                           });
                           // OnItemSelect(item: itemList[index]);
                         },
@@ -172,53 +192,6 @@ class _SaleState extends State<Sale> {
                                               color: Colors.green,
                                               fontSize: 20.0,
                                               fontWeight: FontWeight.bold),
-                                        ),
-                                        PopupMenuButton(
-                                          child: Card(
-                                              margin: EdgeInsets.all(5.0),
-                                              shadowColor:
-                                                  Colors.green.shade100,
-                                              elevation: 0.0,
-                                              color: Colors.green.shade100,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20.0),
-                                              ),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Center(
-                                                    child: Text(
-                                                  'Table 1',
-                                                  style: TextStyle(
-                                                      color: Colors.green,
-                                                      fontSize: 16.0,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )),
-                                              )),
-                                          onSelected: (val) {},
-                                          itemBuilder: (BuildContext context) =>
-                                              [
-                                            PopupMenuItem(
-                                              child: ListTile(
-                                                title: Text('Table 1'),
-                                              ),
-                                              value: 'table 1',
-                                            ),
-                                            PopupMenuItem(
-                                              child: ListTile(
-                                                title: Text('Table 2'),
-                                              ),
-                                              value: 'table 2',
-                                            ),
-                                            PopupMenuItem(
-                                              child: ListTile(
-                                                title: Text('Table 3'),
-                                              ),
-                                              value: 'table 3',
-                                            ),
-                                          ],
                                         ),
                                       ],
                                     )),
@@ -277,7 +250,11 @@ class _SaleState extends State<Sale> {
                         child: CustomButton(
                           label: 'Order',
                           color: Colors.green,
-                          onTap: () {},
+                          onTap: () {
+                            OrderList().setList = cartItems;
+                            Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => OrderDetails()));
+                          },
                         ),
                       )
                     ],
@@ -289,6 +266,11 @@ class _SaleState extends State<Sale> {
         ],
       ),
     );
+  }
+
+  getTotalPrice() {
+    int t = 0;
+    return cartItems.forEach((e) => t += int.parse(e.total));
   }
 
   onRemove(int index) {
@@ -327,14 +309,14 @@ class _SaleState extends State<Sale> {
     );
   }
 
-  CartItem({Item item}) {
+  CartItem({Order item}) {
     return Container(
       margin: EdgeInsets.all(5.0),
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
         ),
-        elevation: 10.0,
+        elevation: 5.0,
         shadowColor: Colors.white54,
         child: Padding(
           padding: EdgeInsets.all(2.0),
@@ -354,8 +336,10 @@ class _SaleState extends State<Sale> {
                               (_, animation) => AnimateCartItem(
                                   context, cartItems.indexOf(item), animation),
                               duration: const Duration(milliseconds: 500));
-                          setState(() {
-                            cartItems.removeAt(cartItems.indexOf(item));
+                          Future.delayed(Duration(milliseconds: 550), () {
+                            setState(() {
+                              cartItems.removeAt(cartItems.indexOf(item));
+                            });
                           });
                         },
                         child: SizedBox(
@@ -371,85 +355,91 @@ class _SaleState extends State<Sale> {
                   )),
               const SizedBox(height: 2.0),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
+                padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Flexible(
-                      child: Text(
-                        item.name,
-                        style: TextStyle(
-                            color: Colors.green,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold),
-                      ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.itemName,
+                          style: TextStyle(
+                              color: Colors.green,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8.0),
+                        Text(
+                          '${item.price} Ks',
+                          style: TextStyle(color: Colors.green, fontSize: 18.0),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 8.0),
-                    Text(
-                      '${item.price} Ks',
-                      style: TextStyle(color: Colors.green, fontSize: 18.0),
-                    ),
+                    Container(
+                        padding: const EdgeInsets.only(top: 5.0, bottom: 10.0),
+                        alignment: Alignment.bottomCenter,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ClipOval(
+                              child: Material(
+                                color: Colors.green.shade50, // Button color
+                                child: InkWell(
+                                  splashColor: Colors.green, // Splash color
+                                  onTap: () {
+                                    if (item.qty > 1) {
+                                      setState(() {
+                                        --item.qty;
+                                      });
+                                    }
+                                  },
+                                  child: SizedBox(
+                                      width: 50,
+                                      height: 50,
+                                      child: Icon(
+                                        Icons.remove,
+                                        color: Colors.green,
+                                      )),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 30.0),
+                              child: Text(
+                                '${item.qty}',
+                                style: TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            ClipOval(
+                              child: Material(
+                                color: Colors.green.shade50, // Button color
+                                child: InkWell(
+                                  splashColor: Colors.green, // Splash color
+                                  onTap: () {
+                                    setState(() {
+                                      ++item.qty;
+                                      // item.total += item.price;
+                                    });
+                                  },
+                                  child: SizedBox(
+                                      width: 50,
+                                      height: 50,
+                                      child: Icon(
+                                        Icons.add,
+                                        color: Colors.green,
+                                      )),
+                                ),
+                              ),
+                            )
+                          ],
+                        )),
                   ],
                 ),
               ),
-              Container(
-                  padding: const EdgeInsets.only(top: 15.0, bottom: 10.0),
-                  alignment: Alignment.bottomCenter,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ClipOval(
-                        child: Material(
-                          color: Colors.green.shade50, // Button color
-                          child: InkWell(
-                            splashColor: Colors.green, // Splash color
-                            onTap: () {
-                              if (item.qty > 1) {
-                                setState(() {
-                                  --item.qty;
-                                });
-                              }
-                            },
-                            child: SizedBox(
-                                width: 50,
-                                height: 50,
-                                child: Icon(
-                                  Icons.remove,
-                                  color: Colors.green,
-                                )),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 30.0),
-                        child: Text(
-                          '${item.qty}',
-                          style: TextStyle(
-                              fontSize: 18.0, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      ClipOval(
-                        child: Material(
-                          color: Colors.green.shade50, // Button color
-                          child: InkWell(
-                            splashColor: Colors.green, // Splash color
-                            onTap: () {
-                              setState(() {
-                                ++item.qty;
-                              });
-                            },
-                            child: SizedBox(
-                                width: 50,
-                                height: 50,
-                                child: Icon(
-                                  Icons.add,
-                                  color: Colors.green,
-                                )),
-                          ),
-                        ),
-                      )
-                    ],
-                  )),
             ],
           ),
         ),
@@ -529,7 +519,7 @@ class SaleItem extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 10.0),
                 alignment: Alignment.bottomCenter,
                 child: Text(
-                  item.name,
+                  item.nameEng,
                   style: TextStyle(color: Colors.green, fontSize: 18.0),
                 ),
               ),

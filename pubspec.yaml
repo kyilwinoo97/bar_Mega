@@ -48,8 +48,13 @@ dependencies:
   fluttertoast: ^7.0.4
   image_picker: ^0.8.4+6
   intl: ^0.16.1
+  charts_flutter: ^0.12.0
+  flutter_datetime_picker: ^1.5.1
 #  firebase_core: ^1.12.0
 #  firebase_storage: ^10.2.7
+  blue_thermal_printer: ^1.1.4
+  pull_to_refresh: ^2.0.0
+
 
 
 
@@ -98,7 +103,7 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-     - family: Roboto
+     - family: Roboto+6+++
        fonts:
          - asset: assets/font/Roboto-Regular.ttf
          - asset: assets/font/Roboto-Italic.ttf

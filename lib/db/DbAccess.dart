@@ -51,9 +51,10 @@ class Sql{
   static const String NETWORK_CONFIG_TABLE = "network_config";
 
   static const String Item_Table = "Item";
-  static const String Id = "itemId";
-  static const String Name = "name";
-  static const String Qty = "qty";
+  static const String itemId = "itemId";
+  static const String Name = "nameEng";
+  static const String nameMyan = "nameMyan";
+  static const String printName = "printName";
   static const String Price = "price";
   static const String Unit = "unit";
   static const String ImagePath = "path";
@@ -65,6 +66,26 @@ class Sql{
   static const String Seat = "noOfSeats";
   static const String Status = "status";
   static const String InvoiceNo = "invoiceNo";
+
+  static const String OrderTable = "order";
+  static const String orderId = "orderId";
+  static const String invoiceId = "invoiceId";
+  //itemid
+  static const String Quantity = "quantity";
+  static const String Amount = "amount";
+  static const String Discount = "discount";
+  static const String Date = "date";
+  static const String Total = "total";
+
+
+  static const String SaleTable = "sale";
+  static const String saleId = "saleId";
+  //invoiceId
+  //amount
+  //doscount
+  //date
+  //total
+
 
 
   static const String Unit_Table = "Unit";
@@ -88,10 +109,33 @@ class Sql{
                   $categoryName TEXT NOT NULL
                   )''';
 
+  static String create_order_table ='''CREATE TABLE IF NOT EXISTS $OrderTable 
+                 ($orderId INTEGER PRIMARY KEY,
+                  $invoiceId TEXT NOT NULL,
+                  $itemId INTEGER NOT NULL,
+                  $Quantity INTEGER NOT NULL,
+                  $Amount INTEGER NOT NULL,
+                  $Discount INTEGER NOT NULL,
+                  $Date INTEGER NOT NULL,
+                  $Total INTEGER NOT NULL
+                  )''';
+
+  static String create_sale_table ='''CREATE TABLE IF NOT EXISTS $SaleTable 
+                 ($saleId INTEGER PRIMARY KEY,
+                  $invoiceId TEXT NOT NULL,
+                  $itemId INTEGER NOT NULL,
+                  $Quantity INTEGER NOT NULL,
+                  $Amount INTEGER NOT NULL,
+                  $Discount INTEGER NOT NULL,
+                  $Date INTEGER NOT NULL,
+                  $Total INTEGER NOT NULL
+                  )''';
+
   static String create_menu_table ='''CREATE TABLE IF NOT EXISTS $Item_Table 
-                 ($Id INTEGER PRIMARY KEY,
+                 ($itemId INTEGER PRIMARY KEY,
                   $Name TEXT NOT NULL,
-                  $Qty INTEGER NOT NULL,
+                  $nameMyan TEXT NOT NULL,
+                  $printName TEXT NOT NULL,
                   $Price TEXT NOT NULL,
                   $Unit TEXT NOT NULL,
                   $ImagePath TEXT NOT NULL,
@@ -106,6 +150,6 @@ class Sql{
                   $Status TEXT NOT NULL
                   )''';
 
-  static List<String> queryList = [create_menu_table,create_desk_table];
+  static List<String> queryList = [create_menu_table,create_desk_table,create_order_table];
 
 }

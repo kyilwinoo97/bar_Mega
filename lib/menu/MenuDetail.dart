@@ -11,10 +11,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
 // import 'package:firebase_storage/firebase_storage.dart';
 
 
-import '../Utils.dart';
+import '../common/Utils.dart';
 import '../injection_container.dart';
 
 class MenuDetail extends StatefulWidget {
@@ -42,7 +43,6 @@ class _MenuDetailState extends State<MenuDetail> {
   String buttonText = "Save";
   final _formKey = GlobalKey<FormState>();
   MainRepository repository;
-  String imagePath = "";
 
   @override
   void initState() {
@@ -52,13 +52,13 @@ class _MenuDetailState extends State<MenuDetail> {
     }
     unitItems.addAll(Utils.unitList);
     if (widget.item != null) {
-      nameController.text = widget.item.name;
+      nameController.text = widget.item.nameEng;
       priceController.text = widget.item.price.toString();
       title = "Update Menu";
       buttonText = "Update";
       selectedUnit = widget.item.unit;
       selectedCategory = widget.item.category;
-      imagePath = widget.item.path;
+      url = widget.item.path;
     }
     super.initState();
   }
@@ -276,9 +276,10 @@ class _MenuDetailState extends State<MenuDetail> {
                                   //     FirebaseStorage.instance;
                                   // if(image.path.isNotEmpty){
                                   //   File file = File(image.path);
+                                  //   String fileName = path.basename(image.path);
                                   //   TaskSnapshot snapshot = await storage
                                   //       .ref()
-                                  //       .child("images")
+                                  //       .child("images/$fileName")
                                   //       .putFile(file);
                                   //   if(snapshot.state == TaskState.success){
                                   //     final String downloadUrl = await snapshot.ref.getDownloadURL();
@@ -292,7 +293,7 @@ class _MenuDetailState extends State<MenuDetail> {
                           Container(
                             child: url.isEmpty
                                 ? Image.asset(
-                              "assets/images/logo.png", height: 100, width: 100,)
+                              "assets/images/menu.png", height: 100, width: 100,)
                                 : Image.network(url, height: 100, width: 100,),
                           ),
                           Container(
@@ -365,8 +366,9 @@ class _MenuDetailState extends State<MenuDetail> {
   }
 
   void saveMenu() async{
-      var result = await repository.saveMenu(Item( name: nameController.text.toString(),
-          price: priceController.text.toString(),unit: selectedUnit,path: "",category: selectedCategory));
+      var result = await repository.saveMenu(Item( nameEng: nameController.text.toString(),
+          nameMyan: '', printName: '',
+          price: priceController.text.toString(),unit: selectedUnit,path: url,category: selectedCategory));
       if(result > 0){
         if(widget.category == Utils.All){
           BlocProvider.of<MenuBloc>(context).add(GetAllMenu());
@@ -381,10 +383,10 @@ class _MenuDetailState extends State<MenuDetail> {
   void updateMenu() async{
     var result = await  repository.updateMenu(Item(
           itemId: widget.item.itemId,
-          name: nameController.text,
+          nameEng: nameController.text,
           price: priceController.text,
           unit: selectedUnit,
-          path: imagePath,
+          path: url,
           category: selectedCategory));
     if(result > 0){
       if(widget.category == Utils.All){

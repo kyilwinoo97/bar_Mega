@@ -1,9 +1,13 @@
 import 'package:bar_mega/menu/Menu.dart';
+import 'package:bar_mega/reports/ReportChart.dart';
 import 'package:bar_mega/sale/Sale.dart';
+import 'package:bar_mega/sale/SaleTables.dart';
 import 'package:bar_mega/settings/Settings.dart';
 import 'package:bar_mega/tables/TableList.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../purchase/Purchase.dart';
 
 class Home extends StatefulWidget{
   @override
@@ -15,6 +19,7 @@ class _HomeSate extends State<Home>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text("Home"),
       ),
@@ -29,10 +34,19 @@ class _HomeSate extends State<Home>{
                   HomeItem("Sale",Image.asset("assets/images/sales.png"),(){
                     Navigator.push(context,
                         MaterialPageRoute(
-                            builder: (context) => Sale()));
+                            builder: (context) => SaleTables()));
                   }),
-                  HomeItem("Purchase",Image.asset("assets/images/shopping_cart.png"),(){}),
-                  HomeItem("Reports",Image.asset("assets/images/business_report.png"),(){}),
+                  HomeItem("Purchase",Image.asset("assets/images/shopping_cart.png"),(){
+                    Navigator.push(context,
+                    MaterialPageRoute(
+                      builder: (context) => Purchase()
+                    ));
+                  }),
+                  HomeItem("Reports",Image.asset("assets/images/business_report.png"),(){
+                    Navigator.push(context,
+                        MaterialPageRoute(
+                            builder: (context) => ReportChart()));
+                  }),
                 ],
               ),
               SizedBox(
@@ -54,7 +68,7 @@ class _HomeSate extends State<Home>{
                   HomeItem("Settings",Image.asset("assets/images/settings.png"),(){
                     Navigator.push(context,
                         MaterialPageRoute(
-                            builder: (context) => Settings()));
+                            builder: (context) => PrinterSetting()));
 
                   }),
               ],)

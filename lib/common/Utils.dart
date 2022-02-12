@@ -128,7 +128,7 @@ static const List<String> unitList = [dish,bottle,cup];
                           children: <Widget>[
 
                             Expanded(
-                              child: FlatButton(
+                              child: ElevatedButton(
                                 onPressed: () {
                                   Navigator.pop(context,false); // To close the dialog
                                 },
@@ -136,7 +136,7 @@ static const List<String> unitList = [dish,bottle,cup];
                               ),
                             ),
                             Expanded(
-                              child: FlatButton(
+                              child: ElevatedButton(
                                 onPressed: () {
                                   Navigator.pop(context,true); // To close the dialog
                                 },

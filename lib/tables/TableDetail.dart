@@ -58,17 +58,18 @@ class _TableDetialState extends State<TableDetail> {
                   child: Container(
                     margin: EdgeInsets.only(top: 20),
                     child: Card(
-                      shadowColor: Colors.grey,
+                      shadowColor: Colors.grey.shade100,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
                       elevation: 5.0,
                       child: Column(
                         children: [
                           Container(
-                            padding: EdgeInsets.all(18.0),
+                            padding: EdgeInsets.all(30.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text("Table No."),
+                                Text("Table No.",style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold,fontSize: 16.0),),
                                 SizedBox(
                                   width: 10,
                                 ),
@@ -90,7 +91,8 @@ class _TableDetialState extends State<TableDetail> {
                                 ),
                                 inputWidget(
                                     width: width * 0.3,
-                                    controller: noOfSeatsController),
+                                    controller: noOfSeatsController,
+                                type: TextInputType.number),
                               ],
                             ),
                           ),
@@ -183,16 +185,18 @@ class _TableDetialState extends State<TableDetail> {
   }
 
 }
-Widget inputWidget({double width, TextEditingController controller}) {
+Widget inputWidget({double width, TextEditingController controller,TextInputType type = TextInputType.text}) {
   return Container(
     width: width,
     height: 50,
     padding: const EdgeInsets.all(5),
     decoration: BoxDecoration(
       border: Border.all(color: Colors.grey, style: BorderStyle.solid),
+      borderRadius: BorderRadius.circular(20.0),
     ),
     child: TextFormField(
         controller: controller,
+        keyboardType: type,
         style: TextStyle(
             fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
         decoration: InputDecoration(

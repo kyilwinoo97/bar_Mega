@@ -11,6 +11,7 @@ import 'package:bar_mega/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 import '../common/Utils.dart';
 import '../injection_container.dart';
@@ -73,7 +74,6 @@ class _SaleListState extends State<SaleList> {
                     total = getTotalPrice(state.result);
                   }
                 });
-
               } else if (state is sale.DeleteSuccess) {
                 BlocProvider.of<TableBloc>(context).add(UpdateTable(Desk(
                     deskId: widget.desk.deskId,
@@ -251,7 +251,7 @@ class _SaleListState extends State<SaleList> {
                                   children: [
                                     Padding(
                                         padding: const EdgeInsets.only(
-                                            left: 10.0, top: 4.0, right: 10.0),
+                                            left: 15.0, top: 4.0, right: 10.0),
                                         child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.start,
@@ -285,19 +285,35 @@ class _SaleListState extends State<SaleList> {
                                           ],
                                         )),
                                     const SizedBox(height: 5.0),
-                                    ListView.builder(
-                                        physics: const BouncingScrollPhysics(),
+                                    AnimationLimiter(
+                                      child: ListView.builder(
                                         shrinkWrap: true,
                                         itemCount: state.result.length,
-                                        itemBuilder: (context, index) {
-                                          return CartItem(
-                                              item: state.result[index]);
-                                        }),
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return AnimationConfiguration
+                                              .staggeredList(
+                                                  position: index,
+                                                  child: ScaleAnimation(
+                                                    child: FadeInAnimation(
+                                                      duration: Duration(
+                                                          milliseconds: 400),
+                                                      delay: Duration(
+                                                          milliseconds: 50),
+                                                      child: CartItem(
+                                                          item: state
+                                                              .result[index]),
+                                                    ),
+                                                  ));
+                                        },
+                                      ),
+                                    ),
+
                                   ],
                                 ),
                               )),
                         );
-                      }else{
+                      } else {
                         return Container(
                           margin: const EdgeInsets.all(5.0),
                           height: double.infinity,
@@ -318,7 +334,7 @@ class _SaleListState extends State<SaleList> {
                                             left: 10.0, top: 4.0, right: 10.0),
                                         child: Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                              MainAxisAlignment.start,
                                           children: [
                                             Text(
                                               'Cart',
@@ -411,10 +427,13 @@ class _SaleListState extends State<SaleList> {
               new Expanded(
                 child: new TextField(
                   controller: _discountController,
-                  keyboardType: TextInputType.text,
+                  keyboardType: TextInputType.number,
                   autofocus: true,
-                  decoration:
-                      new InputDecoration(labelText: 'Discount', hintText: '%'),
+                  decoration: new InputDecoration(
+                      labelText: 'Discount',
+                      hintText: '%',
+                      labelStyle: TextStyle(
+                          fontSize: 22.0, fontWeight: FontWeight.bold)),
                 ),
               )
             ],
@@ -422,12 +441,22 @@ class _SaleListState extends State<SaleList> {
           actions: <Widget>[
             new ElevatedButton(
                 child: const Text('Cancel'),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.grey),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0))),
+                ),
                 onPressed: () {
                   _discountController.text = '';
                   Navigator.pop(context);
                 }),
             new ElevatedButton(
                 child: const Text('Save'),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.green),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0))),
+                ),
                 onPressed: () {
                   if (_discountController.text.isNotEmpty) {
                     discount = int.parse(_discountController.text);

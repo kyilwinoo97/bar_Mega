@@ -29,34 +29,34 @@ class _PurchaseState extends State<Purchase> {
         title: Text('Purchase'),
         elevation: 0.0,
         actions: [
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 15.0),
-            height: 50.0,
-            width: 150.0,
-            child: GestureDetector(
-              onTap: (){},
-              child: Card(
-                  elevation: 0.0,
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.ad_units_outlined,color: Colors.green,size: 30,),
-                      const SizedBox(width: 5.0,),
-                      Text(
-                        'Add Unit',
-                        style: TextStyle(
-                            color: Colors.green,
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  )),
-            ),
-          ),
+          // Container(
+          //   margin: EdgeInsets.symmetric(horizontal: 15.0),
+          //   height: 50.0,
+          //   width: 150.0,
+          //   child: GestureDetector(
+          //     onTap: (){},
+          //     child: Card(
+          //         elevation: 0.0,
+          //         color: Colors.white,
+          //         shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(20.0),
+          //         ),
+          //         child: Row(
+          //           mainAxisAlignment: MainAxisAlignment.center,
+          //           children: [
+          //             Icon(Icons.ad_units_outlined,color: Colors.green,size: 30,),
+          //             const SizedBox(width: 5.0,),
+          //             Text(
+          //               'Add Unit',
+          //               style: TextStyle(
+          //                   color: Colors.green,
+          //                   fontSize: 18.0,
+          //                   fontWeight: FontWeight.bold),
+          //             ),
+          //           ],
+          //         )),
+          //   ),
+          // ),
           // Container(
           //   margin: EdgeInsets.symmetric(horizontal: 15.0),
           //   height: 50.0,
@@ -115,12 +115,6 @@ class _PurchaseState extends State<Purchase> {
                                     delay: Duration(milliseconds: 100),
                                     child: PurchaseItem(
                                       item: state.result[index],
-                                      onTap: () {
-                                        var item = state.result[index];
-                                        setState(() {
-                                          state.result.removeAt(index);
-                                        });
-                                      },
                                     ),
                                   ),
                                 ));

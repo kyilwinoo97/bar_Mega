@@ -15,7 +15,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:firebase_storage/firebase_storage.dart';
 
-
 import '../common/Utils.dart';
 import '../injection_container.dart';
 
@@ -23,7 +22,7 @@ class MenuDetail extends StatefulWidget {
   final Item item;
   final String category;
 
-  MenuDetail({this.item,this.category});
+  MenuDetail({this.item, this.category});
 
   @override
   State<StatefulWidget> createState() => _MenuDetailState();
@@ -33,7 +32,6 @@ class _MenuDetailState extends State<MenuDetail> {
   TextEditingController nameController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   var url = "";
-
 
   final List<String> unitItems = [];
   final List<String> categoryItems = [];
@@ -48,7 +46,7 @@ class _MenuDetailState extends State<MenuDetail> {
   @override
   void initState() {
     repository = sl<MainRepository>();
-    for(int i = 1 ; i< Utils.categoryList.length ; i ++){
+    for (int i = 1; i < Utils.categoryList.length; i++) {
       categoryItems.add(Utils.categoryList[i]);
     }
     unitItems.addAll(Utils.unitList);
@@ -66,27 +64,36 @@ class _MenuDetailState extends State<MenuDetail> {
 
   @override
   Widget build(BuildContext context) {
-    var mQuery = MediaQuery
-        .of(context)
-        .size;
+    var mQuery = MediaQuery.of(context).size;
     var width = mQuery.width;
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
         actions: [
-          buttonText =="Update" ? IconButton(onPressed: (){
-            deleteMenu(widget.item);
-          }, icon: Icon(Icons.delete,color: Colors.white,size: 32,)):SizedBox.shrink(),
-          SizedBox(width: 20,),
+          buttonText == "Update"
+              ? IconButton(
+                  onPressed: () {
+                    deleteMenu(widget.item);
+                  },
+                  icon: Icon(
+                    Icons.delete,
+                    color: Colors.white,
+                    size: 32,
+                  ))
+              : SizedBox.shrink(),
+          SizedBox(
+            width: 20,
+          ),
         ],
       ),
-      body: BlocListener<MenuBloc,MenuState>(
-        listener: (context,state){
+      body: BlocListener<MenuBloc, MenuState>(
+        listener: (context, state) {
           if (state is DeleteSuccess) {
-            if(widget.category == Utils.All){
+            if (widget.category == Utils.All) {
               BlocProvider.of<MenuBloc>(context).add(GetAllMenu());
-            }else{
-              BlocProvider.of<MenuBloc>(context).add(GetMenuByCategory(widget.category));
+            } else {
+              BlocProvider.of<MenuBloc>(context)
+                  .add(GetMenuByCategory(widget.category));
             }
             Navigator.of(context).pop();
           }
@@ -100,7 +107,8 @@ class _MenuDetailState extends State<MenuDetail> {
                   child: Container(
                     margin: EdgeInsets.only(top: 20),
                     child: Card(
-                      shadowColor: Colors.grey,
+                      shadowColor: Colors.grey.shade100,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
                       elevation: 5.0,
                       child: Column(
                         children: [
@@ -110,7 +118,7 @@ class _MenuDetailState extends State<MenuDetail> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text("Name"),
+                                Text("Name",style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold,fontSize: 16.0),),
                                 SizedBox(
                                   width: 10,
                                 ),
@@ -126,13 +134,14 @@ class _MenuDetailState extends State<MenuDetail> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text("Price"),
+                                Text("Price",style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold,fontSize: 16.0),),
                                 SizedBox(
                                   width: 10,
                                 ),
                                 inputWidget(
                                     width: width * 0.3,
-                                    controller: priceController),
+                                    controller: priceController,
+                                type: TextInputType.number),
                               ],
                             ),
                           ),
@@ -142,7 +151,7 @@ class _MenuDetailState extends State<MenuDetail> {
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("Unit"),
+                                Text("Unit",style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold,fontSize: 16.0),),
                                 SizedBox(width: 32),
                                 Container(
                                   width: width * 0.28,
@@ -157,7 +166,8 @@ class _MenuDetailState extends State<MenuDetail> {
                                     isExpanded: true,
                                     hint: Text(
                                       selectedUnit,
-                                      style: TextStyle(fontSize: 14,color: Colors.black),
+                                      style: TextStyle(
+                                          fontSize: 14, color: Colors.black),
                                     ),
                                     icon: const Icon(
                                       Icons.arrow_drop_down,
@@ -171,16 +181,15 @@ class _MenuDetailState extends State<MenuDetail> {
                                       borderRadius: BorderRadius.circular(15),
                                     ),
                                     items: unitItems
-                                        .map((item) =>
-                                        DropdownMenuItem<String>(
-                                          value: item,
-                                          child: Text(
-                                            item,
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ))
+                                        .map((item) => DropdownMenuItem<String>(
+                                              value: item,
+                                              child: Text(
+                                                item,
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                            ))
                                         .toList(),
                                     validator: (value) {
                                       if (value == null) {
@@ -203,7 +212,7 @@ class _MenuDetailState extends State<MenuDetail> {
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("Category"),
+                                Text("Category",style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold,fontSize: 16.0),),
                                 SizedBox(width: 10),
                                 Container(
                                   width: width * 0.28,
@@ -218,7 +227,8 @@ class _MenuDetailState extends State<MenuDetail> {
                                     isExpanded: true,
                                     hint: Text(
                                       selectedCategory,
-                                      style: TextStyle(fontSize: 14,color: Colors.black),
+                                      style: TextStyle(
+                                          fontSize: 14, color: Colors.black),
                                     ),
                                     icon: const Icon(
                                       Icons.arrow_drop_down,
@@ -232,16 +242,15 @@ class _MenuDetailState extends State<MenuDetail> {
                                       borderRadius: BorderRadius.circular(15),
                                     ),
                                     items: categoryItems
-                                        .map((item) =>
-                                        DropdownMenuItem<String>(
-                                          value: item,
-                                          child: Text(
-                                            item,
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ))
+                                        .map((item) => DropdownMenuItem<String>(
+                                              value: item,
+                                              child: Text(
+                                                item,
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                            ))
                                         .toList(),
                                     validator: (value) {
                                       if (value == null) {
@@ -253,10 +262,8 @@ class _MenuDetailState extends State<MenuDetail> {
                                     onChanged: (value) {
                                       selectedCategory = value.toString();
                                     },
-
                                   ),
                                 ),
-
                               ],
                             ),
                           ),
@@ -272,18 +279,20 @@ class _MenuDetailState extends State<MenuDetail> {
                                 onTap: () async {
                                   final ImagePicker _picker = ImagePicker();
                                   // Pick an image
-                                  final XFile image = await _picker.pickImage(source: ImageSource.gallery);
+                                  final XFile image = await _picker.pickImage(
+                                      source: ImageSource.gallery);
                                   FirebaseStorage storage =
                                       FirebaseStorage.instance;
-                                  if(image.path.isNotEmpty){
+                                  if (image.path.isNotEmpty) {
                                     File file = File(image.path);
                                     String fileName = path.basename(image.path);
                                     TaskSnapshot snapshot = await storage
                                         .ref()
                                         .child("images/$fileName")
                                         .putFile(file);
-                                    if(snapshot.state == TaskState.success){
-                                      final String downloadUrl = await snapshot.ref.getDownloadURL();
+                                    if (snapshot.state == TaskState.success) {
+                                      final String downloadUrl =
+                                          await snapshot.ref.getDownloadURL();
                                       setState(() {
                                         url = downloadUrl;
                                       });
@@ -294,8 +303,15 @@ class _MenuDetailState extends State<MenuDetail> {
                           Container(
                             child: url.isEmpty
                                 ? Image.asset(
-                              "assets/images/menu.png", height: 100, width: 100,)
-                                : Image.network(url, height: 100, width: 100,),
+                                    "assets/images/menu.png",
+                                    height: 100,
+                                    width: 100,
+                                  )
+                                : Image.network(
+                                    url,
+                                    height: 100,
+                                    width: 100,
+                                  ),
                           ),
                           Container(
                             padding: EdgeInsets.all(16.0),
@@ -313,19 +329,21 @@ class _MenuDetailState extends State<MenuDetail> {
                                       fontWeight: FontWeight.bold,
                                       onTap: () {
                                         if (nameController.text
-                                            .trim()
-                                            .isNotEmpty && priceController.text
-                                            .trim()
-                                            .isNotEmpty &&
-                                            selectedCategory != null && selectedUnit.isNotEmpty) {
-                                          if(buttonText =="Save"){
+                                                .trim()
+                                                .isNotEmpty &&
+                                            priceController.text
+                                                .trim()
+                                                .isNotEmpty &&
+                                            selectedCategory != null &&
+                                            selectedUnit.isNotEmpty) {
+                                          if (buttonText == "Save") {
                                             saveMenu();
-                                          }else{
+                                          } else {
                                             updateMenu();
                                           }
                                         } else {
                                           Fluttertoast.showToast(
-                                            msg: "Please fill all field!",
+                                            msg: "Please fill all fields!",
                                             toastLength: Toast.LENGTH_SHORT,
                                             fontSize: 13,
                                             backgroundColor: Colors.green,
@@ -366,33 +384,38 @@ class _MenuDetailState extends State<MenuDetail> {
     );
   }
 
-  void saveMenu() async{
-      var result = await repository.saveMenu(Item( name: nameController.text.toString(),
-          price: priceController.text.toString(),unit: selectedUnit,path: url,category: selectedCategory));
-      if(result > 0){
-        if(widget.category == Utils.All){
-          BlocProvider.of<MenuBloc>(context).add(GetAllMenu());
-        }else{
-          BlocProvider.of<MenuBloc>(context).add(GetMenuByCategory(widget.category));
-        }
-        Navigator.of(context).pop();
+  void saveMenu() async {
+    var result = await repository.saveMenu(Item(
+        name: nameController.text.toString(),
+        price: priceController.text.toString(),
+        unit: selectedUnit,
+        path: url,
+        category: selectedCategory));
+    if (result > 0) {
+      if (widget.category == Utils.All) {
+        BlocProvider.of<MenuBloc>(context).add(GetAllMenu());
+      } else {
+        BlocProvider.of<MenuBloc>(context)
+            .add(GetMenuByCategory(widget.category));
       }
-
+      Navigator.of(context).pop();
+    }
   }
 
-  void updateMenu() async{
-    var result = await  repository.updateMenu(Item(
-          itemId: widget.item.itemId,
-          name: nameController.text,
-          price: priceController.text,
-          unit: selectedUnit,
-          path: url,
-          category: selectedCategory));
-    if(result > 0){
-      if(widget.category == Utils.All){
+  void updateMenu() async {
+    var result = await repository.updateMenu(Item(
+        itemId: widget.item.itemId,
+        name: nameController.text,
+        price: priceController.text,
+        unit: selectedUnit,
+        path: url,
+        category: selectedCategory));
+    if (result > 0) {
+      if (widget.category == Utils.All) {
         BlocProvider.of<MenuBloc>(context).add(GetAllMenu());
-      }else{
-        BlocProvider.of<MenuBloc>(context).add(GetMenuByCategory(widget.category));
+      } else {
+        BlocProvider.of<MenuBloc>(context)
+            .add(GetMenuByCategory(widget.category));
       }
       Navigator.of(context).pop();
     }
@@ -403,17 +426,18 @@ class _MenuDetailState extends State<MenuDetail> {
   }
 }
 
-
-Widget inputWidget({double width, TextEditingController controller}) {
+Widget inputWidget({double width, TextEditingController controller, TextInputType type = TextInputType.text}) {
   return Container(
     width: width,
     height: 50,
     padding: const EdgeInsets.all(5),
     decoration: BoxDecoration(
       border: Border.all(color: Colors.grey, style: BorderStyle.solid),
+      borderRadius: BorderRadius.circular(15.0),
     ),
     child: TextFormField(
         controller: controller,
+        keyboardType: type,
         style: TextStyle(
             fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
         decoration: InputDecoration(
@@ -423,12 +447,13 @@ Widget inputWidget({double width, TextEditingController controller}) {
   );
 }
 
-Widget buttonWidget({String text,
-  Color color,
-  double fontSize,
-  double spacing,
-  FontWeight fontWeight,
-  Function() onTap}) {
+Widget buttonWidget(
+    {String text,
+    Color color,
+    double fontSize,
+    double spacing,
+    FontWeight fontWeight,
+    Function() onTap}) {
   return CupertinoButton(
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 14),
       color: CupertinoColors.activeGreen,

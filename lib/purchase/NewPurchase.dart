@@ -3,6 +3,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../common/Utils.dart';
 import '../model/PurchaseItemModel.dart';
@@ -19,9 +20,7 @@ class NewPurchase extends StatefulWidget {
 class _NewPurchaseState extends State<NewPurchase> {
   String selectedUnit = "Select Unit";
 
-  List<String> unitItems = [
-    "bottle","bag","kg"
-  ];
+  List<String> unitItems = [];
 
   DateTime _date = DateTime.now();
   PurchaseItemModel newItem;
@@ -36,10 +35,14 @@ class _NewPurchaseState extends State<NewPurchase> {
   final TextEditingController _discountController = TextEditingController();
   final TextEditingController _totalController = TextEditingController();
 
-  final TextStyle nameTextStyle = TextStyle(
-    fontSize: 18.0,
-    color: Colors.green
-  );
+  final TextStyle nameTextStyle =
+      TextStyle(fontSize: 18.0, color: Colors.green);
+
+  @override
+  void initState() {
+    unitItems.addAll(Utils.unitList);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,17 +51,25 @@ class _NewPurchaseState extends State<NewPurchase> {
       padding: const EdgeInsets.all(10.0),
       child: SingleChildScrollView(
         child: Container(
-          height: size.height * 9/10,
+          height: size.height * 9 / 10,
           child: Column(
             children: [
-              Text('New Purchase',style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold),),
-              const SizedBox(height: 30.0,),
+              Text(
+                'New Purchase',
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 30.0,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Expanded(
                       flex: 3,
-                      child: Text('Name',style: nameTextStyle,)),
+                      child: Text(
+                        'Name',
+                        style: nameTextStyle,
+                      )),
                   Expanded(
                       flex: 7,
                       child: Padding(
@@ -67,28 +78,31 @@ class _NewPurchaseState extends State<NewPurchase> {
                       ))
                 ],
               ),
-              const SizedBox(height: 10.0,),
+              const SizedBox(
+                height: 10.0,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Expanded(
-                      flex: 3,
-                      child: Text('Quantity',style: nameTextStyle)),
+                      flex: 3, child: Text('Quantity', style: nameTextStyle)),
                   Expanded(
                       flex: 7,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                        child: inputWidget(controller: _qtyController,type: TextInputType.number),
+                        child: inputWidget(
+                            controller: _qtyController,
+                            type: TextInputType.number),
                       ))
                 ],
               ),
-              const SizedBox(height: 10.0,),
+              const SizedBox(
+                height: 10.0,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Expanded(
-                      flex: 3,
-                      child: Text('Unit',style: nameTextStyle)),
+                  Expanded(flex: 3, child: Text('Unit', style: nameTextStyle)),
                   Expanded(
                       flex: 7,
                       child: Padding(
@@ -104,7 +118,7 @@ class _NewPurchaseState extends State<NewPurchase> {
                           isExpanded: true,
                           hint: Text(
                             selectedUnit,
-                            style: TextStyle(fontSize: 14,color: Colors.black),
+                            style: TextStyle(fontSize: 14, color: Colors.black),
                           ),
                           icon: const Icon(
                             Icons.arrow_drop_down,
@@ -112,22 +126,21 @@ class _NewPurchaseState extends State<NewPurchase> {
                           ),
                           iconSize: 30,
                           buttonHeight: 60,
-                          buttonPadding: const EdgeInsets.only(
-                              left: 20, right: 10),
+                          buttonPadding:
+                              const EdgeInsets.only(left: 20, right: 10),
                           dropdownDecoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
                           items: unitItems
-                              .map((item) =>
-                              DropdownMenuItem<String>(
-                                value: item,
-                                child: Text(
-                                  item,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ))
+                              .map((item) => DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Text(
+                                      item,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ))
                               .toList(),
                           validator: (value) {
                             if (value == null) {
@@ -143,28 +156,31 @@ class _NewPurchaseState extends State<NewPurchase> {
                       ))
                 ],
               ),
-              const SizedBox(height: 10.0,),
+              const SizedBox(
+                height: 10.0,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Expanded(
-                      flex: 3,
-                      child: Text('Price',style: nameTextStyle)),
+                  Expanded(flex: 3, child: Text('Price', style: nameTextStyle)),
                   Expanded(
                       flex: 7,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                        child: inputWidget(controller: _priceController,type: TextInputType.number),
+                        child: inputWidget(
+                            controller: _priceController,
+                            type: TextInputType.number),
                       ))
                 ],
               ),
-              const SizedBox(height: 10.0,),
+              const SizedBox(
+                height: 10.0,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Expanded(
-                      flex: 3,
-                      child: Text('Supplier',style: nameTextStyle)),
+                      flex: 3, child: Text('Supplier', style: nameTextStyle)),
                   Expanded(
                       flex: 7,
                       child: Padding(
@@ -173,47 +189,52 @@ class _NewPurchaseState extends State<NewPurchase> {
                       ))
                 ],
               ),
-              const SizedBox(height: 10.0,),
+              const SizedBox(
+                height: 10.0,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Expanded(
-                      flex: 3,
-                      child: Text('Discount',style: nameTextStyle)),
+                      flex: 3, child: Text('Discount', style: nameTextStyle)),
                   Expanded(
                       flex: 7,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                        child: inputWidget(controller: _discountController,type: TextInputType.number),
+                        child: inputWidget(
+                            controller: _discountController,
+                            type: TextInputType.number),
                       ))
                 ],
               ),
-              const SizedBox(height: 10.0,),
+              const SizedBox(
+                height: 10.0,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Expanded(
-                      flex: 3,
-                      child: Text('Total',style: nameTextStyle)),
+                  Expanded(flex: 3, child: Text('Total', style: nameTextStyle)),
                   Expanded(
                       flex: 7,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                        child: inputWidget(controller: _totalController,type: TextInputType.number),
+                        child: inputWidget(
+                            controller: _totalController,
+                            type: TextInputType.number),
                       ))
                 ],
               ),
-              const SizedBox(height: 10.0,),
+              const SizedBox(
+                height: 10.0,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Expanded(
-                      flex: 3,
-                      child: Text('Date',style: nameTextStyle)),
+                  Expanded(flex: 3, child: Text('Date', style: nameTextStyle)),
                   Expanded(
                       flex: 7,
                       child: GestureDetector(
-                        onTap: (){
+                        onTap: () {
                           DatePicker.showDatePicker(
                             context,
                             currentTime: this._date,
@@ -230,12 +251,17 @@ class _NewPurchaseState extends State<NewPurchase> {
                           height: 50.0,
                           padding: EdgeInsets.symmetric(horizontal: 10.0),
                           decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey, style: BorderStyle.solid,),
+                            border: Border.all(
+                              color: Colors.grey,
+                              style: BorderStyle.solid,
+                            ),
                             borderRadius: BorderRadius.circular(20.0),
                           ),
-                          child: Center(child: Text("${this._date.day} / ${this._date.month} / ${this._date.year}",style: TextStyle(
-                            fontSize: 18.0
-                          ),)),
+                          child: Center(
+                              child: Text(
+                            "${this._date.day} / ${this._date.month} / ${this._date.year}",
+                            style: TextStyle(fontSize: 18.0),
+                          )),
                         ),
                       ))
                 ],
@@ -245,28 +271,61 @@ class _NewPurchaseState extends State<NewPurchase> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Container(
-                    width: 150.0,
+                      width: 150.0,
                       height: 70.0,
-                      padding: EdgeInsets.all(5.0),child: CustomButton(label: 'Cancel',color: Colors.red,onTap: (){
-                        Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => Purchase()));
-                  },)),
+                      padding: EdgeInsets.all(5.0),
+                      child: CustomButton(
+                        label: 'Cancel',
+                        color: Colors.red,
+                        onTap: () {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Purchase()));
+                        },
+                      )),
                   Container(
-                    width: 150.0,
+                      width: 150.0,
                       height: 70.0,
-                      padding: EdgeInsets.all(5.0),child: CustomButton(label: 'Add',color: Colors.green,onTap: (){
-                        newItem = PurchaseItemModel(
-                          name: _nameController.text,
-                          qty: _qtyController.text,
-                          unit: selectedUnit,
-                          price: _priceController.text,
-                          supplier: _supplierController.text.isEmpty ? "":_supplierController.text,
-                          date: Utils.formatDate(_date),
-                          discount: _discountController.text.isEmpty ? "" : _discountController.text,
-                          total: _totalController.text.isEmpty ? "": _totalController.text
-                        );
-                        widget.onSave(newItem);
-                  },)),
+                      padding: EdgeInsets.all(5.0),
+                      child: CustomButton(
+                        label: 'Add',
+                        color: Colors.green,
+                        onTap: () {
+                          if (_nameController.text.trim().isNotEmpty &&
+                              _qtyController.text.trim().isNotEmpty &&
+                              _priceController.text.trim().isNotEmpty &&
+                              selectedUnit != null &&
+                              selectedUnit.isNotEmpty) {
+
+                            newItem = PurchaseItemModel(
+                                name: _nameController.text,
+                                qty: _qtyController.text,
+                                unit: selectedUnit,
+                                price: _priceController.text,
+                                supplier: _supplierController.text.isEmpty
+                                    ? ""
+                                    : _supplierController.text,
+                                date: Utils.formatDate(_date),
+                                discount: _discountController.text.isEmpty
+                                    ? ""
+                                    : _discountController.text,
+                                total: _totalController.text.isEmpty
+                                    ? ""
+                                    : _totalController.text);
+                            widget.onSave(newItem);
+                          }else{
+                            Fluttertoast.showToast(
+                              msg: "Please fill all fields!",
+                              toastLength: Toast.LENGTH_SHORT,
+                              fontSize: 13,
+                              backgroundColor: Colors.green,
+                              gravity: ToastGravity.CENTER,
+                              timeInSecForIosWeb: 1,
+                            );
+                          }
+                        },
+                      )),
                 ],
               )
             ],
@@ -277,13 +336,18 @@ class _NewPurchaseState extends State<NewPurchase> {
   }
 }
 
-Widget inputWidget({TextEditingController controller, TextInputType type=TextInputType.text}) {
+Widget inputWidget(
+    {TextEditingController controller,
+    TextInputType type = TextInputType.text}) {
   return Container(
     width: double.infinity,
     height: 50,
     padding: const EdgeInsets.all(5),
     decoration: BoxDecoration(
-      border: Border.all(color: Colors.grey, style: BorderStyle.solid,),
+      border: Border.all(
+        color: Colors.grey,
+        style: BorderStyle.solid,
+      ),
       borderRadius: BorderRadius.circular(20.0),
     ),
     child: TextFormField(

@@ -88,7 +88,6 @@ class _OrderDetailsState extends State<OrderDetails> {
                     total: total.toString()
                   )));
 
-
                 },
                 child: Card(
                     elevation: 0.0,
@@ -262,7 +261,9 @@ class _OrderDetailsState extends State<OrderDetails> {
   _connect() async{
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      BlueDevice bt = BlueDevice.fromJson(json.decode(prefs.getString("Printer")));
+      String printerJson = prefs.get("Printer") ?? "";
+
+      BlueDevice bt = printerJson.isNotEmpty ? BlueDevice.fromJson(json.decode(printerJson)) : null;
 
         if(bt != null){
           BluetoothDevice device = BluetoothDevice(bt.name, bt.address);

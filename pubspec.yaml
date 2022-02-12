@@ -56,6 +56,8 @@ dependencies:
   blue_thermal_printer: ^1.1.4
   pull_to_refresh: ^2.0.0
   screenshot: ^1.2.3
+  encrypt: ^5.0.1
+  permission_handler: ^8.3.0
 #  image: ^2.1.18
 
 

@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:bar_mega/common/Utils.dart';
 import 'package:bar_mega/model/Desk.dart';
 import 'package:bar_mega/model/Invoice.dart';
@@ -7,6 +9,7 @@ import 'package:bar_mega/model/Order.dart';
 import 'package:bar_mega/model/PurchaseItemModel.dart';
 import 'package:bar_mega/model/Unit.dart';
 import 'package:charts_flutter/flutter.dart';
+import 'package:encrypt/encrypt.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'DbAccess.dart';
@@ -56,10 +59,17 @@ abstract class DbHelper{
   Future<int> insertPurchase(PurchaseItemModel itemModel);
 
   Future<List<Map>> getAllSale();
+
+  Future<String>generateBackup({bool isEncrypted = true});
+
+  Future<void>restoreBackup(String backup,{ bool isEncrypted = true});
+
 }
 class DbHelperImpl implements DbHelper{
   final Database database;
   DbHelperImpl({this.database});
+  String SECRET_KEY = "2514879314527865";
+  String SECRET_IV = "2389451725810357";
 
 
   @override
@@ -178,6 +188,72 @@ class DbHelperImpl implements DbHelper{
   Future<List<Map>> getAllSale() async{
     return await database.query(Sql.SaleTable);
   }
+
+  @override
+  Future<String>generateBackup({bool isEncrypted = true}) async {
+
+    print('GENERATE BACKUP');
+
+    var dbs = await database;
+
+    List data =[];
+
+    List<Map<String,dynamic>> listMaps=[];
+
+    for (var i = 0; i < Sql.tables.length; i++)
+    {
+
+      listMaps = await dbs.query(Sql.tables[i]);
+
+      data.add(listMaps);
+
+    }
+
+    List backups=[Sql.tables,data];
+
+    String json = jsonEncode(backups);
+
+    if(isEncrypted)
+    {
+
+      var key = Key.fromUtf8(SECRET_KEY);
+      var iv = IV.fromUtf8(SECRET_IV);
+      var encrypter = Encrypter(AES(key,mode: AESMode.cbc,padding: 'PKCS7'));
+      var encrypted = encrypter.encrypt(json, iv: iv);
+      return encrypted.base64;
+    }
+    else
+    {
+      return json;
+    }
+  }
+
+  @override
+  Future<void>restoreBackup(String backup,{ bool isEncrypted = true}) async {
+
+    var dbs = await database;
+
+    Batch batch = dbs.batch();
+
+    final key = Key.fromUtf8(SECRET_KEY);
+    final iv = IV.fromUtf8(SECRET_IV);
+    var encrypter = Encrypter(AES(key,mode: AESMode.cbc,padding: 'PKCS7'));
+
+    List json = jsonDecode(isEncrypted ? encrypter.decrypt64(backup,iv:iv):backup);
+
+    for (var i = 0; i < json[0].length; i++)
+    {
+      for (var k = 0; k < json[1][i].length; k++)
+      {
+        batch.insert(json[0][i],json[1][i][k]);
+      }
+    }
+
+    await batch.commit(continueOnError:false,noResult:true);
+
+    print('RESTORE BACKUP');
+  }
+
 
 }
 

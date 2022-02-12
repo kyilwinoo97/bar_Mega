@@ -52,7 +52,9 @@ class _ReportListState extends State<ReportList> {
               child: Text(state.message),
             );
           }else{
-            return Text('Hello');
+            return Center(
+              child: CircularProgressIndicator(color: Colors.green,),
+            );
           }
         },
       ),
@@ -120,7 +122,6 @@ class ReportItem extends StatelessWidget {
                   20.0,color: Colors.blueGrey,),
                   const SizedBox(width: 10.0,),
                   Text('${item.date}'),
-                  // Text("${item.date.day.toString()} / ${item.date.month.toString()} / ${item.date.year.toString()}",style: TextStyle(color: Colors.blueGrey),)
                 ],
               ),
             ],

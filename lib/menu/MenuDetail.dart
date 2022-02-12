@@ -12,7 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
-// import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 
 import '../common/Utils.dart';
@@ -272,22 +272,22 @@ class _MenuDetailState extends State<MenuDetail> {
                                   final ImagePicker _picker = ImagePicker();
                                   // Pick an image
                                   final XFile image = await _picker.pickImage(source: ImageSource.gallery);
-                                  // FirebaseStorage storage =
-                                  //     FirebaseStorage.instance;
-                                  // if(image.path.isNotEmpty){
-                                  //   File file = File(image.path);
-                                  //   String fileName = path.basename(image.path);
-                                  //   TaskSnapshot snapshot = await storage
-                                  //       .ref()
-                                  //       .child("images/$fileName")
-                                  //       .putFile(file);
-                                  //   if(snapshot.state == TaskState.success){
-                                  //     final String downloadUrl = await snapshot.ref.getDownloadURL();
-                                  //     setState(() {
-                                  //       url = downloadUrl;
-                                  //     });
-                                  //   }
-                                  // }
+                                  FirebaseStorage storage =
+                                      FirebaseStorage.instance;
+                                  if(image.path.isNotEmpty){
+                                    File file = File(image.path);
+                                    String fileName = path.basename(image.path);
+                                    TaskSnapshot snapshot = await storage
+                                        .ref()
+                                        .child("images/$fileName")
+                                        .putFile(file);
+                                    if(snapshot.state == TaskState.success){
+                                      final String downloadUrl = await snapshot.ref.getDownloadURL();
+                                      setState(() {
+                                        url = downloadUrl;
+                                      });
+                                    }
+                                  }
                                 }),
                           ),
                           Container(

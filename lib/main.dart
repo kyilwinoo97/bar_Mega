@@ -1,6 +1,7 @@
 import 'package:bar_mega/bloc/menu_bloc/MenuBloc.dart';
 import 'package:bar_mega/bloc/purchase_bloc/PurchaseBloc.dart';
 import 'package:bar_mega/bloc/sale_bloc/SaleBloc.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,7 +11,7 @@ import 'home/home.dart';
 import 'injection_container.dart' as di;
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
- // await Firebase.initializeApp();
+ await Firebase.initializeApp();
   di.init();
   runApp(MultiBlocProvider(providers: [
     BlocProvider<MenuBloc>(

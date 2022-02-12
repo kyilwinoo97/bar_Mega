@@ -16,12 +16,11 @@ class ReportDetails extends StatefulWidget {
 class _ReportDetailsState extends State<ReportDetails> {
   @override
   void initState() {
-
+    getData();
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
-    getData();
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(

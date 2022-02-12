@@ -32,6 +32,8 @@ abstract class MainRepository{
   Future<int> deleteInvoice(String invoiceNo);
 
   Future<int> addPurchase(PurchaseItemModel itemModel);
+
+  Future<String> backUpData(bool isEncrypted);
 }
 class MainRepositoryImpl extends MainRepository{
   DbHelper helper;
@@ -106,6 +108,11 @@ class MainRepositoryImpl extends MainRepository{
   @override
   Future<int> addPurchase(PurchaseItemModel itemModel) async{
    return await helper.insertPurchase(itemModel);
+  }
+
+  @override
+  Future<String> backUpData(bool isEncrypted) async{
+   return await helper.generateBackup(isEncrypted: isEncrypted);
   }
 
 }

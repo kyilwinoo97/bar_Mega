@@ -205,6 +205,7 @@ class Sql{
                   $Status TEXT NOT NULL
                   )''';
 
+  static List<String> tables = [Invoice_Table,Item_Table,Desk_Table,SaleTable,OrderTable,Purchase_Table,PurchaseItem,UnitSaleTable,Unit_Table];
   static List<String> queryList = [create_invoice_table,create_menu_table,create_desk_table,create_sale_table,create_order_table,create_purchase_table,create_purchase_Item_table,create_sale_unit_table,create_unit_table];
 
 }

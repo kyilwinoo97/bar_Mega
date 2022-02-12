@@ -41,7 +41,7 @@ class SaleRepositoryImpl extends SaleRepository{
   Future<List<PurchaseItemModel>> getAllPurchase() async{
    List<Map> result = await helper.getAllPurchase();
    List<PurchaseItemModel> lst = [];
-   for(int i = 0 ;i< result.length; i ++){
+   for(int i = 0 ;i< result.length; i++){
      lst.add(PurchaseItemModel.fromMap(result[i]));
    }
    return lst;

@@ -31,6 +31,8 @@ class SaleBloc extends Bloc<SaleEvent,SaleState> {
      yield* _addOneOrder(event.order);
    }else if(event is UpdateOrder){
      yield* _updateOrder(event.order);
+   }else if(event is GetAllSale){
+     yield* _getAllSale();
    }
   }
 
@@ -141,9 +143,17 @@ class SaleBloc extends Bloc<SaleEvent,SaleState> {
       yield Failure("Something went wrong");
     }
   }
-
-
-
-
-
+  Stream<SaleState> _getAllSale() async*{
+    yield Loading();
+    List<Sale> lst = [];
+    List<Sale> result = await repository.getAllSale();
+    for(int i = 0 ; i< result.length ; i++){
+      lst.add(result[i]);
+    }
+    if(lst.length > 0){
+      yield AllSaleSuccess(result: lst);
+    }else{
+      yield Failure("No Sales");
+    }
+  }
 }

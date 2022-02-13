@@ -183,7 +183,7 @@ class _SaleListState extends State<SaleList> {
                                     unit: item.unit,
                                     discount: "",
                                     date: Utils.formatDate(DateTime.now()),
-                                    total: item.price);
+                                    total: item.price, nameMyanmar: item.nameMyanmar);
                                 BlocProvider.of<sale.SaleBloc>(context)
                                     .add(sale.AddOneOrder(orderItem));
                               } else {
@@ -204,7 +204,7 @@ class _SaleListState extends State<SaleList> {
                                         discount: temItems[itemIndex].discount,
                                         unit: temItems[itemIndex].unit,
                                         date: temItems[itemIndex].date,
-                                        total: temItems[itemIndex].total)));
+                                        total: temItems[itemIndex].total, nameMyanmar: temItems[index].nameMyanmar)));
                               }
                             });
                           },
@@ -564,8 +564,7 @@ class _SaleListState extends State<SaleList> {
                                                 discount: item.discount,
                                                 unit: item.unit,
                                                 date: item.date,
-                                                total: item.total)));
-                                        // total = getTotalPrice();
+                                                total: item.total, nameMyanmar: item.nameMyanmar)));
                                       });
                                     }
                                   },
@@ -609,7 +608,7 @@ class _SaleListState extends State<SaleList> {
                                               discount: item.discount,
                                               unit: item.unit,
                                               date: item.date,
-                                              total: item.total)));
+                                              total: item.total, nameMyanmar: item.nameMyanmar)));
                                     });
                                   },
                                   child: SizedBox(

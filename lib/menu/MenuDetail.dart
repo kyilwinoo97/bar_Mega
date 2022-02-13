@@ -30,6 +30,7 @@ class MenuDetail extends StatefulWidget {
 
 class _MenuDetailState extends State<MenuDetail> {
   TextEditingController nameController = TextEditingController();
+  TextEditingController _nameMyanController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   var url = "";
 
@@ -132,6 +133,28 @@ class _MenuDetailState extends State<MenuDetail> {
                                 inputWidget(
                                     width: width * 0.3,
                                     controller: nameController),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "Name\n(Myanmar)",
+                                  style: TextStyle(
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16.0),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                inputWidget(
+                                    width: width * 0.3,
+                                    controller: _nameMyanController),
                               ],
                             ),
                           ),
@@ -355,7 +378,7 @@ class _MenuDetailState extends State<MenuDetail> {
                                       onTap: () {
                                         if (nameController.text
                                                 .trim()
-                                                .isNotEmpty &&
+                                                .isNotEmpty && _nameMyanController.text.trim().isNotEmpty &&
                                             priceController.text
                                                 .trim()
                                                 .isNotEmpty &&
@@ -415,7 +438,7 @@ class _MenuDetailState extends State<MenuDetail> {
         price: priceController.text.toString(),
         unit: selectedUnit,
         path: url,
-        category: selectedCategory));
+        category: selectedCategory, nameMyanmar: _nameMyanController.text));
     if (result > 0) {
       if (widget.category == Utils.All) {
         BlocProvider.of<MenuBloc>(context).add(GetAllMenu());
@@ -434,13 +457,12 @@ class _MenuDetailState extends State<MenuDetail> {
         price: priceController.text,
         unit: selectedUnit,
         path: url,
-        category: selectedCategory));
+        category: selectedCategory, nameMyanmar: _nameMyanController.text));
     if (result > 0) {
       if (widget.category == Utils.All) {
         BlocProvider.of<MenuBloc>(context).add(GetAllMenu());
       } else {
-        BlocProvider.of<MenuBloc>(context)
-            .add(GetMenuByCategory(widget.category));
+        BlocProvider.of<MenuBloc>(context).add(GetMenuByCategory(widget.category));
       }
       Navigator.of(context).pop();
     }

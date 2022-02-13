@@ -53,7 +53,7 @@ class Sql{
   static const String Item_Table = "Item";
   static const String itemId = "itemId";
   static const String Name = "name";
-  // static const String nameMyan = "nameMyan";
+  static const String NameMyanmar = "nameMyanmar";
   // static const String printName = "printName";
   static const String Price = "price";
   static const String Unit = "unit";
@@ -169,6 +169,7 @@ class Sql{
                  ($orderId INTEGER PRIMARY KEY,
                   $invoiceNo TEXT NOT NULL,
                   $Name TEXT NOT NULL,
+                  $NameMyanmar TEXT NOT NULL, 
                   $Quantity INTEGER NOT NULL,
                   $Amount TEXT NOT NULL,
                   $Discount TEXT NOT NULL,
@@ -191,6 +192,7 @@ class Sql{
   static String create_menu_table ='''CREATE TABLE IF NOT EXISTS $Item_Table 
                  ($itemId INTEGER PRIMARY KEY,
                   $Name TEXT NOT NULL,
+                  $NameMyanmar TEXT NOT NULL,
                   $Price TEXT NOT NULL,
                   $Unit TEXT NOT NULL,
                   $ImagePath TEXT NOT NULL,

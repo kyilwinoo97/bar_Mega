@@ -1,9 +1,12 @@
+import 'package:flutter/cupertino.dart';
+
 import 'Item.dart';
 
 class Order{
   int orderId;
   String invoiceNo;
   String name;
+  String nameMyanmar;
   int quantity;
   String amount;
   String discount;
@@ -11,12 +14,13 @@ class Order{
   String total;
   String unit;
 
-  Order({this.orderId, this.invoiceNo, this.name, this.quantity, this.amount,
+  Order({this.orderId, this.invoiceNo, this.name,@required this.nameMyanmar, this.quantity, this.amount,
       this.discount,this.unit, this.date, this.total});
   Order.fromMap(Map<String, dynamic> map)
       : orderId = map['orderId'],
        invoiceNo = map['invoiceNo'],
         name = map['name'],
+        nameMyanmar = map['nameMyanmar'],
         quantity = map['quantity'],
         amount = map['amount'],
         unit = map['unit'],
@@ -29,6 +33,7 @@ class Order{
     map['orderId'] = orderId;
     map['invoiceNo'] = invoiceNo;
     map['name'] = name;
+    map['nameMyanmar'] = nameMyanmar;
     map['quantity'] = quantity;
     map['amount'] = amount;
     map['unit'] = unit;

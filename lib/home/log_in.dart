@@ -1,5 +1,8 @@
+import 'package:bar_mega/common/Utils.dart';
+import 'package:bar_mega/home/home.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../widgets/Toasts.dart';
 
@@ -14,7 +17,7 @@ class _LoginState extends State<Login> {
 
   _getTextFields() {
     return Expanded(
-      flex: 3,
+      flex: 6,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -44,16 +47,33 @@ class _LoginState extends State<Login> {
       label: 'Log In',
       onPressed: () {
         setState(() {
-          if(_nameController.text.trim().isEmpty || _passwordController.text.trim().isEmpty){
+          if (_nameController.text.trim().isEmpty ||
+              _passwordController.text.trim().isEmpty) {
             Toasts.greenToast("Please fill out all fields!");
-          }else{
-
+          } else {
+            Utils.checkInternetConnection(context).then((value) => {
+                  if (!value)
+                    {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        duration: const Duration(milliseconds: 500),
+                        content: Text("No Internet Connection"),
+                      )),
+                    } else
+                    {
+                      getUserFromFireStore(),
+                    }
+                });
           }
         });
       },
     );
   }
 
+  @override
+  void initState() {
+    getUserLogin();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -64,7 +84,6 @@ class _LoginState extends State<Login> {
           height: size.height / 1.5,
           child: Column(
             children: [
-
               Expanded(
                   flex: 2,
                   child: Image.asset(
@@ -79,6 +98,56 @@ class _LoginState extends State<Login> {
         ),
       ),
     );
+  }
+
+  getUserFromFireStore() async{
+    QuerySnapshot querySnapshot =  await FirebaseFirestore.instance
+        .collection(Utils.firestore_collection)
+        .where("name",isEqualTo: _nameController.text)
+        .where("pwd",isEqualTo: this._passwordController.text)
+        .get();
+    if(querySnapshot.docs.isNotEmpty){
+      querySnapshot.docs.forEach((element) {
+        String userId = element.id;
+        bool isActive = element.get("isActive");
+        if(isActive){
+          Toasts.greenToast("Your account was already login \n on another device!");
+        }else{
+          setUserToSharedPreference(userId);
+          updateFireStoreData(userId);
+        }
+      });
+    }else{
+      Toasts.greenToast("Incorrect User Name or Password!");
+    }
+  }
+
+  void setUserToSharedPreference(String userId) async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("IsLogin", true);
+    prefs.setString("UserId", userId);
+  }
+
+  void updateFireStoreData(String userId) {
+    FirebaseFirestore.instance
+        .collection(
+        Utils.firestore_collection)
+        .doc(userId)
+        .update({
+      "isActive": true,
+    }).then((_) {
+      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+          Home()), (Route<dynamic> route) => false);
+    });
+  }
+
+  void getUserLogin() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isLogin = prefs.getBool("IsLogin");
+    if(isLogin){
+      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+          Home()), (Route<dynamic> route) => false);
+    }
   }
 }
 
@@ -134,9 +203,11 @@ class CustomTextFormField extends StatelessWidget {
 class CustomElevatedButton extends StatelessWidget {
   CustomElevatedButton(
       {this.label, this.onPressed, this.bgColor = Colors.green});
+
   final String label;
   final Function() onPressed;
   Color bgColor;
+
   @override
   Widget build(BuildContext context) {
     return Container(

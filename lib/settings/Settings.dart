@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bar_mega/common/Utils.dart';
+import 'package:bar_mega/home/log_in.dart';
 import 'package:bar_mega/injection_container.dart';
 import 'package:bar_mega/model/BlueDevice.dart';
 import 'package:bar_mega/repository/MainRepository.dart';
 import 'package:bar_mega/widgets/ListItem.dart';
 import 'package:bar_mega/widgets/Toasts.dart';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -87,7 +89,21 @@ class _PrinterSettingState extends State<PrinterSetting> {
             height: 50.0,
             width: 150.0,
             child: InkWell(
-              onTap: (){
+              onTap: ()async{
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setBool("IsLogin", false);
+                String userId = prefs.getString("UserId");
+                FirebaseFirestore.instance
+                    .collection(
+                    Utils.firestore_collection)
+                    .doc(userId)
+                    .update({
+                  "isActive": false,
+                }).then((_) {
+                  prefs.setString("UserId","");
+                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                      Login()), (Route<dynamic> route) => false);
+                });
 
               },
               child: Card(

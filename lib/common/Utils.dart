@@ -1,12 +1,15 @@
 import 'package:bar_mega/widgets/ListItem.dart';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart' as intl;
 
 class Utils{
   static Utils _instance;
+
   Utils._internal(){
     _instance = this;
   }
@@ -16,6 +19,7 @@ static const String MainMenu ="Main Menu";
 static const String SoftDrink ="Soft Drink";
 static const String AlcoholicDrink ="Alcoholic Drink";
 static const String Desserts ="Desserts";
+  static String firestore_collection = "Bar Mega";
 static const List<String> categoryList = [All,MainMenu,SoftDrink,AlcoholicDrink,Desserts];
 
 
@@ -132,7 +136,7 @@ static const List<String> unitList = ['ခု','လုံး','ဘူး',dish,b
                                 onPressed: () {
                                   Navigator.pop(context,false); // To close the dialog
                                 },
-                                child: Text("Cancel",style: TextStyle(color: Theme.of(context).primaryColor),),
+                                child: Text("Cancel",style: TextStyle(color:Colors.black),),
                               ),
                             ),
                             Expanded(
@@ -140,7 +144,7 @@ static const List<String> unitList = ['ခု','လုံး','ဘူး',dish,b
                                 onPressed: () {
                                   Navigator.pop(context,true); // To close the dialog
                                 },
-                                child: Text("OK",style: TextStyle(color: Theme.of(context).primaryColor),),
+                                child: Text("OK",style: TextStyle(color:Colors.black),),
                               ),
                             ),
                           ],
@@ -162,6 +166,30 @@ static const List<String> unitList = ['ခု','လုံး','ဘူး',dish,b
             ),
           );
         });
+  }
+
+  static checkInternetConnection(BuildContext context) async{
+    ConnectivityResult result;
+    final Connectivity _connectivity = Connectivity();
+    bool _return = true;
+
+    try {
+      result = await _connectivity.checkConnectivity();
+      switch (result) {
+        case ConnectivityResult.none:
+          _return = false;
+          break;
+        case ConnectivityResult.wifi:
+        // TODO: Handle this case.
+          break;
+        case ConnectivityResult.mobile:
+        // TODO: Handle this case.
+          break;
+      }
+    } on PlatformException catch (e) {
+      print(e.toString());
+    }
+    return _return;
   }
 
 }

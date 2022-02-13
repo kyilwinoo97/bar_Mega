@@ -81,6 +81,37 @@ class _PrinterSettingState extends State<PrinterSetting> {
                   )),
             ),
           ),
+          const SizedBox(width: 10.0,),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 15.0),
+            height: 50.0,
+            width: 150.0,
+            child: InkWell(
+              onTap: (){
+
+              },
+              child: Card(
+                  elevation: 0.0,
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.logout,color: Colors.green,size: 30,),
+                      const SizedBox(width: 5.0,),
+                      Text(
+                        'Log Out',
+                        style: TextStyle(
+                            color: Colors.green,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  )),
+            ),
+          )
         ],
       ),
       body: Container(

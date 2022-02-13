@@ -223,7 +223,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text('Amount',style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
-                            Text("$netAmount",style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
+                            Text("${netAmount.toPrecision(1)}",style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
                           ],
                         ),
                          Divider(color: Colors.grey.shade500,),

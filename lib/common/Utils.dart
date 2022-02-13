@@ -19,10 +19,10 @@ static const String Desserts ="Desserts";
 static const List<String> categoryList = [All,MainMenu,SoftDrink,AlcoholicDrink,Desserts];
 
 
-static const String dish ="dish";
-static const String bottle ="bottle";
-static const String cup ="cup";
-static const List<String> unitList = [dish,bottle,cup];
+static const String dish ="ပွဲ";
+static const String bottle ="ပုလင်း";
+static const String cup ="ခွက်";
+static const List<String> unitList = ['ခု','လုံး','ဘူး',dish,bottle,cup];
 
   static const kDateTimePickerTheme = DatePickerTheme(
     cancelStyle: TextStyle(

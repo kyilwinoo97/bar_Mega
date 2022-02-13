@@ -20,7 +20,7 @@ class NewPurchase extends StatefulWidget {
 class _NewPurchaseState extends State<NewPurchase> {
   String selectedUnit = "Select Unit";
 
-  List<String> unitItems = [];
+  List<String> unitItems = ['ခု','လုံး','ဘူး','ခွက်','ပိဿာ','ကျပ်သား','m','cm','g','kg','l','ml'];
 
   DateTime _date = DateTime.now();
   PurchaseItemModel newItem;
@@ -40,7 +40,6 @@ class _NewPurchaseState extends State<NewPurchase> {
 
   @override
   void initState() {
-    unitItems.addAll(Utils.unitList);
     super.initState();
   }
 

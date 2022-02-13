@@ -297,7 +297,7 @@ class _SaleListState extends State<SaleList> {
                                                   child: ScaleAnimation(
                                                     child: FadeInAnimation(
                                                       duration: Duration(
-                                                          milliseconds: 400),
+                                                          milliseconds: 100),
                                                       delay: Duration(
                                                           milliseconds: 50),
                                                       child: CartItem(

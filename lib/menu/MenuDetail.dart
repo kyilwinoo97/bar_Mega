@@ -108,7 +108,8 @@ class _MenuDetailState extends State<MenuDetail> {
                     margin: EdgeInsets.only(top: 20),
                     child: Card(
                       shadowColor: Colors.grey.shade100,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0)),
                       elevation: 5.0,
                       child: Column(
                         children: [
@@ -118,7 +119,13 @@ class _MenuDetailState extends State<MenuDetail> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text("Name",style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold,fontSize: 16.0),),
+                                Text(
+                                  "Name",
+                                  style: TextStyle(
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16.0),
+                                ),
                                 SizedBox(
                                   width: 10,
                                 ),
@@ -134,14 +141,20 @@ class _MenuDetailState extends State<MenuDetail> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text("Price",style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold,fontSize: 16.0),),
+                                Text(
+                                  "Price",
+                                  style: TextStyle(
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16.0),
+                                ),
                                 SizedBox(
                                   width: 10,
                                 ),
                                 inputWidget(
                                     width: width * 0.3,
                                     controller: priceController,
-                                type: TextInputType.number),
+                                    type: TextInputType.number),
                               ],
                             ),
                           ),
@@ -151,7 +164,13 @@ class _MenuDetailState extends State<MenuDetail> {
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("Unit",style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold,fontSize: 16.0),),
+                                Text(
+                                  "Unit",
+                                  style: TextStyle(
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16.0),
+                                ),
                                 SizedBox(width: 32),
                                 Container(
                                   width: width * 0.28,
@@ -212,7 +231,13 @@ class _MenuDetailState extends State<MenuDetail> {
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("Category",style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold,fontSize: 16.0),),
+                                Text(
+                                  "Category",
+                                  style: TextStyle(
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16.0),
+                                ),
                                 SizedBox(width: 10),
                                 Container(
                                   width: width * 0.28,
@@ -426,7 +451,10 @@ class _MenuDetailState extends State<MenuDetail> {
   }
 }
 
-Widget inputWidget({double width, TextEditingController controller, TextInputType type = TextInputType.text}) {
+Widget inputWidget(
+    {double width,
+    TextEditingController controller,
+    TextInputType type = TextInputType.text}) {
   return Container(
     width: width,
     height: 50,

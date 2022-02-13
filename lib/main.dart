@@ -1,6 +1,8 @@
 import 'package:bar_mega/bloc/menu_bloc/MenuBloc.dart';
 import 'package:bar_mega/bloc/purchase_bloc/PurchaseBloc.dart';
 import 'package:bar_mega/bloc/sale_bloc/SaleBloc.dart';
+import 'package:bar_mega/home/log_in.dart';
+import 'package:bar_mega/settings/Settings.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +46,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.green,
         fontFamily: "Roboto"
       ),
-      home: Home(),
+      debugShowCheckedModeBanner: false,
+      home: Login(),
     );
   }
 }

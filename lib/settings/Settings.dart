@@ -4,10 +4,13 @@ import 'dart:io';
 import 'package:bar_mega/common/Utils.dart';
 import 'package:bar_mega/home/log_in.dart';
 import 'package:bar_mega/injection_container.dart';
-import 'package:bar_mega/model/BlueDevice.dart';
+import 'package:bar_mega/model/BtDevice.dart';
 import 'package:bar_mega/repository/MainRepository.dart';
 import 'package:bar_mega/widgets/ListItem.dart';
 import 'package:bar_mega/widgets/Toasts.dart';
+import 'package:blue_print_pos/blue_print_pos.dart';
+import 'package:blue_print_pos/models/blue_device.dart';
+import 'package:blue_print_pos/models/models.dart';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,40 +28,44 @@ class PrinterSetting extends StatefulWidget {
 }
 
 class _PrinterSettingState extends State<PrinterSetting> {
-  BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
+  // BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
+  final BluePrintPos _bluePrintPos = BluePrintPos.instance;
+  List<BlueDevice> _blueDevices = <BlueDevice>[];
+  BlueDevice _selectedDevice;
 
   // List<BluetoothDevice> _devices = [];
-  List<ListItem<BluetoothDevice>> _devices = [];
+  // List<ListItem<BluetoothDevice>> _devices = [];
   final RefreshController _refreshController =
-  RefreshController(initialRefresh: false);
+      RefreshController(initialRefresh: false);
   MainRepository repository;
   SharedPreferences prefs;
   @override
   void initState() {
     super.initState();
-    repository =sl<MainRepository>();
-    getDevices();
+    repository = sl<MainRepository>();
+    _onScanPressed();
+    // getDevices();
     setSharedPreferece();
   }
+
   @override
   void dispose() {
     super.dispose();
-    bluetooth.disconnect();
-
+    // _bluePrintPos.disconnect();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Printer Settings"),
-        centerTitle: true,
         actions: [
           Container(
             margin: EdgeInsets.symmetric(horizontal: 15.0),
             height: 50.0,
             width: 150.0,
             child: InkWell(
-              onTap: (){
+              onTap: () {
                 backUpData();
               },
               child: Card(
@@ -70,8 +77,14 @@ class _PrinterSettingState extends State<PrinterSetting> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.backup,color: Colors.green,size: 30,),
-                      const SizedBox(width: 5.0,),
+                      Icon(
+                        Icons.backup,
+                        color: Colors.green,
+                        size: 30,
+                      ),
+                      const SizedBox(
+                        width: 5.0,
+                      ),
                       Text(
                         'BackUp',
                         style: TextStyle(
@@ -83,28 +96,29 @@ class _PrinterSettingState extends State<PrinterSetting> {
                   )),
             ),
           ),
-          const SizedBox(width: 10.0,),
+          const SizedBox(
+            width: 10.0,
+          ),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 15.0),
             height: 50.0,
             width: 150.0,
             child: InkWell(
-              onTap: ()async{
+              onTap: () async {
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 prefs.setBool("IsLogin", false);
                 String userId = prefs.getString("UserId");
                 FirebaseFirestore.instance
-                    .collection(
-                    Utils.firestore_collection)
+                    .collection(Utils.firestore_collection)
                     .doc(userId)
                     .update({
                   "isActive": false,
                 }).then((_) {
-                  prefs.setString("UserId","");
-                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-                      Login()), (Route<dynamic> route) => false);
+                  prefs.setString("UserId", "");
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => Login()),
+                      (Route<dynamic> route) => false);
                 });
-
               },
               child: Card(
                   elevation: 0.0,
@@ -115,8 +129,14 @@ class _PrinterSettingState extends State<PrinterSetting> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.logout,color: Colors.green,size: 30,),
-                      const SizedBox(width: 5.0,),
+                      Icon(
+                        Icons.logout,
+                        color: Colors.green,
+                        size: 30,
+                      ),
+                      const SizedBox(
+                        width: 5.0,
+                      ),
                       Text(
                         'Log Out',
                         style: TextStyle(
@@ -136,14 +156,22 @@ class _PrinterSettingState extends State<PrinterSetting> {
           onRefresh: _refresh,
           controller: _refreshController,
           child: ListView.builder(
-            itemCount: _devices.length,
+
+            itemCount: _blueDevices.length,
             itemBuilder: (context, index) => InkWell(
               onTap: () {
-                _connect(_devices[index].data ,index);
+                // _blueDevices[index].address ==
+                // (_selectedDevice?.address ?? '')
+                // ? _onDisconnectDevice
+                // : () =>
+                _onSelectDevice(index);
+                // _connect(_blueDevices[index], index);
+                // _connect(_devices[index].data ,index);
               },
               child: Card(
                 elevation: 5,
                 child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 20.0),
                   child: ListTile(
                     leading: CircleAvatar(
                       backgroundColor: Colors.green,
@@ -153,8 +181,8 @@ class _PrinterSettingState extends State<PrinterSetting> {
                         size: 30.0,
                       ),
                     ),
-                    title: Text(_devices[index].data.name),
-                    subtitle: Text(_devices[index].isSelected
+                    title: Text(_blueDevices[index].name),
+                    subtitle: Text(_blueDevices[index].connected
                         ? "Connected"
                         : "Tap to Connect"),
                   ),
@@ -167,80 +195,170 @@ class _PrinterSettingState extends State<PrinterSetting> {
     );
   }
 
-  void _connect(BluetoothDevice device, int index) {
-    try{
-      bluetooth.isConnected.then((isConnected) => {
-        if(!isConnected){
-          bluetooth.connect(device).then((value) => {
-            setState(() {
-              BlueDevice bt = BlueDevice(name:device.name,address:device.address,type: device.type,connected: device.connected);
-              prefs.setString("Printer",jsonEncode(bt));
+  // void _connect(BlueDevice device, int index) {
+  //   try {
+  //     if (!_bluePrintPos.isConnected) {
+  //       _bluePrintPos.connect(device).then((value) => {
+  //             print("======================================>${value}"),
+  //             setState(() {
+  //               BtDevice bt = BtDevice(
+  //                   name: device.name,
+  //                   address: device.address,
+  //                   type: device.type,
+  //                   connected: device.connected);
+  //               prefs.setString("Printer", jsonEncode(bt));
+  //               print('Connected Bluetooth device' + device.name);
+  //               _blueDevices[index].connected = true;
+  //               Utils.lstDevices = _blueDevices;
+  //             }),
+  //           });
+  //     } else {
+  //       _bluePrintPos.disconnect().then((value) => {
+  //             setState(() {
+  //               for (int i = 0; i < _blueDevices.length; i++) {
+  //                 _blueDevices[i].connected = false;
+  //               }
+  //               _blueDevices[value.index].connected = false;
+  //               Utils.lstDevices = [];
+  //             }),
+  //           });
+  //     }
+  //     // _bluePrintPos.isConnected.then((isConnected) => {
+  //     //   if(!isConnected){
+  //     //     _bluePrintPos.connect(device).then((value) => {
+  //     //       setState(() {
+  //     //         BtDevice bt = BtDevice(name:device.name,address:device.address,type: device.type,connected: device.connected);
+  //     //         prefs.setString("Printer",jsonEncode(bt));
+  //     //
+  //     //         _devices[index].isSelected = true;
+  //     //         Utils.lstDevices = _devices;
+  //     //       }),
+  //     //     }),
+  //     //   }else{
+  //     //     bluetooth.disconnect().then((value) => {
+  //     //       if(value){
+  //     //         setState(() {
+  //     //           for(int i = 0 ; i < _devices.length ; i ++){
+  //     //             _devices[i].isSelected = false;
+  //     //           }
+  //     //           Utils.lstDevices = [];
+  //     //         }),
+  //     //       }
+  //     //     }),
+  //     //   }
+  //     //
+  //     // });
+  //
+  //   } on PlatformException {}
+  // }
 
-              _devices[index].isSelected = true;
-              Utils.lstDevices = _devices;
-            }),
-          }),
-        }else{
-          bluetooth.disconnect().then((value) => {
-            if(value){
-              setState(() {
-                for(int i = 0 ; i < _devices.length ; i ++){
-                  _devices[i].isSelected = false;
-                }
-                Utils.lstDevices = [];
-              }),
-            }
-          }),
-        }
+  // void getDevices() async {
+  //   List<BluetoothDevice> devices = [];
+  //   List<ListItem<BluetoothDevice>> lst = [];
+  //   var isOn = await _bluePrintPos.;
+  //   if (!isOn) {
+  //     Utils.lstDevices = [];
+  //     Utils.confirmDialog(context, "Confirm", "Please open bluetooth!")
+  //         .then((value) => {
+  //       if (value)
+  //         {
+  //           bluetooth.openSettings,
+  //         }
+  //     });
+  //   }
+  //   try {
+  //     devices = await bluetooth.getBondedDevices();
+  //   } on PlatformException {
+  //     // TODO - Error
+  //   }
+  //
+  //   if (!mounted) return;
+  //   for (int i = 0; i < devices.length; i++) {
+  //     lst.add(ListItem<BluetoothDevice>(devices[i]));
+  //   }
+  //   setState(() {
+  //     if(Utils.lstDevices.length > 0 ){
+  //       _devices = Utils.lstDevices;
+  //     }else{
+  //       _devices = lst;
+  //     }
+  //   });
+  // }
 
-      });
-
-    }on PlatformException{
-
-    }
-
+  Future<void> _onScanPressed() async {
+    // setState(() => _isLoading = true);
+    _bluePrintPos.scan().then((List<BlueDevice> devices) {
+      if (devices.isNotEmpty) {
+        setState(() {
+          _blueDevices = devices;
+          // _isLoading = false;
+        });
+      } else {
+        // setState(() => _isLoading = false);
+      }
+    });
   }
 
-  void getDevices() async {
-    List<BluetoothDevice> devices = [];
-    List<ListItem<BluetoothDevice>> lst = [];
-    var isOn = await bluetooth.isOn;
-    if (!isOn) {
-      Utils.lstDevices = [];
-      Utils.confirmDialog(context, "Confirm", "Please open bluetooth!")
-          .then((value) => {
-        if (value)
-          {
-            bluetooth.openSettings,
-          }
-      });
-    }
-    try {
-      devices = await bluetooth.getBondedDevices();
-    } on PlatformException {
-      // TODO - Error
-    }
+  void _onSelectDevice(int index) {
+    // setState(() {
+    //   _isLoading = true;
+    //   _loadingAtIndex = index;
+    // });
+    // BlueDevice(name: ,address: )
 
-    if (!mounted) return;
-    for (int i = 0; i < devices.length; i++) {
-      lst.add(ListItem<BluetoothDevice>(devices[i]));
+    BlueDevice blueDevice =
+        _blueDevices[index]; //todo get sharedPreferecne
+    String printerJson = prefs.get("Printer") ?? "";
+    BtDevice bt = printerJson.isNotEmpty
+        ? BtDevice.fromJson(json.decode(printerJson))
+        : null;
+    if(bt!=null){
+      blueDevice = BlueDevice(name: bt.name, address: bt.address);
     }
-    setState(() {
-      if(Utils.lstDevices.length > 0 ){
-        _devices = Utils.lstDevices;
-      }else{
-        _devices = lst;
+    _bluePrintPos.connect(blueDevice).then((ConnectionStatus status) {
+      print("---------> ${status}");
+      if (status == ConnectionStatus.connected) {
+        //printReceipt();
+        setState((){
+          BtDevice bt = BtDevice(name:blueDevice.name,address:blueDevice.address,type: blueDevice.type,connected: blueDevice.connected);
+          prefs.setString("Printer",jsonEncode(bt));
+          _selectedDevice= blueDevice;
+          _blueDevices[index].connected = true;
+          Utils.lstDevices = _blueDevices;
+          Toasts.greenToast('Successfully Connected to Printer');
+        }
+      );
+        print('Selected Device' + blueDevice.name);
+      } else if (status == ConnectionStatus.timeout) {
+        _onDisconnectDevice(index);
+      } else {
+        print('$runtimeType - something wrong');
+      }
+      // setState(() => _isLoading = false);
+    });
+  }
+
+  void _onDisconnectDevice(int index) {
+    _bluePrintPos.disconnect().then((ConnectionStatus status) {
+      if (status == ConnectionStatus.disconnect) {
+        setState(() {
+          _selectedDevice = null;
+          _blueDevices[index].connected = false;
+          Utils.lstDevices = [];
+          Toasts.greenToast('Disconnected from Printer');
+        });
       }
     });
   }
 
   Future<void> _refresh() async {
-    getDevices();
+    _onScanPressed();
+    // getDevices();
     await Future.delayed(Duration(milliseconds: 1000));
     _refreshController.refreshCompleted();
   }
 
-  void setSharedPreferece() async{
+  void setSharedPreferece() async {
     prefs = await SharedPreferences.getInstance();
   }
 
@@ -320,16 +438,15 @@ class _PrinterSettingState extends State<PrinterSetting> {
   //   } on PlatformException {}
   // }
 
-  printInvoice(String path) async{
-    var unit8Lint = await File(path).readAsBytes();
-    bluetooth.writeBytes(unit8Lint);
-    bluetooth.paperCut();
-  }
+  // printInvoice(String path) async{
+  //   var unit8Lint = await File(path).readAsBytes();
+  //   bluetooth.writeBytes(unit8Lint);
+  //   bluetooth.paperCut();
+  // }
 
-  void backUpData() async{
+  void backUpData() async {
     // bool isEncrypted = true;
     // var result = await repository.backUpData(isEncrypted);
-
 
     Directory dbDirectory = await getApplicationDocumentsDirectory();
     File source1 = File('${dbDirectory.path}/barMega.db');
@@ -350,7 +467,8 @@ class _PrinterSettingState extends State<PrinterSetting> {
     //   }
     // }
 
-    Directory dir = Directory((await getExternalStorageDirectory()).path + '/BarMega BackUp');
+    Directory dir = Directory(
+        (await getExternalStorageDirectory()).path + '/BarMega BackUp');
     var status = await Permission.storage.status;
     if (!status.isGranted) {
       await Permission.storage.request();
@@ -364,7 +482,7 @@ class _PrinterSettingState extends State<PrinterSetting> {
     await source1.copy(newPath);
   }
 
-  void restoreDb()async{
+  void restoreDb() async {
     // var directory = await getApplicationDocumentsDirectory();
     // var dbPath = join(directory.path, 'barMega.db');
 
@@ -382,7 +500,4 @@ class _PrinterSettingState extends State<PrinterSetting> {
     //
     // }
   }
-
-
-
 }

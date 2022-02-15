@@ -46,10 +46,15 @@ class MyApp extends StatelessWidget {
       title: 'Bar Mega',
       theme: ThemeData(
         primarySwatch: Colors.green,
-        fontFamily: "Roboto"
+        fontFamily: "Roboto",
+        appBarTheme: AppBarTheme(
+          elevation: 0.0,
+          titleTextStyle: TextStyle(fontWeight: FontWeight.bold,fontSize: 20.0)
+        )
       ),
       debugShowCheckedModeBanner: false,
       home: Login(),
+
     );
   }
 }

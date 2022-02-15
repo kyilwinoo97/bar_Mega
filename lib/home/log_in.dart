@@ -101,6 +101,7 @@ class _LoginState extends State<Login> {
   }
 
   getUserFromFireStore() async{
+
     QuerySnapshot querySnapshot =  await FirebaseFirestore.instance
         .collection(Utils.firestore_collection)
         .where("name",isEqualTo: _nameController.text)

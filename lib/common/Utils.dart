@@ -1,4 +1,6 @@
 import 'package:bar_mega/widgets/ListItem.dart';
+import 'package:blue_print_pos/blue_print_pos.dart';
+import 'package:blue_print_pos/models/blue_device.dart';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
@@ -41,7 +43,7 @@ static const List<String> unitList = ['ခု','လုံး','ဘူး',dish,b
     ),
   );
 
-  static List<ListItem<BluetoothDevice>> lstDevices = [];
+  static List<BlueDevice> lstDevices = [];
 
 
   static bool validatePhone(String phone) {
@@ -69,8 +71,8 @@ static const List<String> unitList = ['ခု','လုံး','ဘူး',dish,b
     var formatter = new intl.DateFormat('hh:mm a');
     return formatter.format(dateTime);
   }
-  static Future<bool> isEnableBT(BlueThermalPrinter blueThermalPrinter) async{
-    return await blueThermalPrinter.isOn ?? false;
+  static Future<bool> isEnableBT(BluePrintPos bluePrintPos) async{
+    return await bluePrintPos.isConnected ?? false;
 
   }
 

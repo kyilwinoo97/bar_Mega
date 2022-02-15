@@ -1,16 +1,16 @@
-class BlueDevice {
+class BtDevice {
    String name;
    String address;
    int type = 0;
   bool connected = false;
 
-   BlueDevice({this.name, this.address, this.type, this.connected});
+   BtDevice({this.name, this.address, this.type, this.connected});
 
-   BlueDevice.fromMap(Map map)
+   BtDevice.fromMap(Map map)
       : name = map['name'],
         address = map['address'];
 
-   BlueDevice.fromJson(Map<String, dynamic> json,) {
+   BtDevice.fromJson(Map<String, dynamic> json,) {
     name = json['name'];
     address = json['address'];
     type = json['type'];
@@ -34,7 +34,7 @@ class BlueDevice {
   };
 
   operator ==(Object other) {
-    return other is BlueDevice && other.address == this.address;
+    return other is BtDevice && other.address == this.address;
   }
 
   @override

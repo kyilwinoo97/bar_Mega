@@ -1,4 +1,5 @@
 import 'package:bar_mega/bloc/sale_bloc/SaleBloc.dart';
+import 'package:bar_mega/db/DbHelper.dart';
 import 'package:bar_mega/reports/ReportDetails.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

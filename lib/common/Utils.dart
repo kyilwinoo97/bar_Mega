@@ -9,26 +9,45 @@ import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart' as intl;
 
-class Utils{
+class Utils {
   static Utils _instance;
 
-  Utils._internal(){
+  Utils._internal() {
     _instance = this;
   }
   factory Utils() => _instance ?? Utils._internal();
-static const String All ="All";
-static const String MainMenu ="Main Menu";
-static const String SoftDrink ="Soft Drink";
-static const String AlcoholicDrink ="Alcoholic Drink";
-static const String Desserts ="Desserts";
+  static const String All = "All";
+  static const String SpecialMenu = "Special Menu";
+  static const String FriedMeat = "အခြောက်အကြော်";
+  static const String SeaFood = "အနှစ်";
+  static const String Soup = "အရည်သောက်";
+  static const String FriedVeg = "အရွက်ကြော်";
+  static const String Salad = "အသုပ်";
+  static const String Barbecue = "အကင်";
+
+  static const String Desserts = "Desserts";
+  static const String AlcoholicDrink = "Alcoholic Drink";
+  static const String SoftDrink = "Soft Drink";
+
   static String firestore_collection = "Bar Mega";
-static const List<String> categoryList = [All,MainMenu,SoftDrink,AlcoholicDrink,Desserts];
+  static const List<String> categoryList = [
+    All,
+    SpecialMenu,
+    FriedMeat,
+    SeaFood,
+    Soup,
+    FriedVeg,
+    Salad,
+    Barbecue,
+    SoftDrink,
+    AlcoholicDrink,
+    Desserts,
+  ];
 
-
-static const String dish ="ပွဲ";
-static const String bottle ="ပုလင်း";
-static const String cup ="ခွက်";
-static const List<String> unitList = ['ခု','လုံး','ဘူး',dish,bottle,cup];
+  static const String dish = "ပွဲ";
+  static const String bottle = "ပုလင်း";
+  static const String cup = "ခွက်";
+  static const List<String> unitList = ['ခု',cup,dish, 'လုံး', 'ဘူး','ဂျား','ပတ်', bottle,'ကင်', ];
 
   static const kDateTimePickerTheme = DatePickerTheme(
     cancelStyle: TextStyle(
@@ -45,42 +64,51 @@ static const List<String> unitList = ['ခု','လုံး','ဘူး',dish,b
 
   static List<BlueDevice> lstDevices = [];
 
-
   static bool validatePhone(String phone) {
-    final regex = new RegExp(r"^(09|\+?950?9|\+?95950?9)\d{7,9}$$", multiLine: false);
+    final regex =
+        new RegExp(r"^(09|\+?950?9|\+?95950?9)\d{7,9}$$", multiLine: false);
     return regex.hasMatch(phone);
   }
-  static  bool isEqualDateFilter(DateTime objDate, DateTime fromDate, DateTime toDate) {
-    String fromDateString =  formatDate(fromDate);
-    String toDateString =  formatDate(toDate);
-    return objDate.compareTo(new intl.DateFormat("dd-MM-yyyy").parse(fromDateString)) >= 0 && objDate.compareTo(new intl.DateFormat("dd-MM-yyyy").parse(toDateString)) <= 0;
 
+  static bool isEqualDateFilter(
+      DateTime objDate, DateTime fromDate, DateTime toDate) {
+    String fromDateString = formatDate(fromDate);
+    String toDateString = formatDate(toDate);
+    return objDate.compareTo(
+                new intl.DateFormat("dd-MM-yyyy").parse(fromDateString)) >=
+            0 &&
+        objDate.compareTo(
+                new intl.DateFormat("dd-MM-yyyy").parse(toDateString)) <=
+            0;
   }
-  static String getCurrentDate(){
+
+  static String getCurrentDate() {
     DateTime now = new DateTime.now();
     var formatter = new intl.DateFormat('dd-MM-yyyy');
     String formattedDate = formatter.format(now);
     return formattedDate;
   }
-  static String formatDate(DateTime dateTime){
+
+  static String formatDate(DateTime dateTime) {
     var formatter = new intl.DateFormat('dd-MM-yyyy');
     String formattedDate = formatter.format(dateTime);
     return formattedDate;
   }
-  static String formatTime(DateTime dateTime){
+
+  static String formatTime(DateTime dateTime) {
     var formatter = new intl.DateFormat('hh:mm a');
     return formatter.format(dateTime);
   }
-  static Future<bool> isEnableBT(BluePrintPos bluePrintPos) async{
-    return await bluePrintPos.isConnected ?? false;
 
+  static Future<bool> isEnableBT(BluePrintPos bluePrintPos) async {
+    return await bluePrintPos.isConnected ?? false;
   }
 
-
-  static confirmDialog(BuildContext context,String title,String content){
-    return showDialog(context: context,
+  static confirmDialog(BuildContext context, String title, String content) {
+    return showDialog(
+        context: context,
         barrierDismissible: false,
-        builder: (BuildContext context){
+        builder: (BuildContext context) {
           return Dialog(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
@@ -94,7 +122,7 @@ static const List<String> unitList = ['ခု','လုံး','ဘူး',dish,b
                     top: 36,
                     bottom: 4,
                     left: 4,
-                    right:4,
+                    right: 4,
                   ),
                   margin: EdgeInsets.only(top: 30),
                   decoration: new BoxDecoration(
@@ -132,21 +160,28 @@ static const List<String> unitList = ['ခု','လုံး','ဘူး',dish,b
                         alignment: Alignment.bottomRight,
                         child: Row(
                           children: <Widget>[
-
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: () {
-                                  Navigator.pop(context,false); // To close the dialog
+                                  Navigator.pop(
+                                      context, false); // To close the dialog
                                 },
-                                child: Text("Cancel",style: TextStyle(color:Colors.black),),
+                                child: Text(
+                                  "Cancel",
+                                  style: TextStyle(color: Colors.black),
+                                ),
                               ),
                             ),
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: () {
-                                  Navigator.pop(context,true); // To close the dialog
+                                  Navigator.pop(
+                                      context, true); // To close the dialog
                                 },
-                                child: Text("OK",style: TextStyle(color:Colors.black),),
+                                child: Text(
+                                  "OK",
+                                  style: TextStyle(color: Colors.black),
+                                ),
                               ),
                             ),
                           ],
@@ -161,7 +196,13 @@ static const List<String> unitList = ['ခု','လုံး','ဘူး',dish,b
                   child: CircleAvatar(
                     radius: 25,
                     backgroundColor: Colors.blue,
-                    child: Text('?',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 40),),
+                    child: Text(
+                      '?',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 40),
+                    ),
                   ),
                 ),
               ],
@@ -170,7 +211,7 @@ static const List<String> unitList = ['ခု','လုံး','ဘူး',dish,b
         });
   }
 
-  static checkInternetConnection(BuildContext context) async{
+  static checkInternetConnection(BuildContext context) async {
     ConnectivityResult result;
     final Connectivity _connectivity = Connectivity();
     bool _return = true;
@@ -182,10 +223,10 @@ static const List<String> unitList = ['ခု','လုံး','ဘူး',dish,b
           _return = false;
           break;
         case ConnectivityResult.wifi:
-        // TODO: Handle this case.
+          // TODO: Handle this case.
           break;
         case ConnectivityResult.mobile:
-        // TODO: Handle this case.
+          // TODO: Handle this case.
           break;
       }
     } on PlatformException catch (e) {
@@ -193,5 +234,4 @@ static const List<String> unitList = ['ခု','လုံး','ဘူး',dish,b
     }
     return _return;
   }
-
 }

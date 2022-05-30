@@ -110,6 +110,13 @@ class _LoginState extends State<Login> {
     if(querySnapshot.docs.isNotEmpty){
       querySnapshot.docs.forEach((element) {
         String userId = element.id;
+        FirebaseFirestore.instance
+            .collection(
+            Utils.firestore_collection)
+            .doc(userId)
+            .update({
+          "isActive": false,
+        });
         bool isActive = element.get("isActive");
         if(isActive){
           Toasts.greenToast("Your account was already login \n on another device!");

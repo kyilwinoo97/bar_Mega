@@ -295,6 +295,8 @@ class _PrinterSettingState extends State<PrinterSetting> {
         });
       } else {
         // setState(() => _isLoading = false);
+
+        print("BLUETOOTH DEVICES" + _blueDevices.length.toString());
       }
     });
   }

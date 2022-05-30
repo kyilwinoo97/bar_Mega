@@ -53,6 +53,7 @@ class _MenuDetailState extends State<MenuDetail> {
     unitItems.addAll(Utils.unitList);
     if (widget.item != null) {
       nameController.text = widget.item.name;
+      _nameMyanController.text = widget.item.nameMyanmar;
       priceController.text = widget.item.price.toString();
       title = "Update Menu";
       buttonText = "Update";
@@ -121,29 +122,7 @@ class _MenuDetailState extends State<MenuDetail> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  "Name",
-                                  style: TextStyle(
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16.0),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                inputWidget(
-                                    width: width * 0.3,
-                                    controller: nameController),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.all(16.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  "Name\n(Myanmar)",
+                                  "Name\n(မြန်မာ)",
                                   style: TextStyle(
                                       color: Colors.green,
                                       fontWeight: FontWeight.bold,
@@ -165,7 +144,7 @@ class _MenuDetailState extends State<MenuDetail> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  "Price",
+                                  "Name\n(English)",
                                   style: TextStyle(
                                       color: Colors.green,
                                       fontWeight: FontWeight.bold,
@@ -173,6 +152,28 @@ class _MenuDetailState extends State<MenuDetail> {
                                 ),
                                 SizedBox(
                                   width: 10,
+                                ),
+                                inputWidget(
+                                    width: width * 0.3,
+                                    controller: nameController),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "Price",
+                                  style: TextStyle(
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16.0),
+                                ),
+                                SizedBox(
+                                  width: 30,
                                 ),
                                 inputWidget(
                                     width: width * 0.3,
@@ -378,16 +379,21 @@ class _MenuDetailState extends State<MenuDetail> {
                                       onTap: () {
                                         if (nameController.text
                                                 .trim()
-                                                .isNotEmpty && _nameMyanController.text.trim().isNotEmpty &&
-                                            priceController.text
+                                                .isNotEmpty ||
+                                            _nameMyanController.text
                                                 .trim()
-                                                .isNotEmpty &&
-                                            selectedCategory != null &&
-                                            selectedUnit.isNotEmpty) {
-                                          if (buttonText == "Save") {
-                                            saveMenu();
-                                          } else {
-                                            updateMenu();
+                                                .isNotEmpty) {
+
+                                          if (priceController.text
+                                                  .trim()
+                                                  .isNotEmpty &&
+                                              selectedCategory != null &&
+                                              selectedUnit.isNotEmpty) {
+                                            if (buttonText == "Save") {
+                                              saveMenu();
+                                            } else {
+                                              updateMenu();
+                                            }
                                           }
                                         } else {
                                           Fluttertoast.showToast(
@@ -438,7 +444,8 @@ class _MenuDetailState extends State<MenuDetail> {
         price: priceController.text.toString(),
         unit: selectedUnit,
         path: url,
-        category: selectedCategory, nameMyanmar: _nameMyanController.text));
+        category: selectedCategory,
+        nameMyanmar: _nameMyanController.text));
     if (result > 0) {
       if (widget.category == Utils.All) {
         BlocProvider.of<MenuBloc>(context).add(GetAllMenu());
@@ -457,12 +464,14 @@ class _MenuDetailState extends State<MenuDetail> {
         price: priceController.text,
         unit: selectedUnit,
         path: url,
-        category: selectedCategory, nameMyanmar: _nameMyanController.text));
+        category: selectedCategory,
+        nameMyanmar: _nameMyanController.text));
     if (result > 0) {
       if (widget.category == Utils.All) {
         BlocProvider.of<MenuBloc>(context).add(GetAllMenu());
       } else {
-        BlocProvider.of<MenuBloc>(context).add(GetMenuByCategory(widget.category));
+        BlocProvider.of<MenuBloc>(context)
+            .add(GetMenuByCategory(widget.category));
       }
       Navigator.of(context).pop();
     }

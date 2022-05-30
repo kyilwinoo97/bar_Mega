@@ -60,6 +60,8 @@ abstract class DbHelper{
 
   Future<List<Map>> getAllSale();
 
+  Future<void> deleteAllSale();
+
   Future<String>generateBackup({bool isEncrypted = true});
 
   Future<void>restoreBackup(String backup,{ bool isEncrypted = true});
@@ -187,6 +189,11 @@ class DbHelperImpl implements DbHelper{
   @override
   Future<List<Map>> getAllSale() async{
     return await database.query(Sql.SaleTable);
+  }
+
+  @override
+  Future<void> deleteAllSale() async{
+    return await database.delete(Sql.SaleTable);
   }
 
   @override

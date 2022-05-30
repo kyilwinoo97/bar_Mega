@@ -83,49 +83,44 @@ class _OrderDetailsState extends State<OrderDetails> {
           ),
           elevation: 0.0,
           actions: [
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 15.0),
-              height: 50.0,
-              width: 150.0,
-              child: InkWell(
-                onTap: () {
-                  BlocProvider.of<SaleBloc>(context).add(AddSale(Sale(
-                      invoiceNo: invoiceNo,
-                      name: "Sale",
-                      quantity: orderDetails.length,
-                      amount: total.toString(),
-                      discount: widget.discount.toString(),
-                      date: Utils.formatDate(DateTime.now()),
-                      total: total.toString())));
-                },
-                child: Card(
-                    elevation: 0.0,
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.attach_money,
-                          color: Colors.green,
-                          size: 30,
-                        ),
-                        const SizedBox(
-                          width: 5.0,
-                        ),
-                        Text(
-                          'Charge',
-                          style: TextStyle(
-                              color: Colors.green,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    )),
-              ),
-            ),
+            // Container(
+            //   margin: EdgeInsets.symmetric(horizontal: 15.0),
+            //   height: 50.0,
+            //   width: 150.0,
+            //   child: InkWell(
+            //     onTap: () {
+            //       BlocProvider.of<SaleBloc>(context).add(AddSale(Sale(
+            //           invoiceNo: invoiceNo,
+            //           name: "Sale",
+            //           quantity: orderDetails.length,
+            //           amount: total.toString(),
+            //           discount: widget.discount.toString(),
+            //           date: Utils.formatDate(DateTime.now()),
+            //           total: total.toString())));
+            //     },
+            //     child: Card(
+            //         elevation: 0.0,
+            //         color: Colors.white,
+            //         shape: RoundedRectangleBorder(
+            //           borderRadius: BorderRadius.circular(20.0),
+            //         ),
+            //         child: Row(
+            //           mainAxisAlignment: MainAxisAlignment.center,
+            //           children: [
+            //             const SizedBox(
+            //               width: 5.0,
+            //             ),
+            //             Text(
+            //               'Charge',
+            //               style: TextStyle(
+            //                   color: Colors.green,
+            //                   fontSize: 18.0,
+            //                   fontWeight: FontWeight.bold),
+            //             ),
+            //           ],
+            //         )),
+            //   ),
+            // ),
             // Container(
             //   margin: EdgeInsets.symmetric(horizontal: 15.0),
             //   height: 50.0,
@@ -156,7 +151,33 @@ class _OrderDetailsState extends State<OrderDetails> {
             // )
           ],
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.grey.shade100,
+        floatingActionButton: Padding(
+          padding: EdgeInsets.only(right: 20.0),
+          child: FloatingActionButton.extended(
+            extendedPadding:
+                EdgeInsets.symmetric(horizontal: 35.0, vertical: 30.0),
+            icon: Icon(
+              Icons.attach_money,
+              color: Colors.white,
+              size: 30,
+            ),
+            label: Text(
+              'Charge',
+              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+            ),
+            onPressed: () {
+              BlocProvider.of<SaleBloc>(context).add(AddSale(Sale(
+                  invoiceNo: invoiceNo,
+                  name: "Sale",
+                  quantity: orderDetails.length,
+                  amount: total.toString(),
+                  discount: widget.discount.toString(),
+                  date: Utils.formatDate(DateTime.now()),
+                  total: total.toString())));
+            },
+          ),
+        ),
         body: BlocListener<SaleBloc, SaleState>(
           listener: (context, state) {
             if (state is SaleSuccess) {
@@ -185,7 +206,9 @@ class _OrderDetailsState extends State<OrderDetails> {
                     shrinkWrap: true,
                     padding: const EdgeInsets.symmetric(horizontal: 50.0),
                     children: [
-                      const SizedBox(height: 20,),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       Center(
                           child: Image.asset(
                         "assets/images/logo_bar_mega.png",
@@ -221,8 +244,16 @@ class _OrderDetailsState extends State<OrderDetails> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(orderDetails[index].name + '\n' + orderDetails[index].nameMyanmar,
-                                    overflow: TextOverflow.visible,softWrap: true,style: TextStyle(fontSize: 15),),
+                                    Text(
+                                      (orderDetails[index].name.isNotEmpty
+                                          ? orderDetails[index].name
+                                          : orderDetails[index].nameMyanmar) +
+                                              '\n' +
+                                          (orderDetails[index].name.isEmpty?'':orderDetails[index].nameMyanmar),
+                                      overflow: TextOverflow.visible,
+                                      softWrap: true,
+                                      style: TextStyle(fontSize: 15),
+                                    ),
                                     Text(
                                         '${orderDetails[index].quantity} \tx\t\t' +
                                             orderDetails[index].amount),
@@ -322,15 +353,16 @@ class _OrderDetailsState extends State<OrderDetails> {
           ? BtDevice.fromJson(json.decode(printerJson))
           : null;
 
-      print("###########################################> ${_bluePrintPos.isConnected}");
-      if(_bluePrintPos.isConnected){
+      print(
+          "###########################################> ${_bluePrintPos.isConnected}");
+      if (_bluePrintPos.isConnected) {
         _onPrintReceipt();
-      }else if (bt != null) {
+      } else if (bt != null) {
         BlueDevice device = BlueDevice(name: bt.name, address: bt.address);
 
         if (!_bluePrintPos.isConnected) {
           _bluePrintPos.connect(device).then((value) => {
-          print("----------------->${value}"),
+                print("----------------->${value}"),
                 _onPrintReceipt(),
               });
         }
@@ -403,14 +435,14 @@ class _OrderDetailsState extends State<OrderDetails> {
     receiptText.addSpacer(count: 2);
 
     for (int i = 0; i < orderDetails.length; i++) {
-      receiptText.addLeftRightText("${orderDetails[i].name}",
+      receiptText.addLeftRightText("${orderDetails[i].name.isEmpty?orderDetails[i].nameMyanmar:orderDetails[i].name}",
           '${orderDetails[i].quantity} \tx\t\t' + orderDetails[i].amount,
           leftSize: ReceiptTextSizeType.small,
           rightSize: ReceiptTextSizeType.small);
-      receiptText.addText('${orderDetails[i].nameMyanmar}',size: ReceiptTextSizeType.small,alignment: ReceiptAlignment.left);
+      receiptText.addText("${orderDetails[i].name.isEmpty?'':orderDetails[i].nameMyanmar}",
+          size: ReceiptTextSizeType.small, alignment: ReceiptAlignment.left);
       receiptText.addSpacer(useDashed: true);
     }
-
 
     receiptText.addLeftRightText('Total', total.toString(),
         leftStyle: ReceiptTextStyleType.bold,

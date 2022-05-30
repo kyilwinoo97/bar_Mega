@@ -33,107 +33,182 @@ class _ItemListState extends State<ItemList> {
       appBar: AppBar(
         title: Text("Menu"),
       ),
-      body: Row(
-          children: [
-            Expanded(
-              flex: 2,
-              child: Container(
-                color: Colors.white,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CategoryWidget(
-                        label: cats[0],
-                        onSelected: (selected) {
-                          if (selected) {
-                            setState(() {
-                              selectedCat = cats[0];
-                              BlocProvider.of<MenuBloc>(context).add(GetAllMenu());
-                            });
-                          }
-                        }),
-                    CategoryWidget(
-                        label: cats[1],
-                        onSelected: (selected) {
-                          if (selected) {
-                            setState(() {
-                              selectedCat = cats[1];
-                              BlocProvider.of<MenuBloc>(context).add(GetMenuByCategory(selectedCat));
-
-                            });
-                          }
-                        }),
-                    CategoryWidget(
-                        label: cats[2],
-                        onSelected: (selected) {
-                          if (selected) {
-                            setState(() {
-                              selectedCat = cats[2];
-                              BlocProvider.of<MenuBloc>(context).add(GetMenuByCategory(selectedCat));
-
-                            });
-                          }
-                        }),
-                    CategoryWidget(
-                        label: cats[3],
-                        onSelected: (selected) {
-                          if (selected) {
-                            setState(() {
-                              selectedCat = cats[3];
-                              BlocProvider.of<MenuBloc>(context).add(GetMenuByCategory(selectedCat));
-                            });
-                          }
-                        }),
-                    CategoryWidget(
-                        label: cats[4],
-                        onSelected: (selected) {
-                          if (selected) {
-                            setState(() {
-                              selectedCat = cats[4];
-                              BlocProvider.of<MenuBloc>(context).add(GetMenuByCategory(selectedCat));
-                            });
-                          }
-                        }),
-                  ],
-                ),
-              ),
+      body: Row(children: [
+        Expanded(
+          flex: 2,
+          child: Container(
+            color: Colors.white,
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                CategoryWidget(
+                    label: cats[0],
+                    onSelected: (selected) {
+                      if (selected) {
+                        setState(() {
+                          selectedCat = cats[0];
+                          BlocProvider.of<MenuBloc>(context).add(GetAllMenu());
+                        });
+                      }
+                    }),
+                CategoryWidget(
+                    label: cats[1],
+                    onSelected: (selected) {
+                      if (selected) {
+                        setState(() {
+                          selectedCat = cats[1];
+                          BlocProvider.of<MenuBloc>(context)
+                              .add(GetMenuByCategory(selectedCat));
+                        });
+                      }
+                    }),
+                CategoryWidget(
+                    label: cats[2],
+                    onSelected: (selected) {
+                      if (selected) {
+                        setState(() {
+                          selectedCat = cats[2];
+                          BlocProvider.of<MenuBloc>(context)
+                              .add(GetMenuByCategory(selectedCat));
+                        });
+                      }
+                    }),
+                CategoryWidget(
+                    label: cats[3],
+                    onSelected: (selected) {
+                      if (selected) {
+                        setState(() {
+                          selectedCat = cats[3];
+                          BlocProvider.of<MenuBloc>(context)
+                              .add(GetMenuByCategory(selectedCat));
+                        });
+                      }
+                    }),
+                CategoryWidget(
+                    label: cats[4],
+                    onSelected: (selected) {
+                      if (selected) {
+                        setState(() {
+                          selectedCat = cats[4];
+                          BlocProvider.of<MenuBloc>(context)
+                              .add(GetMenuByCategory(selectedCat));
+                        });
+                      }
+                    }),
+                CategoryWidget(
+                    label: cats[5],
+                    onSelected: (selected) {
+                      if (selected) {
+                        setState(() {
+                          selectedCat = cats[5];
+                          BlocProvider.of<MenuBloc>(context)
+                              .add(GetMenuByCategory(selectedCat));
+                        });
+                      }
+                    }),
+                CategoryWidget(
+                    label: cats[6],
+                    onSelected: (selected) {
+                      if (selected) {
+                        setState(() {
+                          selectedCat = cats[6];
+                          BlocProvider.of<MenuBloc>(context)
+                              .add(GetMenuByCategory(selectedCat));
+                        });
+                      }
+                    }),
+                CategoryWidget(
+                    label: cats[7],
+                    onSelected: (selected) {
+                      if (selected) {
+                        setState(() {
+                          selectedCat = cats[7];
+                          BlocProvider.of<MenuBloc>(context)
+                              .add(GetMenuByCategory(selectedCat));
+                        });
+                      }
+                    }),
+                CategoryWidget(
+                    label: cats[8],
+                    onSelected: (selected) {
+                      if (selected) {
+                        setState(() {
+                          selectedCat = cats[8];
+                          BlocProvider.of<MenuBloc>(context)
+                              .add(GetMenuByCategory(selectedCat));
+                        });
+                      }
+                    }),
+                CategoryWidget(
+                    label: cats[9],
+                    onSelected: (selected) {
+                      if (selected) {
+                        setState(() {
+                          selectedCat = cats[9];
+                          BlocProvider.of<MenuBloc>(context)
+                              .add(GetMenuByCategory(selectedCat));
+                        });
+                      }
+                    }),
+                CategoryWidget(
+                    label: cats[10],
+                    onSelected: (selected) {
+                      if (selected) {
+                        setState(() {
+                          selectedCat = cats[10];
+                          BlocProvider.of<MenuBloc>(context)
+                              .add(GetMenuByCategory(selectedCat));
+                        });
+                      }
+                    }),
+              ],
             ),
+          ),
+        ),
         VerticalDivider(
           thickness: 0.4,
           color: Colors.black,
         ),
         Expanded(
           flex: 7,
-          child: BlocBuilder<MenuBloc,MenuState>(
-            builder: (context,state){
-              if(state is Success){
-               return Container(
+          child: BlocBuilder<MenuBloc, MenuState>(
+            builder: (context, state) {
+              if (state is Success) {
+                return Container(
                   child: GridView.count(
                     crossAxisCount: 5,
                     scrollDirection: Axis.vertical,
                     children: List.generate(state.result.length, (index) {
-                      return InkWell(child: MenuItem(state.result[index]),onTap: (){
-                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => MenuDetail(item: state.result[index],category: selectedCat,)));
-
-                      },);
+                      return InkWell(
+                        child: MenuItem(state.result[index]),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MenuDetail(
+                                        item: state.result[index],
+                                        category: selectedCat,
+                                      )));
+                        },
+                      );
                     }),
                   ),
                 );
-            }else if(state is Failure){
+              } else if (state is Failure) {
                 return Center(
                   child: Text(state.message),
                 );
-              }else {
+              } else {
                 return Center(
-                  child: CircularProgressIndicator(color: Colors.green,),
+                  child: CircularProgressIndicator(
+                    color: Colors.green,
+                  ),
                 );
               }
             },
           ),
         ),
-      ]
-      ),
+      ]),
       floatingActionButton: Container(
         height: 60.0,
         width: 60.0,
@@ -141,9 +216,12 @@ class _ItemListState extends State<ItemList> {
           child: FloatingActionButton(
             backgroundColor: CupertinoColors.activeGreen,
             onPressed: () {
-           Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => MenuDetail(category: selectedCat,)));
-
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MenuDetail(
+                            category: selectedCat,
+                          )));
             },
             tooltip: "Add Menu",
             child: Icon(
@@ -155,7 +233,6 @@ class _ItemListState extends State<ItemList> {
       ),
     );
   }
-
 
   CategoryWidget({String label, Function(bool) onSelected}) {
     return Padding(
@@ -185,8 +262,7 @@ class _ItemListState extends State<ItemList> {
     );
   }
 
-
-  void getData() async{
+  void getData() async {
     BlocProvider.of<MenuBloc>(context).add(GetAllMenu());
   }
 }
@@ -198,45 +274,45 @@ class MenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Card(
       margin: EdgeInsets.all(8),
-      decoration: BoxDecoration(
-          border: Border.all(
-              color: Colors.grey, width: 0.5, style: BorderStyle.solid)),
-      child: Column(
-        children: [
-          Flexible(
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: item.path.isNotEmpty
-                  ? Image.network(
-                      item.path,
-                      fit: BoxFit.fill,
-                    )
-                  : Image.asset(
-                      "assets/images/menu.png",
-                      fit: BoxFit.fill,
-                      height: 100,
-                    ),
+      elevation: 10.0,
+      shadowColor: Colors.white54,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(10.0),
+        child: Column(
+          children: [
+            Flexible(
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: item.path.isNotEmpty
+                    ? Image.network(
+                        item.path,
+                        fit: BoxFit.fill,
+                      )
+                    : Image.asset(
+                        "assets/images/menu.png",
+                        fit: BoxFit.fill,
+                      ),
+              ),
             ),
-          ),
-          Divider(
-            height: 0.4,
-            color: Colors.grey,
-          ),
-          Container(
-            padding: EdgeInsets.all(4),
-            child: Text(
-              item.name,
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
+
+            Container(
+              padding: EdgeInsets.all(4),
+              child: Text(
+                item.name.isNotEmpty ? item.name : item.nameMyanmar,
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
-

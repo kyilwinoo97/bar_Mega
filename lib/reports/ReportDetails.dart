@@ -67,12 +67,13 @@ class _ReportDetailsState extends State<ReportDetails> {
                             shrinkWrap: true,
                             itemCount: state.result.length,
                             itemBuilder: (context,index){
+                              bool isNameEnglish = state.result[index].name.isNotEmpty;
                               return Column(
                                 children: [
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text('${state.result[index].name}'),
+                                      isNameEnglish?Text('${state.result[index].name}\n${state.result[index].nameMyanmar}'):Text('${state.result[index].nameMyanmar}'),
                                       Text('${state.result[index].quantity} \tx\t\t'+'${state.result[index].amount}'),
                                     ],
                                   ),

@@ -85,7 +85,7 @@ class _TableDetialState extends State<TableDetail> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text("No. of Seats"),
+                                Text("No. of Seats",style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold,fontSize: 16.0)),
                                 SizedBox(
                                   width: 10,
                                 ),

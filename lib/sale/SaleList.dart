@@ -8,6 +8,7 @@ import 'package:bar_mega/model/Invoice.dart';
 import 'package:bar_mega/repository/SaleRepository.dart';
 import 'package:bar_mega/widgets/Toasts.dart';
 import 'package:bar_mega/widgets/custom_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -70,7 +71,7 @@ class _SaleListState extends State<SaleList> {
                 setState(() {
                   temItems.clear();
                   temItems.addAll(state.result);
-                  if (state.result.length > 0) {
+                  if (state.result.length >= 0) {
                     total = getTotalPrice(state.result);
                   }
                 });
@@ -105,7 +106,8 @@ class _SaleListState extends State<SaleList> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
                     ),
-                    child: Column(
+                    child: ListView(
+                      shrinkWrap: true,
                       children: [
                         CategoryWidget(
                             label: cats[0],
@@ -113,9 +115,8 @@ class _SaleListState extends State<SaleList> {
                               if (selected) {
                                 setState(() {
                                   selectedCat = cats[0];
+                                  BlocProvider.of<Menu.MenuBloc>(context).add(Menu.GetAllMenu());
                                 });
-                                BlocProvider.of<Menu.MenuBloc>(context)
-                                    .add(Menu.GetAllMenu());
                               }
                             }),
                         CategoryWidget(
@@ -124,9 +125,9 @@ class _SaleListState extends State<SaleList> {
                               if (selected) {
                                 setState(() {
                                   selectedCat = cats[1];
+                                  BlocProvider.of<Menu.MenuBloc>(context)
+                                      .add(Menu.GetMenuByCategory(selectedCat));
                                 });
-                                BlocProvider.of<Menu.MenuBloc>(context)
-                                    .add(Menu.GetMenuByCategory(selectedCat));
                               }
                             }),
                         CategoryWidget(
@@ -135,9 +136,9 @@ class _SaleListState extends State<SaleList> {
                               if (selected) {
                                 setState(() {
                                   selectedCat = cats[2];
+                                  BlocProvider.of<Menu.MenuBloc>(context)
+                                      .add(Menu.GetMenuByCategory(selectedCat));
                                 });
-                                BlocProvider.of<Menu.MenuBloc>(context)
-                                    .add(Menu.GetMenuByCategory(selectedCat));
                               }
                             }),
                         CategoryWidget(
@@ -146,13 +147,90 @@ class _SaleListState extends State<SaleList> {
                               if (selected) {
                                 setState(() {
                                   selectedCat = cats[3];
+                                  BlocProvider.of<Menu.MenuBloc>(context)
+                                      .add(Menu.GetMenuByCategory(selectedCat));
                                 });
-                                BlocProvider.of<Menu.MenuBloc>(context)
-                                    .add(Menu.GetMenuByCategory(selectedCat));
+                              }
+                            }),
+                        CategoryWidget(
+                            label: cats[4],
+                            onSelected: (selected) {
+                              if (selected) {
+                                setState(() {
+                                  selectedCat = cats[4];
+                                  BlocProvider.of<Menu.MenuBloc>(context)
+                                      .add(Menu.GetMenuByCategory(selectedCat));
+                                });
+                              }
+                            }),
+                        CategoryWidget(
+                            label: cats[5],
+                            onSelected: (selected) {
+                              if (selected) {
+                                setState(() {
+                                  selectedCat = cats[5];
+                                  BlocProvider.of<Menu.MenuBloc>(context)
+                                      .add(Menu.GetMenuByCategory(selectedCat));
+                                });
+                              }
+                            }),
+                        CategoryWidget(
+                            label: cats[6],
+                            onSelected: (selected) {
+                              if (selected) {
+                                setState(() {
+                                  selectedCat = cats[6];
+                                  BlocProvider.of<Menu.MenuBloc>(context)
+                                      .add(Menu.GetMenuByCategory(selectedCat));
+                                });
+                              }
+                            }),
+                        CategoryWidget(
+                            label: cats[7],
+                            onSelected: (selected) {
+                              if (selected) {
+                                setState(() {
+                                  selectedCat = cats[7];
+                                  BlocProvider.of<Menu.MenuBloc>(context)
+                                      .add(Menu.GetMenuByCategory(selectedCat));
+                                });
+                              }
+                            }),
+                        CategoryWidget(
+                            label: cats[8],
+                            onSelected: (selected) {
+                              if (selected) {
+                                setState(() {
+                                  selectedCat = cats[8];
+                                  BlocProvider.of<Menu.MenuBloc>(context)
+                                      .add(Menu.GetMenuByCategory(selectedCat));
+                                });
+                              }
+                            }),
+                        CategoryWidget(
+                            label: cats[9],
+                            onSelected: (selected) {
+                              if (selected) {
+                                setState(() {
+                                  selectedCat = cats[9];
+                                  BlocProvider.of<Menu.MenuBloc>(context)
+                                      .add(Menu.GetMenuByCategory(selectedCat));
+                                });
+                              }
+                            }),
+                        CategoryWidget(
+                            label: cats[10],
+                            onSelected: (selected) {
+                              if (selected) {
+                                setState(() {
+                                  selectedCat = cats[10];
+                                  BlocProvider.of<Menu.MenuBloc>(context)
+                                      .add(Menu.GetMenuByCategory(selectedCat));
+                                });
                               }
                             }),
                       ],
-                    )),
+                    ),),
               ),
             ),
             Expanded(
@@ -169,9 +247,16 @@ class _SaleListState extends State<SaleList> {
                           child: SaleItem(state.result[index]),
                           onTap: () {
                             var item = state.result[index];
+                            int itemIndex = -1;
+                            if(item.name.isNotEmpty){
+                              itemIndex = temItems.indexWhere((e) => e.name == item.name);
+                            }else{
+                              itemIndex = temItems.indexWhere((e) => e.nameMyanmar == item.nameMyanmar);
+                            }
 
-                            int itemIndex = temItems.indexWhere((e) =>
-                                e.name == item.name); //todo itemId is better
+
+                            print("ITEM INDEX ===============> ${itemIndex}");
+                            // print("ITEM INDEX ===================> ${temItems[itemIndex].nameMyanmar}\n${item.nameMyanmar}");
                             setState(() {
                               if (itemIndex == -1) {
                                 //not exist order add to database
@@ -204,7 +289,7 @@ class _SaleListState extends State<SaleList> {
                                         discount: temItems[itemIndex].discount,
                                         unit: temItems[itemIndex].unit,
                                         date: temItems[itemIndex].date,
-                                        total: temItems[itemIndex].total, nameMyanmar: temItems[index].nameMyanmar)));
+                                        total: temItems[itemIndex].total, nameMyanmar: temItems[itemIndex].nameMyanmar)));
                               }
                             });
                           },
@@ -234,84 +319,83 @@ class _SaleListState extends State<SaleList> {
                     child: BlocBuilder<sale.SaleBloc, sale.SaleState>(
                         builder: (context, state) {
                       if (state is sale.Success) {
-                        return Container(
-                          margin: const EdgeInsets.all(5.0),
-                          height: double.infinity,
+                        return SingleChildScrollView(
+
                           child: Card(
-                              shadowColor: Colors.white30,
-                              elevation: 5.0,
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
+                            shadowColor: Colors.white30,
+                            elevation: 5.0,
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20.0),
                               ),
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 15.0, top: 4.0, right: 10.0),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Cart',
-                                              style: TextStyle(
-                                                  color: Colors.green,
-                                                  fontSize: 20.0,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            // ClipOval(
-                                            //   child: Material(
-                                            //     color: Colors.red.shade50, // Button color
-                                            //     child: InkWell(
-                                            //       splashColor: Colors.red, // Splash color
-                                            //       onTap: () {
-                                            //         BlocProvider.of<sale.SaleBloc>(context).add(sale.RemoveAllOrder(cartItems));
-                                            //       },
-                                            //       child: SizedBox(
-                                            //           width: 30,
-                                            //           height: 30,
-                                            //           child: Icon(
-                                            //             Icons.delete_forever,
-                                            //             size: 20,
-                                            //             color: Colors.red,
-                                            //           )),
-                                            //     ),
-                                            //   ),
-                                            // ),
-                                          ],
-                                        )),
-                                    const SizedBox(height: 5.0),
-                                    AnimationLimiter(
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount: state.result.length,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return AnimationConfiguration
-                                              .staggeredList(
-                                                  position: index,
-                                                  child: ScaleAnimation(
-                                                    child: FadeInAnimation(
-                                                      duration: Duration(
-                                                          milliseconds: 100),
-                                                      delay: Duration(
-                                                          milliseconds: 50),
-                                                      child: CartItem(
-                                                          item: state
-                                                              .result[index]),
-                                                    ),
-                                                  ));
-                                        },
-                                      ),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 15.0, top: 4.0, right: 10.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Cart',
+                                            style: TextStyle(
+                                                color: Colors.green,
+                                                fontSize: 20.0,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          // ClipOval(
+                                          //   child: Material(
+                                          //     color: Colors.red.shade50, // Button color
+                                          //     child: InkWell(
+                                          //       splashColor: Colors.red, // Splash color
+                                          //       onTap: () {
+                                          //         BlocProvider.of<sale.SaleBloc>(context).add(sale.RemoveAllOrder(cartItems));
+                                          //       },
+                                          //       child: SizedBox(
+                                          //           width: 30,
+                                          //           height: 30,
+                                          //           child: Icon(
+                                          //             Icons.delete_forever,
+                                          //             size: 20,
+                                          //             color: Colors.red,
+                                          //           )),
+                                          //     ),
+                                          //   ),
+                                          // ),
+                                        ],
+                                      )),
+                                  const SizedBox(height: 5.0),
+                                  AnimationLimiter(
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: state.result.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return AnimationConfiguration
+                                            .staggeredList(
+                                                position: index,
+                                                child: ScaleAnimation(
+                                                  child: FadeInAnimation(
+                                                    duration: Duration(
+                                                        milliseconds: 100),
+                                                    delay: Duration(
+                                                        milliseconds: 50),
+                                                    child: CartItem(
+                                                        item: state
+                                                            .result[index]),
+                                                  ),
+                                                ));
+                                      },
                                     ),
+                                  ),
 
-                                  ],
-                                ),
-                              )),
+                                ],
+                              ),
+                          ),
                         );
                       } else {
                         return Container(
@@ -478,6 +562,7 @@ class _SaleListState extends State<SaleList> {
   CartItem({Order item}) {
     return Container(
       margin: EdgeInsets.all(5.0),
+      height: 120.0,
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
@@ -499,6 +584,7 @@ class _SaleListState extends State<SaleList> {
                           if (temItems.length < 1) return;
                           BlocProvider.of<sale.SaleBloc>(context)
                               .add(sale.RemoveOneOrder(item));
+
                         },
                         child: SizedBox(
                             width: 30,
@@ -522,7 +608,7 @@ class _SaleListState extends State<SaleList> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          item.name,
+                          item.name.isNotEmpty?item.name:item.nameMyanmar,
                           style: TextStyle(
                               color: Colors.green,
                               fontSize: 20.0,
@@ -736,7 +822,7 @@ class SaleItem extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 10.0),
                 alignment: Alignment.bottomCenter,
                 child: Text(
-                  item.name,
+                  item.name.isNotEmpty?item.name:item.nameMyanmar,
                   style: TextStyle(color: Colors.green, fontSize: 18.0),
                 ),
               ),

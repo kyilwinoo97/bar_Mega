@@ -30,6 +30,7 @@ class SaleRepositoryImpl extends SaleRepository{
 
   @override
   Future<List<Sale>> getAllSale() async{
+    // await helper.deleteAllSale();
    List<Map> result = await helper.getAllSale();
    List<Sale> lst = [];
    for(int i = 0;i< result.length; i++){

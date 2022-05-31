@@ -1,6 +1,10 @@
+
+import 'dart:io';
+
 import 'package:bar_mega/common/Utils.dart';
 import 'package:bar_mega/home/home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,6 +18,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
 
   _getTextFields() {
     return Expanded(
@@ -68,10 +73,12 @@ class _LoginState extends State<Login> {
       },
     );
   }
+  var model;
 
   @override
   void initState() {
     getUserLogin();
+    initDeviceInfo();
     super.initState();
   }
   @override
@@ -110,13 +117,6 @@ class _LoginState extends State<Login> {
     if(querySnapshot.docs.isNotEmpty){
       querySnapshot.docs.forEach((element) {
         String userId = element.id;
-        FirebaseFirestore.instance
-            .collection(
-            Utils.firestore_collection)
-            .doc(userId)
-            .update({
-          "isActive": false,
-        });
         bool isActive = element.get("isActive");
         if(isActive){
           Toasts.greenToast("Your account was already login \n on another device!");
@@ -143,6 +143,8 @@ class _LoginState extends State<Login> {
         .doc(userId)
         .update({
       "isActive": true,
+      "model":model
+
     }).then((_) {
       Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
           Home()), (Route<dynamic> route) => false);
@@ -155,6 +157,16 @@ class _LoginState extends State<Login> {
     if(isLogin){
       Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
           Home()), (Route<dynamic> route) => false);
+    }
+  }
+
+  void initDeviceInfo() async{
+    if(Platform.isAndroid){
+      var build = await deviceInfoPlugin.androidInfo;
+      model = build.model;
+    }else if(Platform.isIOS){
+      var build = await deviceInfoPlugin.iosInfo;
+      model = build.model;
     }
   }
 }

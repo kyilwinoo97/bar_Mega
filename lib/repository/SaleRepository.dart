@@ -22,6 +22,8 @@ Future<List<Map>> getAllOrderByInvoiceNo(String invoiceNo);
 
  Future<List<PurchaseItemModel>> getAllPurchase();
 
+ Future<Sale> getSaleByInvoiceNo(String invoiceNo);
+
 
 }
 class SaleRepositoryImpl extends SaleRepository{
@@ -77,6 +79,11 @@ class SaleRepositoryImpl extends SaleRepository{
   @override
   Future<int> addSale(Sale sale) async{
     return await helper.addSale(sale);
+  }
+
+  @override
+  Future<Sale> getSaleByInvoiceNo(String invoiceNo) async{
+   return await helper.getSaleByInvoiceNo(invoiceNo);
   }
 
 

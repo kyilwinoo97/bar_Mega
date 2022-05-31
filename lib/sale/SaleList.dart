@@ -253,10 +253,6 @@ class _SaleListState extends State<SaleList> {
                             }else{
                               itemIndex = temItems.indexWhere((e) => e.nameMyanmar == item.nameMyanmar);
                             }
-
-
-                            print("ITEM INDEX ===============> ${itemIndex}");
-                            // print("ITEM INDEX ===================> ${temItems[itemIndex].nameMyanmar}\n${item.nameMyanmar}");
                             setState(() {
                               if (itemIndex == -1) {
                                 //not exist order add to database
@@ -319,8 +315,8 @@ class _SaleListState extends State<SaleList> {
                     child: BlocBuilder<sale.SaleBloc, sale.SaleState>(
                         builder: (context, state) {
                       if (state is sale.Success) {
+                        //Todo fix UI blink
                         return SingleChildScrollView(
-
                           child: Card(
                             shadowColor: Colors.white30,
                             elevation: 5.0,
@@ -346,25 +342,6 @@ class _SaleListState extends State<SaleList> {
                                                 fontSize: 20.0,
                                                 fontWeight: FontWeight.bold),
                                           ),
-                                          // ClipOval(
-                                          //   child: Material(
-                                          //     color: Colors.red.shade50, // Button color
-                                          //     child: InkWell(
-                                          //       splashColor: Colors.red, // Splash color
-                                          //       onTap: () {
-                                          //         BlocProvider.of<sale.SaleBloc>(context).add(sale.RemoveAllOrder(cartItems));
-                                          //       },
-                                          //       child: SizedBox(
-                                          //           width: 30,
-                                          //           height: 30,
-                                          //           child: Icon(
-                                          //             Icons.delete_forever,
-                                          //             size: 20,
-                                          //             color: Colors.red,
-                                          //           )),
-                                          //     ),
-                                          //   ),
-                                          // ),
                                         ],
                                       )),
                                   const SizedBox(height: 5.0),

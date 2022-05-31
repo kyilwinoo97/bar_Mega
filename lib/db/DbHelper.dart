@@ -66,6 +66,8 @@ abstract class DbHelper{
 
   Future<void>restoreBackup(String backup,{ bool isEncrypted = true});
 
+  Future<Sale> getSaleByInvoiceNo(String invoiceNo);
+
 }
 class DbHelperImpl implements DbHelper{
   final Database database;
@@ -259,6 +261,13 @@ class DbHelperImpl implements DbHelper{
     await batch.commit(continueOnError:false,noResult:true);
 
     print('RESTORE BACKUP');
+  }
+
+  @override
+  Future<Sale> getSaleByInvoiceNo(String invoiceNo) async{
+    var result =  await database.query(Sql.SaleTable,where:'${Sql.invoiceNo} = ?',whereArgs: [invoiceNo]);
+    return result.length > 0 ? Sale.fromMap(result[0]) : new Sale(saleId: -1);
+
   }
 
 

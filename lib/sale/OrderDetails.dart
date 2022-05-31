@@ -4,9 +4,11 @@ import 'dart:typed_data';
 import 'package:bar_mega/bloc/sale_bloc/SaleBloc.dart';
 import 'package:bar_mega/bloc/table_bloc/TableBloc.dart';
 import 'package:bar_mega/common/Utils.dart';
+import 'package:bar_mega/injection_container.dart';
 import 'package:bar_mega/model/BtDevice.dart';
 import 'package:bar_mega/model/Desk.dart';
 import 'package:bar_mega/model/Order.dart';
+import 'package:bar_mega/repository/SaleRepository.dart';
 import 'package:bar_mega/sale/SaleTables.dart';
 import 'package:bar_mega/tables/TableList.dart';
 import 'package:bar_mega/widgets/Toasts.dart';
@@ -27,7 +29,9 @@ import 'package:image/image.dart' as img;
 class OrderDetails extends StatefulWidget {
   final Desk desk;
   final int discount;
+
   OrderDetails(this.desk, this.discount);
+
   @override
   State<OrderDetails> createState() => _OrderDetailsState();
 }
@@ -38,9 +42,10 @@ class _OrderDetailsState extends State<OrderDetails> {
   int prefix = 0;
   String invoiceNo = "";
   ScreenshotController screenshotController = ScreenshotController();
-  // BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
+
   final BluePrintPos _bluePrintPos = BluePrintPos.instance;
   double netAmount = 0.0;
+
   @override
   void initState() {
     super.initState();
@@ -49,7 +54,7 @@ class _OrderDetailsState extends State<OrderDetails> {
       total += double.parse(orderDetails[i].total);
       invoiceNo = orderDetails[i].invoiceNo;
     }
-    if (widget.discount != 0) {
+    if (widget.discount > 0) {
       netAmount = total - (total * (widget.discount.toDouble() / 100));
     } else {
       netAmount = total;
@@ -64,7 +69,6 @@ class _OrderDetailsState extends State<OrderDetails> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    double widthPadding = size.width / 3;
     return WillPopScope(
       onWillPop: _willPopCallback,
       child: Scaffold(
@@ -155,6 +159,7 @@ class _OrderDetailsState extends State<OrderDetails> {
         floatingActionButton: Padding(
           padding: EdgeInsets.only(right: 20.0),
           child: FloatingActionButton.extended(
+
             extendedPadding:
                 EdgeInsets.symmetric(horizontal: 35.0, vertical: 30.0),
             icon: Icon(
@@ -166,15 +171,22 @@ class _OrderDetailsState extends State<OrderDetails> {
               'Charge',
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
-            onPressed: () {
-              BlocProvider.of<SaleBloc>(context).add(AddSale(Sale(
-                  invoiceNo: invoiceNo,
-                  name: "Sale",
-                  quantity: orderDetails.length,
-                  amount: total.toString(),
-                  discount: widget.discount.toString(),
-                  date: Utils.formatDate(DateTime.now()),
-                  total: total.toString())));
+            onPressed: () async{
+              //getInvoice
+             var sale =  await getSaleByInvoiceNo(invoiceNo);
+             if(sale.saleId < 0){
+               Utils.showPrintDialog(context);
+               BlocProvider.of<SaleBloc>(context).add(AddSale(Sale(
+                   invoiceNo: invoiceNo,
+                   name: "Sale",
+                   quantity: orderDetails.length,
+                   amount: total.toString(),
+                   discount: widget.discount.toString(),
+                   date: Utils.formatDate(DateTime.now()),
+                   total: netAmount.toString())));
+             }else{
+
+             }
             },
           ),
         ),
@@ -188,6 +200,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                   noOfSeats: widget.desk.noOfSeats,
                   status: "Available")));
               //print voucher
+              print("add sale");
               printInvoice();
             }
           },
@@ -246,10 +259,14 @@ class _OrderDetailsState extends State<OrderDetails> {
                                   children: [
                                     Text(
                                       (orderDetails[index].name.isNotEmpty
-                                          ? orderDetails[index].name
-                                          : orderDetails[index].nameMyanmar) +
-                                              '\n' +
-                                          (orderDetails[index].name.isEmpty?'':orderDetails[index].nameMyanmar),
+                                              ? orderDetails[index].name
+                                              : orderDetails[index]
+                                                  .nameMyanmar) +
+                                          '\n' +
+                                          (orderDetails[index].name.isEmpty
+                                              ? ''
+                                              : orderDetails[index]
+                                                  .nameMyanmar),
                                       overflow: TextOverflow.visible,
                                       softWrap: true,
                                       style: TextStyle(fontSize: 15),
@@ -270,7 +287,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Total',
+                            'Amount',
                             style: TextStyle(
                                 fontSize: 15.0, fontWeight: FontWeight.bold),
                           ),
@@ -300,12 +317,12 @@ class _OrderDetailsState extends State<OrderDetails> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Amount',
+                            'Total',
                             style: TextStyle(
                                 fontSize: 16.0, fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            "${netAmount.toPrecision(1)}",
+                            "${netAmount}",
                             style: TextStyle(
                                 fontSize: 16.0, fontWeight: FontWeight.bold),
                           ),
@@ -314,12 +331,12 @@ class _OrderDetailsState extends State<OrderDetails> {
                       Divider(
                         color: Colors.grey.shade500,
                       ),
-                      Spacer(),
+                      // Spacer(),
+                      SizedBox(height: 30,),
                       Align(
                         alignment: Alignment.center,
                         child: Text('အားပေးမှုအတွက် ကျေးဇူးတင်ရှိပါသည်။'),
                       ),
-                      const SizedBox(height: 100.0),
                     ],
                   ),
                 ),
@@ -362,7 +379,6 @@ class _OrderDetailsState extends State<OrderDetails> {
 
         if (!_bluePrintPos.isConnected) {
           _bluePrintPos.connect(device).then((value) => {
-                print("----------------->${value}"),
                 _onPrintReceipt(),
               });
         }
@@ -373,6 +389,7 @@ class _OrderDetailsState extends State<OrderDetails> {
         //     }
         // });
       } else {
+        Utils.dismissDialog(context);
         Toasts.greenToast("No connected printer found!");
       }
     } on PlatformException {}
@@ -435,12 +452,15 @@ class _OrderDetailsState extends State<OrderDetails> {
     receiptText.addSpacer(count: 2);
 
     for (int i = 0; i < orderDetails.length; i++) {
-      receiptText.addLeftRightText("${orderDetails[i].name.isEmpty?orderDetails[i].nameMyanmar:orderDetails[i].name}",
+      receiptText.addLeftRightText(
+          "${orderDetails[i].name.isEmpty ? orderDetails[i].nameMyanmar : orderDetails[i].name}",
           '${orderDetails[i].quantity} \tx\t\t' + orderDetails[i].amount,
           leftSize: ReceiptTextSizeType.small,
           rightSize: ReceiptTextSizeType.small);
-      receiptText.addText("${orderDetails[i].name.isEmpty?'':orderDetails[i].nameMyanmar}",
-          size: ReceiptTextSizeType.small, alignment: ReceiptAlignment.left);
+      receiptText.addText(
+          "${orderDetails[i].name.isEmpty ? '' : orderDetails[i].nameMyanmar}",
+          size: ReceiptTextSizeType.small,
+          alignment: ReceiptAlignment.left);
       receiptText.addSpacer(useDashed: true);
     }
 
@@ -456,7 +476,7 @@ class _OrderDetailsState extends State<OrderDetails> {
         rightStyle: ReceiptTextStyleType.normal,
         rightSize: ReceiptTextSizeType.small);
     receiptText.addSpacer(count: 1);
-    receiptText.addLeftRightText('Net Amount', '${netAmount.toPrecision(1)}',
+    receiptText.addLeftRightText('Net Amount', '${netAmount}',
         leftStyle: ReceiptTextStyleType.bold,
         leftSize: ReceiptTextSizeType.small,
         rightStyle: ReceiptTextStyleType.bold,
@@ -469,8 +489,14 @@ class _OrderDetailsState extends State<OrderDetails> {
     );
     receiptText.addSpacer(count: 4);
 
-    await _bluePrintPos.printReceiptText(receiptText,
-        paperSize: PaperSize.mm80);
+    _bluePrintPos
+        .printReceiptText(receiptText, paperSize: PaperSize.mm80)
+        .then((value) => {
+          Utils.dismissDialog(context),
+      Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => SaleTables()),
+                  (Route<dynamic> route) => false),
+            });
 
     /// Example for print QR
     // await _bluePrintPos.printQR('www.google.com', size: 250);
@@ -482,5 +508,11 @@ class _OrderDetailsState extends State<OrderDetails> {
     // receiptSecondText.addSpacer();
     // await _bluePrintPos.printReceiptText(receiptSecondText,
     //     feedCount: 1, paperSize: PaperSize.mm80);
+  }
+
+  Future<Sale> getSaleByInvoiceNo(String invoiceNo) async{
+    var repository = sl<SaleRepository>();
+    Sale sale = await repository.getSaleByInvoiceNo(invoiceNo);
+    return sale;
   }
 }

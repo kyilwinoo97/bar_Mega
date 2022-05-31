@@ -234,4 +234,27 @@ class Utils {
     }
     return _return;
   }
+
+  static showPrintDialog(BuildContext context){
+    AlertDialog alert= AlertDialog(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20.0))
+      ),
+      content: new Row(
+        children: [
+          CircularProgressIndicator(color: Theme.of(context).primaryColor,backgroundColor: Colors.white,),
+          SizedBox(width: 4,),
+          Container(margin: EdgeInsets.only(left: 7),child:Text("Please wait,printing voucher ...")),
+        ],),
+    );
+   return showDialog(barrierDismissible: false,
+      context:context,
+      builder:(BuildContext context){
+        return alert;
+      },
+    );
+  }
+  static dismissDialog(BuildContext context){
+    Navigator.of(context, rootNavigator: true).pop();
+  }
 }
